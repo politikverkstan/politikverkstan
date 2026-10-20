@@ -14,6 +14,8 @@ for a,b in values.items(): tpl=tpl.replace(a,b)
 assert '/*' not in tpl or True
 out=root/'dist'
 out.mkdir(exist_ok=True)
+# Keep the favicon in the published static assets on every build.
+(out/'favicon.ico').write_bytes((root/'favicon.ico').read_bytes())
 (out/'index.html').write_text(tpl,encoding='utf-8')
 (root/'index.html').write_text(tpl,encoding='utf-8')
 assert not (out/'Mandatportal-Lekeberg.html').exists()
