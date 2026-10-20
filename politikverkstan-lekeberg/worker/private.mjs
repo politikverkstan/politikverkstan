@@ -15,7 +15,7 @@ const allowedCategory=new Set(['Skola och utbildning','Omsorg och socialtjänst'
 const base64=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-s.length%4)%4)),c=>c.charCodeAt(0));
 const b64json=s=>JSON.parse(new TextDecoder().decode(base64(s)));
 function readOrigin(r){const origin=r.headers.get('Origin');return !origin||origin===new URL(r.url).origin;}
-async function bodyJson(req){if(Number(req.headers.get('content-length')||0)>maxBody)throw Error('För stor begäran');let raw=await req.text();if(raw.length>maxBody)throw Error('För stor begäran');return JSON.parse(raw);}
+async function bodyJson(req,limit=maxBody){if(Number(req.headers.get('content-length')||0)>limit)throw Error('För stor begäran');let raw=await req.text();if(raw.length>limit)throw Error('För stor begäran');return JSON.parse(raw);}
 export function normalizeMotion(raw){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('Ogiltigt dokument');
  const clauses=Array.isArray(raw.clauses)?raw.clauses.map(x=>clean(x,600)).filter(Boolean).slice(0,12):[];
@@ -107,7 +107,7 @@ export async function handlePrivate(req,env){
   }
   if(path==='/api/private/branding'&&method==='POST'){
    if(user.role!=='admin')return err(403,'Administratörsbehörighet krävs');
-   const v=await bodyJson(req);if(v.logo===null){await env.DB.prepare('DELETE FROM work_branding WHERE id=1').run();return out({ok:true});}
+   const v=await bodyJson(req,360000);if(v.logo===null){await env.DB.prepare('DELETE FROM work_branding WHERE id=1').run();return out({ok:true});}
    if(typeof v.logo!=='string'||v.logo.length>360000||v.logo.length<100||!/^[A-Za-z0-9+/]+={0,2}$/.test(v.logo))return err(400,'Endast PNG upp till cirka 250 KB är tillåten');
    const raw=atob(v.logo);if(raw.length>250000||!raw.startsWith('\x89PNG\r\n\x1a\n'))return err(400,'Ogiltig PNG');
    const view=new DataView(Uint8Array.from(raw,c=>c.charCodeAt(0)).buffer);const w=view.getUint32(16),h=view.getUint32(20);if(w<1||h<1||w>2400||h>2400)return err(400,'Orimlig bildstorlek');
