@@ -1,3 +1,5 @@
+Se även **TESTRAPPORT_0.5.2.md** för senaste testerna.
+
 # Testrapport – Politikverkstan 0.5.1
 
 **Miljö:** lokal Node.js 22, SQLite via `node:sqlite`, Python 3.13, Chromium/Playwright och PyMuPDF. Tester gjordes med lokal D1-kompatibel anpassare och mockade Access-JWT-signaturer, inte med kundens produktionskonto.

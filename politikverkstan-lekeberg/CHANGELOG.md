@@ -1,3 +1,5 @@
+Se även **CHANGELOG_0.5.2.md** för senaste versionen.
+
 # Ändringslogg – Politikverkstan Lekeberg
 
 ## 0.5.1 – SD Arbetsrum: samarbete och gemensamma dokument

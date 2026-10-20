@@ -15,7 +15,10 @@ let result={},status=200;
 let m=String(path).match(/^\/api\/private\/motions\/([a-f0-9-]{36})(.*)$/),i=String(path).match(/^\/api\/private\/ideas\/([a-f0-9-]{36})(.*)$/);
 if(path==='/api/private/me')result={user:window.mockUser};
 else if(path==='/api/private/directory')result={users:people};
-else if(path==='/api/private/motions?scope=shared')result={motions:Object.values(docs).filter(x=>x.owner_email!==mockUser.email&&x.team_permission!=='none')};
+else if(path==='/api/private/motions?scope=shared')result={motions:Object.values(docs).filter(x=>!x.trashed_at&&!x.archived_at)};
+else if(path==='/api/private/motions?scope=shared&lifecycle=archived')result={motions:Object.values(docs).filter(x=>x.archived_at&&!x.trashed_at)};
+else if(path==='/api/private/motions?scope=mine&lifecycle=archived')result={motions:[]};
+else if(path==='/api/private/motions?scope=mine&lifecycle=trash')result={motions:[]};
 else if(path==='/api/private/motions'&&method==='GET')result={motions:Object.values(docs).filter(x=>x.owner_email===mockUser.email)};
 else if(path==='/api/private/motions'&&method==='POST'){const id=uuid();const obj={...data,id,permission:'owner',owner_email:mockUser.email,owner_name:mockUser.name,team_permission:'none',revision:1,updated_at:'2026-10-20T10:00:00Z'};docs[id]=obj;result=obj;status=201;}
 else if(m){const [_,id,suffix]=m,doc=docs[id],owner=doc?.owner_email===mockUser.email;
@@ -31,7 +34,8 @@ else if(m){const [_,id,suffix]=m,doc=docs[id],owner=doc?.owner_email===mockUser.
 else if(path==='/api/private/ideas'&&method==='GET')result={ideas:Object.values(ideas)};
 else if(path==='/api/private/ideas'&&method==='POST'){const id=uuid();ideas[id]={...data,id,status:'ny',owner_email:mockUser.email,owner_name:mockUser.name,comment_count:0};result={id,ok:true};status=201;}
 else if(i){const [_,id,suffix]=i;
- if(suffix==='/motions'&&method==='GET')result={motions:Object.values(docs).filter(x=>x.origin_idea_id===id&&x.owner_email===mockUser.email)};
+ if(suffix==='/history'&&method==='GET')result={history:[]};
+ else if(suffix==='/motions'&&method==='GET')result={motions:Object.values(docs).filter(x=>x.origin_idea_id===id&&x.owner_email===mockUser.email)};
  else if(suffix==='/comments'&&method==='GET')result={comments:icomments[id]||[]};
  else if(suffix==='/comments'&&method==='POST'){icomments[id]??=[];icomments[id].push({id:uuid(),author_email:mockUser.email,author_name:mockUser.name,body:data.body,created_at:'2026-10-20T11:00:00Z'});ideas[id].comment_count++;result={ok:true};status=201;}
  else if(suffix===''&&method==='PATCH'){Object.assign(ideas[id],data);result={ok:true};}

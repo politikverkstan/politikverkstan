@@ -64,3 +64,12 @@
 .header-button.workroom-shortcut{text-decoration:none;color:#253c74;border:1px solid #d8dff1;background:#f5f7ff}
 .header-button.workroom-shortcut:hover{background:#e9edfc}
 @media(max-width:1060px){.portal-workroom{margin-top:14px}.workroom-shortcut{display:none}}
+
+/* 0.5.2 privacy cards: fix missing inner padding without altering tables/other panels */
+.privacy-panels>.main-card{padding:27px 31px;overflow:visible}
+.privacy-panels>.main-card h2{margin:0 0 16px;font-size:20px;line-height:1.35;color:#1d2c48}
+.privacy-panels>.main-card p{max-width:950px;line-height:1.7;margin:0 0 15px}
+.privacy-panels>.main-card p:last-child{margin-bottom:0}
+.privacy-panels .telemetry-consent{margin:22px 0 18px}
+.privacy-panels .privacy-actions{margin:0 0 19px}
+@media(max-width:690px){.privacy-panels>.main-card{padding:23px 20px}}

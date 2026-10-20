@@ -1,3 +1,5 @@
+**För uppgradering 0.5.1 → 0.5.2: följ UPPGRADERING_0.5.2_CLOUDFLARE.md innan du ändrar D1.**
+
 # Uppdatera Politikverkstan 0.5.0 → 0.5.1 via GitHub och Cloudflare
 
 **Avsedd webbadress:** `https://politikverkstan.joel-wennstrom.workers.dev/`. Befintligt SD Arbetsrum och D1-databas ska återanvändas. Du behöver inte installera Wrangler på din dator om du redan använder Cloudflares GitHub-anslutna byggning.

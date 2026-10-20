@@ -15,3 +15,16 @@
 #comment-form,#idea-comment-form{padding-top:12px}.idea-thread{background:#f7f9fd;border:1px solid #dfe7f1;border-radius:11px;padding:16px;margin:14px 0}
 .tile{transition:box-shadow .18s ease,transform .18s ease}.share-card h2{margin-bottom:2px}.share-card p{margin:0 0 15px}
 @media(max-width:1100px){.collab-grid{grid-template-columns:1fr}}@media(max-width:600px){.share-person{display:block}.share-person select{max-width:none;width:100%;margin-top:8px}.collab-grid{gap:12px}}
+
+/* 0.5.2: resilient spacing, tidy card grid and document lifecycle controls */
+.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-bottom:30px}
+.tile{min-height:164px;padding:25px;gap:13px}
+.recent-drafts{margin-top:30px;margin-bottom:25px}
+.doc-actions{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.actions-menu{position:relative}.actions-menu summary{list-style:none;border:1px solid var(--border);border-radius:9px;background:#fff;padding:7px 13px;cursor:pointer;font-size:18px;font-weight:800;line-height:1}
+.actions-menu summary::-webkit-details-marker{display:none}.action-options{position:absolute;right:0;top:calc(100% + 4px);z-index:30;min-width:235px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 28px #14213e2b;padding:7px}
+.action-options button{display:block;width:100%;text-align:left;background:#fff;border:0;padding:12px 11px;border-radius:8px;color:var(--ink)}.action-options button:hover{background:#f3f5fb}.action-options button.danger{color:#9f3145}
+.life-tabs{margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+@media(min-width:1550px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:950px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:690px){.tiles{grid-template-columns:1fr}.docrow{align-items:flex-start;flex-direction:column}.doc-actions{width:100%;justify-content:space-between}}

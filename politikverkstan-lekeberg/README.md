@@ -1,3 +1,7 @@
+# Politikverkstan Lekeberg 0.5.2
+
+Läs **UPPGRADERING_0.5.2_CLOUDFLARE.md** före installation mot en befintlig databas.
+
 # Politikverkstan Lekeberg — 0.5.1
 
 **Uppdatering av befintliga Politikverkstan, inte en ny applikation.** Huvudfilen för den publika portalen är alltid `dist/index.html`, med en kopia som `index.html` i projektroten. Cloudflare Workern har namnet `politikverkstan` och den avsedda adressen är `https://politikverkstan.joel-wennstrom.workers.dev/`.
