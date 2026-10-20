@@ -3,20 +3,38 @@
   "main": "./worker/index.mjs",
   "compatibility_date": "2026-10-20",
   "workers_dev": true,
+
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
-    "run_worker_first": ["/api/*", "/admin", "/admin/*", "/arbetsrum", "/arbetsrum/*", "/Mandatportal-Lekeberg", "/Mandatportal-Lekeberg.html"]
+    "run_worker_first": [
+      "/api/*",
+      "/admin",
+      "/admin/*",
+      "/arbetsrum",
+      "/arbetsrum/*",
+      "/Mandatportal-Lekeberg",
+      "/Mandatportal-Lekeberg.html"
+    ]
   },
-  "d1_databases": [{
-    "binding": "DB",
-    "database_name": "mandatportal-analytics",
-    "database_id": "b469a112-d804-4e7f-868f-4ab8aaafdd26",
-    "migrations_dir": "migrations"
-  }],
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mandatportal-analytics",
+      "database_id": "DITT_BEFlNTLIGA_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+
   "vars": {
+    "ACCESS_TEAM_DOMAIN": "divine-mountain-bb10.cloudflareaccess.com",
+    "ACCESS_AUD": "07269839da1595dcfc0ad3477a5286856b4ac4102733f1ad4137e5ee3ffab69a",
     "TELEMETRY_ENABLED": "false",
     "SECURITY_LOG_ENABLED": "false"
   },
-  "triggers": {"crons": ["0 3 * * *"]}
+
+  "triggers": {
+    "crons": ["0 3 * * *"]
+  }
 }
