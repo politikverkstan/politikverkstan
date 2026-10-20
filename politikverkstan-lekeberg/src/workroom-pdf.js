@@ -1,40 +1,60 @@
-/* Tiny offline-capable PDF exporter. A4, true selectable text, standard Helvetica WinAnsi.
-   Unsupported glyphs are transliterated only for PDF output, not stored data. */
+/* Politics workroom PDF exporter. A4, selectable WinAnsi text, optional user-authorized PNG branding.
+ * Classic PDF fonts are used without claiming they are the party's official typeface.
+ * Unsupported non-WinAnsi characters are replaced only in the exported PDF; source data is unchanged. */
 window.MotionPDF=(function(){
+'use strict';
+const W=595.28,H=841.89,L=64,R=64,WIDTH=W-L-R;
 const CP={'€':128,'‚':130,'ƒ':131,'„':132,'…':133,'†':134,'‡':135,'ˆ':136,'‰':137,'Š':138,'‹':139,'Œ':140,'Ž':142,'‘':145,'’':146,'“':147,'”':148,'•':149,'–':150,'—':151,'˜':152,'™':153,'š':154,'›':155,'œ':156,'ž':158,'Ÿ':159};
-function encode(s){let v='';for(let c of String(s)){let n=c.codePointAt(0);if(c==='\n'||c==='\r')continue;if(n===92||n===40||n===41){v+='\\'+c;continue;}if(n>255)n=CP[c]??63;if(n>=128||n<32)v+='\\'+n.toString(8).padStart(3,'0');else v+=String.fromCharCode(n);}return '('+v+')';}
-function width(text,size,bold){const canvas=width.canvas||(width.canvas=document.createElement('canvas'));const ctx=canvas.getContext('2d');ctx.font=(bold?'bold ':'')+size+'px Arial';return ctx.measureText(String(text)).width;}
-function wrap(text,maxWidth,size,bold=false){let rows=[];const paras=String(text||'').replace(/\r/g,'').split('\n');for(const para of paras){if(!para.trim()){rows.push('');continue;}let line='';for(const word of para.split(/\s+/)){if(!word)continue;const next=(line?line+' ':'')+word;if(line&&width(next,size,bold)>maxWidth){rows.push(line);line=word;}else line=next;}rows.push(line);}return rows;}
-const esc=encode;
-function createPdf(doc,variant='sd'){
- const W=595.28,H=841.89,left=59,right=59,max=W-left-right;const pages=[];let cmds=[],y=H-64;const navy=variant==='sd'?'0.08 0.12 0.31':'0.15 0.20 0.29';const dark='0.13 0.18 0.27';
- function draw(txt,size=11,bold=false,x=left,yy=y,color=dark){if(!txt)return;cmds.push(`BT ${color} rg /${bold?'F2':'F1'} ${size} Tf 1 0 0 1 ${x.toFixed(2)} ${yy.toFixed(2)} Tm ${esc(txt)} Tj ET`);}
- function fresh(){cmds=[];y=H-68;cmds.push(variant==='sd'?`${navy} rg 0 ${H-12} ${W} 12 re f`:'0.70 0.73 0.77 rg 0 '+(H-3)+' '+W+' 3 re f');draw('MOTION TILL LEKEBERGS KOMMUNFULLMÄKTIGE',9,true,left,H-52,navy);}
- function finish(){cmds.push(`0.55 0.61 0.69 rg 0.5 w ${left} 46 m ${W-right} 46 l S`);draw('Politikverkstan Lekeberg · Dokumentutkast',8,false,left,31,'0.47 0.51 0.58');pages.push(cmds.join('\n'));}
- function ensure(n=19){if(y-n<75){finish();fresh();}}
- function textBlock(txt,size=11,lineHeight=17,color=dark){const lines=wrap(txt,max,size);for(const line of lines){ensure(lineHeight);if(line)draw(line,size,false,left,y,color);y-=lineHeight;}return lines.length;}
- function section(title){ensure(42);y-=14;draw(title,11,true,left,y,navy);y-=19;}
- fresh();y-=13;let title=String(doc.title||'Motion utan rubrik');for(const line of wrap(title,max,19,true)){ensure(27);draw(line,19,true,left,y,navy);y-=26;}y-=11;
- if(doc.problem){section('Bakgrund');textBlock(doc.problem);}
- if(doc.motivation){section('Motivering');textBlock(doc.motivation);}
- if(doc.proposal){section('Förslag');textBlock(doc.proposal);}
+const tenc=new TextEncoder();
+function ascii(s){return tenc.encode(s);}
+function join(...parts){const list=parts.filter(Boolean).map(x=>typeof x==='string'?ascii(x):x);const n=list.reduce((a,b)=>a+b.length,0);const bytes=new Uint8Array(n);let i=0;for(const b of list){bytes.set(b,i);i+=b.length;}return bytes;}
+function escapeText(s){let out='';for(const ch of String(s||'')){let n=ch.codePointAt(0);if(n>255)n=CP[ch]??63;if(n===40||n===41||n===92){out+='\\'+String.fromCharCode(n);continue;}if(n<32||n>126)out+='\\'+n.toString(8).padStart(3,'0');else out+=String.fromCharCode(n);}return '('+out+')';}
+function measure(s,size,bold=false,serif=false){const c=measure.c||(measure.c=document.createElement('canvas'));const ctx=c.getContext('2d');ctx.font=(bold?'bold ':'')+size+'px '+(serif?'"Times New Roman"':'Helvetica');return ctx.measureText(String(s)).width;}
+function lines(s,w,size,bold=false,serif=true){const result=[];for(const para of String(s||'').replace(/\r/g,'').split('\n')){if(!para.trim()){result.push('');continue;}let line='';for(let word of para.split(/\s+/)){if(!word)continue;if(!line){line=word;continue;}if(measure(line+' '+word,size,bold,serif)>w){result.push(line);line=word;}else line+=' '+word;}if(line)result.push(line);}return result;}
+async function jpegFromDataUrl(url){if(!url||!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(url)||url.length>520000)return null;return new Promise(resolve=>{const im=new Image();im.onload=()=>{try{const max=640,ratio=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.naturalWidth*ratio));c.height=Math.max(1,Math.round(im.naturalHeight*ratio));const ctx=c.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);const jpg=c.toDataURL('image/jpeg',0.88).split(',')[1];const bin=atob(jpg);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);resolve({data:bytes,width:c.width,height:c.height});}catch{resolve(null)}};im.onerror=()=>resolve(null);im.src=url;});}
+async function createPdf(doc,variant='sd',logoDataUrl=''){
+ const sd=variant==='sd',logo=sd?await jpegFromDataUrl(logoDataUrl):null;
+ const navy=sd?'0.09 0.15 0.39':'0.24 0.28 0.34',gold='0.93 0.74 0.19',dark='0.17 0.21 0.27',muted='0.39 0.43 0.51';
+ const pages=[];let cmds=[],y=0;let pageNumber=0;
+ const draw=(s,x,yy,size=11,font='F1',color=dark)=>{if(!s)return;cmds.push(`BT ${color} rg /${font} ${size} Tf 1 0 0 1 ${x.toFixed(2)} ${yy.toFixed(2)} Tm ${escapeText(s)} Tj ET`);};
+ const line=(x1,y1,x2,y2,color=navy,weight=0.8)=>cmds.push(`${color} RG ${weight} w ${x1} ${y1} m ${x2} ${y2} l S`);
+ function start(){pageNumber++;cmds=[];
+   if(sd){if(logo){const ratio=logo.width/logo.height,w=Math.min(42,42*ratio),h=Math.min(42,42/ratio);cmds.push(`q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${L} ${(H-89).toFixed(2)} cm /Logo Do Q`);}draw('Sverigedemokraterna',L+(logo?55:0),H-62,16,'F3',navy);draw('LEKEBERG',L+(logo?55:0),H-78,9,'F3',navy);line(L,H-105,W-R,H-105);cmds.push(`${gold} RG 3 w ${L} ${H-105} m ${L+43} ${H-105} l S`);}else{draw('MOTION TILL LEKEBERGS KOMMUNFULLMÄKTIGE',L,H-73,9,'F3',navy);line(L,H-94,W-R,H-94,'0.75 0.77 0.80',0.7);}
+   if(sd)draw('MOTION TILL LEKEBERGS KOMMUNFULLMÄKTIGE',L,H-127,8,'F3',muted);
+   y=H-(sd?157:123);
+ }
+ function finish(){line(L,61,W-R,61,'0.78 0.81 0.85',0.6);if(sd)draw('SVERIGEDEMOKRATERNA LEKEBERG',L,45,7.4,'F3',muted);draw('Sida '+pageNumber,W-R-40,45,8,'F2',muted);pages.push(cmds.join('\n')+'\n');}
+ function ensure(height){if(y-height<87){finish();start();}}
+ function paragraph(s,size=11.4,leading=17.2,extra=10,font='F1',col=dark,indent=0){for(const row of lines(s,WIDTH-indent,size,font==='F4',font==='F1'||font==='F4')){ensure(leading);if(row)draw(row,L+indent,y,size,font,col);y-=leading;}y-=extra;}
+ function section(name){ensure(46);y-=9;draw(name,L,y,11,'F3',navy);y-=19;}
+ start();let title=String(doc?.title||'Motion utan rubrik');for(const row of lines(title,WIDTH,20,true,false)){ensure(27);draw(row,L,y,20,'F3',navy);y-=26;}y-=13;
+ // Formal municipal motions benefit from continuous prose; never generate empty section headings.
+ if(doc?.problem)paragraph(doc.problem);
+ if(doc?.motivation)paragraph(doc.motivation);
+ if(doc?.proposal)paragraph(doc.proposal);
  section('Förslag till beslut');
- let clauses=Array.isArray(doc.clauses)?doc.clauses.filter(Boolean):[];
- if(!clauses.length)clauses=['[Beslutsförslag behöver formuleras]'];
- for(const [i,clause] of clauses.entries()){
-   const sentence=String(clause).trim().replace(/^att\s+/i,'');const lines=wrap('att '+sentence,max-25,11);const height=lines.length*17+8;
-   if(y-height<75){finish();fresh();} draw(String(i+1)+'.',11,true,left,y,navy);
-   for(const line of lines){draw(line,11,false,left+24,y);y-=17;}y-=8;
+ const clauses=Array.isArray(doc?.clauses)?doc.clauses.map(x=>String(x).trim()).filter(Boolean):[];
+ for(const [i,c] of (clauses.length?clauses:['[Beslutsförslag saknas]']).entries()){
+  const body=/^att\s/i.test(c)?c:'att '+c;const rows=lines(body,WIDTH-34,11.5,false,true);const block=rows.length*17.5+10;ensure(Math.min(block,150));draw((i+1)+'.',L,y,10.5,'F3',navy);
+  for(const row of rows){ensure(17.5);draw(row,L+27,y,11.5,'F1');y-=17.5;}y-=10;
  }
- y-=25;ensure(95);draw(String(doc.date||''),10,false,left,y);y-=27;for(const signer of String(doc.signer||'Motionärens namn').split('\n')){ensure(19);draw(signer,11,true,left,y);y-=17;}draw(String(doc.party||'Sverigedemokraterna'),10,false,left,y);finish();
- const objects=[null];const add=(obj)=>{objects.push(obj);return objects.length-1;};
- const f1=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');const f2=add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
- const kids=[];for(const pageContent of pages){const str=pageContent+'\n';const content=add(`<< /Length ${str.length} >>\nstream\n${str}endstream`);const page=add(`<< /Type /Page /Parent PARENTPAGES /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R >> >> /Contents ${content} 0 R >>`);kids.push(page);}
- const pagesId=add(`<< /Type /Pages /Kids [${kids.map(x=>x+' 0 R').join(' ')}] /Count ${kids.length} >>`);for(const id of kids)objects[id]=objects[id].replace('PARENTPAGES',pagesId+' 0 R');
- const catalog=add(`<< /Type /Catalog /Pages ${pagesId} 0 R >>`);
- let pdf='%PDF-1.4\n%PDFBUILD\n';const offsets=[0];for(let id=1;id<objects.length;id++){offsets.push(pdf.length);pdf+=`${id} 0 obj\n${objects[id]}\nendobj\n`;}
- const xref=pdf.length;pdf+=`xref\n0 ${objects.length}\n0000000000 65535 f \n`;for(let id=1;id<objects.length;id++)pdf+=String(offsets[id]).padStart(10,'0')+' 00000 n \n';pdf+=`trailer\n<< /Size ${objects.length} /Root ${catalog} 0 R >>\nstartxref\n${xref}\n%%EOF`;
- return new Blob([new TextEncoder().encode(pdf)],{type:'application/pdf'});
- }
- return {createPdf};
+ y-=18;ensure(85);let date=String(doc?.date||'').trim();if(/^\d{4}-\d{2}-\d{2}$/.test(date)){const [a,b,c]=date.split('-');date=`${c}/${b} ${a}`;}if(date){draw('Lekeberg, '+date,L,y,10.5,'F1',muted);y-=30;}
+ const signers=String(doc?.signer||'').split('\n').map(x=>x.trim()).filter(Boolean);for(const s of signers){ensure(19);draw(s,L,y,11.2,'F4',dark);y-=18;}
+ if(doc?.party){ensure(17);draw(String(doc.party),L,y,10,'F1',muted);}finish();
+ // All PDF offsets must be counted in bytes, not JS string length (e.g. metadata and JPEG).
+ const objs=[null],add=x=>(objs.push(x),objs.length-1);
+ const f1=add(ascii('<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman /Encoding /WinAnsiEncoding >>'));
+ const f2=add(ascii('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>'));
+ const f3=add(ascii('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'));
+ const f4=add(ascii('<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold /Encoding /WinAnsiEncoding >>'));
+ let logoId=0;if(logo)logoId=add(join(`<< /Type /XObject /Subtype /Image /Width ${logo.width} /Height ${logo.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${logo.data.length} >>\nstream\n`,logo.data,'\nendstream'));
+ const kids=[];for(const content of pages){const bytes=ascii(content);const cid=add(join(`<< /Length ${bytes.length} >>\nstream\n`,bytes,'endstream'));
+   kids.push(add(ascii(`<< /Type /Page /Parent PARENTPAGES /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R /F3 ${f3} 0 R /F4 ${f4} 0 R >> ${logoId?`/XObject << /Logo ${logoId} 0 R >>`:''} >> /Contents ${cid} 0 R >>`)));}
+ const p=add(ascii(`<< /Type /Pages /Kids [${kids.map(n=>n+' 0 R').join(' ')}] /Count ${kids.length} >>`));for(const id of kids)objs[id]=ascii(new TextDecoder().decode(objs[id]).replace('PARENTPAGES',p+' 0 R'));
+ const root=add(ascii(`<< /Type /Catalog /Pages ${p} 0 R >>`));const parts=[ascii('%PDF-1.4\n%\xA5\xA5\xA5\xA5\n')],offsets=[0];let length=parts[0].length;
+ for(let id=1;id<objs.length;id++){offsets[id]=length;const block=join(`${id} 0 obj\n`,objs[id],'\nendobj\n');parts.push(block);length+=block.length;}
+ const xref=length;parts.push(ascii(`xref\n0 ${objs.length}\n0000000000 65535 f \n${offsets.slice(1).map(n=>String(n).padStart(10,'0')+' 00000 n \n').join('')}trailer\n<< /Size ${objs.length} /Root ${root} 0 R >>\nstartxref\n${xref}\n%%EOF`));
+ return new Blob(parts,{type:'application/pdf'});
+}
+return {createPdf};
 })();
