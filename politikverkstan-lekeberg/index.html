@@ -73,6 +73,42 @@
 .privacy-panels .telemetry-consent{margin:22px 0 18px}
 .privacy-panels .privacy-actions{margin:0 0 19px}
 @media(max-width:690px){.privacy-panels>.main-card{padding:23px 20px}}
+
+/* Candidate election: consistent inset and vertical rhythm for both setup and ballot cards. */
+.main-card:has(> .candidate-setup) > .card-top,
+.main-card:has(> .candidate-hint) > .card-top{padding-bottom:14px}
+.main-card:has(> .candidate-setup) > .candidate-setup{
+  margin:12px 0 0;padding:0 25px;align-items:end
+}
+.main-card:has(> .candidate-setup) > .candidate-threshold{
+  margin:16px 25px 22px;line-height:1.55
+}
+.main-card:has(> .candidate-setup) > .candidate-checkbox{
+  margin:16px 25px 0
+}
+.main-card:has(> .candidate-hint) > .candidate-hint{
+  margin:12px 25px 18px
+}
+.main-card:has(> .candidate-hint) > .ballot-grid{
+  margin:0;padding:0 25px
+}
+.main-card:has(> .candidate-hint) > .candidate-footer{
+  margin:18px 25px 22px
+}
+@media(max-width:700px){
+  .main-card:has(> .candidate-setup) > .candidate-setup{
+    padding:0 18px;grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+  .main-card:has(> .candidate-setup) > .candidate-threshold{margin:14px 18px 20px}
+  .main-card:has(> .candidate-setup) > .candidate-checkbox{margin:14px 18px 0}
+  .main-card:has(> .candidate-hint) > .candidate-hint{margin:10px 18px 16px}
+  .main-card:has(> .candidate-hint) > .ballot-grid{padding:0 18px}
+  .main-card:has(> .candidate-hint) > .candidate-footer{margin:16px 18px 20px}
+}
+@media(max-width:450px){
+  .main-card:has(> .candidate-setup) > .candidate-setup{grid-template-columns:1fr}
+}
+
 </style></head><body><div id="root"></div><input type="file" id="file-import" accept="application/json,.json" hidden><script type="application/json" id="org-data">[
   {
     "id": "org01",
