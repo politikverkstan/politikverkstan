@@ -28,3 +28,14 @@
 @media(min-width:1550px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:950px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:690px){.tiles{grid-template-columns:1fr}.docrow{align-items:flex-start;flex-direction:column}.doc-actions{width:100%;justify-content:space-between}}
+
+/* 0.5.3: formal A4-inspired motion template */
+.admin-table .account-name{min-width:185px;max-width:240px;width:100%;padding:9px 11px;border:1px solid #cdd6e5;border-radius:9px;color:var(--ink);font:inherit}
+.paper{font-family:Georgia,'Times New Roman',serif;position:relative;padding:36px 33px 28px;line-height:1.52;min-height:610px}
+.paper-letterhead{display:flex;align-items:center;gap:13px;min-height:62px;border-bottom:1.5px solid #1a2c61;padding-bottom:12px;margin-bottom:22px}
+.paper-logo{display:block;object-fit:contain;width:44px;height:48px;flex-shrink:0}.paper-brand{font-family:Arial,sans-serif;color:#142452}.paper-brand strong{font-size:15px;display:block;letter-spacing:-.2px}.paper-brand span{display:block;letter-spacing:1.3px;font-size:9px;font-weight:800;margin-top:5px}
+.paper-blue .paper-letterhead{border-bottom:2px solid #1c356e}.paper-neutral .paper-letterhead{border-bottom:1px solid #aeb8c8}.paper-overline{font:700 9px Arial,sans-serif;letter-spacing:.7px;text-transform:uppercase;color:#68798b}
+.paper h2{font-family:Arial,sans-serif;font-size:20px;margin:13px 0 21px;line-height:1.24;letter-spacing:-.45px}.paper p{font-family:Georgia,'Times New Roman',serif;font-size:12px;line-height:1.65;color:#253046;margin:0 0 13px}
+.paper .decision{font:700 12px Arial,sans-serif;margin:25px 0 12px;color:#192b56}.paper .clauses p{padding-left:20px;position:relative;margin-bottom:12px}.clause-prefix{position:absolute;left:0;font-family:Arial,sans-serif;font-weight:700;color:#193366}
+.paper .signature{font-size:11px;line-height:1.8;margin-top:45px}.paper-footer{border-top:1px solid #dee3e9;margin-top:46px;padding-top:9px;font:700 8px Arial,sans-serif;letter-spacing:1px;color:#7d899a}
+@media(max-width:690px){.paper{padding:25px 19px;min-height:480px}.paper h2{font-size:18px}.admin-table .account-name{min-width:145px}}
