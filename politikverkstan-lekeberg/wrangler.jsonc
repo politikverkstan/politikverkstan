@@ -1,5 +1,5 @@
 {
-  "name": "mandatportal",
+  "name": "politikverkstan",
   "main": "./worker/index.mjs",
   "compatibility_date": "2026-10-20",
   "workers_dev": true,
