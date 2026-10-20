@@ -31,6 +31,7 @@
  "ACCESS_AUD": "07269839da1595dcfc0ad3477a5286856b4ac4102733f1ad4137e5ee3ffab69a",
     "ACCESS_TEAM_DOMAIN": "divine-mountain-bb10.cloudflareaccess.com",
     "BOOTSTRAP_ADMIN_EMAIL": "joel.wennstrom@outlook.com",
+    "ADMIN_EMAILS": "joel.wennstrom@outlook.com",
     "SECURITY_LOG_ENABLED": "false",
     "TELEMETRY_ENABLED": "false"
   },
