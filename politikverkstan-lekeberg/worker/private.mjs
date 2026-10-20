@@ -56,15 +56,20 @@ async function userAdmin(req,env,user,path){if(user.role!=='admin')return err(40
   const r=await env.DB.prepare('SELECT email,display_name,role,active,created_at FROM work_users ORDER BY created_at DESC').all();return out({users:r.results||[]});
  }
  if(path==='/api/private/users'&&req.method==='POST'){
-  const v=await bodyJson(req);const email=normEmail(v.email);if(!validEmail(email))return err(400,'Ogiltig e-postadress');const role=v.role==='admin'?'admin':'user';const name=clean(v.name,120);
+  const v=await bodyJson(req);const email=normEmail(v.email);if(!validEmail(email))return err(400,'Ogiltig e-postadress');const role=v.role==='admin'?'admin':'user';const name=clean(v.name,120).replace(/\s+/g,' ');if(!name||/[\x00-\x1F\x7F]/.test(name))return err(400,'Ange ett giltigt visningsnamn');
   await env.DB.prepare('INSERT INTO work_users(email,display_name,role,active,created_at) VALUES(?,?,?,?,?) ON CONFLICT(email) DO UPDATE SET display_name=excluded.display_name,role=excluded.role,active=1').bind(email,name,role,1,new Date().toISOString()).run();return out({ok:true});
  }
  const match=path.match(/^\/api\/private\/users\/([^/]+)$/);
  if(match&&req.method==='PATCH'){
-  const email=normEmail(decodeURIComponent(match[1]));const v=await bodyJson(req);if(!validEmail(email)||typeof v.active!=='boolean'||!['user','admin'].includes(v.role))return err(400,'Ogiltiga uppgifter');
-  if(email===user.email&&(v.active===false||v.role!=='admin'))return err(409,'Du kan inte stänga av ditt eget administratörskonto');
-  const row=await env.DB.prepare('SELECT email FROM work_users WHERE email=?').bind(email).first();if(!row)return err(404,'Användaren finns inte');
-  await env.DB.prepare('UPDATE work_users SET role=?,active=? WHERE email=?').bind(v.role,v.active?1:0,email).run();return out({ok:true});
+  const email=normEmail(decodeURIComponent(match[1]));const v=await bodyJson(req);if(!validEmail(email)||!v||typeof v!=='object'||Array.isArray(v))return err(400,'Ogiltiga uppgifter');
+  const row=await env.DB.prepare('SELECT email,display_name,role,active FROM work_users WHERE email=?').bind(email).first();if(!row)return err(404,'Användaren finns inte');
+  if(!['display_name','role','active'].some(k=>Object.hasOwn(v,k)))return err(400,'Inga ändringar angivna');
+  const role=Object.hasOwn(v,'role')?v.role:row.role,active=Object.hasOwn(v,'active')?v.active:!!row.active;
+  if(!['user','admin'].includes(role)||typeof active!=='boolean')return err(400,'Ogiltiga behörigheter');
+  let name=row.display_name;
+  if(Object.hasOwn(v,'display_name')){if(typeof v.display_name!=='string')return err(400,'Ogiltigt visningsnamn');name=v.display_name.trim().replace(/\s+/g,' ');if(!name||name.length>120||/[\x00-\x1F\x7F]/.test(name))return err(400,'Visningsnamnet måste vara 1–120 tecken');}
+  if(email===user.email&&(!active||role!=='admin'))return err(409,'Du kan inte stänga av ditt eget administratörskonto');
+  await env.DB.prepare('UPDATE work_users SET display_name=?,role=?,active=? WHERE email=?').bind(name,role,active?1:0,email).run();return out({ok:true});
  }
  return err(404,'Okänd begäran');
 }
@@ -79,13 +84,14 @@ export async function handlePrivate(req,env){
   if(path==='/api/private/bootstrap'&&method==='POST'){
    if(normEmail(env.BOOTSTRAP_ADMIN_EMAIL)!==identity.email||!validEmail(identity.email))return err(403,'Bootstrap är inte tillåten');
    const count=await env.DB.prepare('SELECT COUNT(*) AS n FROM work_users').first();if(Number(count?.n)!==0)return err(409,'Administratör finns redan');
-   await env.DB.prepare("INSERT INTO work_users(email,display_name,role,active,created_at) VALUES(?,?, 'admin',1,?)").bind(identity.email,'Administratör',new Date().toISOString()).run();return out({ok:true});
+   const v=await bodyJson(req);const display_name=typeof v.display_name==='string'?v.display_name.trim().replace(/\s+/g,' '):'';if(!display_name||display_name.length>120||/[\x00-\x1F\x7F]/.test(display_name))return err(400,'Ange ditt visningsnamn (1–120 tecken');
+   await env.DB.prepare("INSERT INTO work_users(email,display_name,role,active,created_at) VALUES(?,?, 'admin',1,?)").bind(identity.email,display_name,new Date().toISOString()).run();return out({ok:true});
   }
   if(path==='/arbetsrum/setup'&&method==='GET'){
    if(normEmail(env.BOOTSTRAP_ADMIN_EMAIL)!==identity.email||!validEmail(identity.email))return err(403,'Installationsåtkomst nekad');
    const count=await env.DB.prepare('SELECT COUNT(*) AS n FROM work_users').first();
    if(Number(count?.n)!==0)return new Response(null,{status:302,headers:{location:'/arbetsrum','cache-control':'no-store'}});
-   const page=`<!doctype html><html lang="sv"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Aktivera arbetsrum</title><style>body{font:16px system-ui;background:#f5f7fb;color:#1b2450;display:grid;min-height:100vh;place-items:center;margin:0}.box{background:#fff;padding:36px;max-width:500px;border:1px solid #e0e6f2;border-radius:18px}button{background:#141b4d;color:white;border:0;border-radius:10px;padding:13px 20px;font:inherit;cursor:pointer}</style><main class="box"><h1>Aktivera Politikverkstan</h1><p>Inloggad identitet: <strong>${identity.email.replace(/[&<>"']/g,'')}</strong></p><p>Skapa det första administratörskontot. Detta kan bara göras en gång och kräver rätt Cloudflare Access-identitet.</p><button id="go">Aktivera administratören</button><p id="status" role="status"></p></main><script nonce="setup">document.getElementById('go').addEventListener('click',async()=>{const r=await fetch('/api/private/bootstrap',{method:'POST'});const d=await r.json();if(r.ok)location.href='/arbetsrum';else document.getElementById('status').textContent=d.error||'Aktivering misslyckades';});</script></html>`;
+   const page=`<!doctype html><html lang="sv"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Aktivera arbetsrum</title><style>body{font:16px system-ui;background:#f5f7fb;color:#1b2450;display:grid;min-height:100vh;place-items:center;margin:0}.box{background:#fff;padding:36px;max-width:500px;border:1px solid #e0e6f2;border-radius:18px}button{background:#141b4d;color:white;border:0;border-radius:10px;padding:13px 20px;font:inherit;cursor:pointer}</style><main class="box"><h1>Aktivera Politikverkstan</h1><p>Inloggad identitet: <strong>${identity.email.replace(/[&<>"']/g,'')}</strong></p><p>Skapa det första administratörskontot. Detta kan bara göras en gång och kräver rätt Cloudflare Access-identitet.</p><label for="displayName">Visningsnamn</label><input id="displayName" maxlength="120" required autocomplete="name" style="display:block;width:100%;margin:8px 0 19px;padding:10px;border:1px solid #bbc6de;border-radius:9px"><button id="go">Aktivera administratören</button><p id="status" role="status"></p></main><script nonce="setup">document.getElementById('go').addEventListener('click',async()=>{const r=await fetch('/api/private/bootstrap',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({display_name:document.getElementById('displayName').value})});const d=await r.json();if(r.ok)location.href='/arbetsrum';else document.getElementById('status').textContent=d.error||'Aktivering misslyckades';});</script></html>`;
    return new Response(page,{headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store, private','x-frame-options':'DENY','referrer-policy':'no-referrer','content-security-policy':"default-src 'none'; script-src 'nonce-setup'; connect-src 'self'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'"}});
   }
   const user=await requireUser(req,env);if(!user)return err(403,'Ditt konto är inte godkänt i arbetsrummet');
@@ -96,6 +102,17 @@ export async function handlePrivate(req,env){
    return out({users:records.results||[]});
   }
   if(path.startsWith('/api/private/users'))return userAdmin(req,env,user,path);
+  if(path==='/api/private/branding'&&method==='GET'){
+   const item=await env.DB.prepare('SELECT png_base64 FROM work_branding WHERE id=1').first();return out({logo:item?.png_base64?`data:image/png;base64,${item.png_base64}`:null});
+  }
+  if(path==='/api/private/branding'&&method==='POST'){
+   if(user.role!=='admin')return err(403,'Administratörsbehörighet krävs');
+   const v=await bodyJson(req);if(v.logo===null){await env.DB.prepare('DELETE FROM work_branding WHERE id=1').run();return out({ok:true});}
+   if(typeof v.logo!=='string'||v.logo.length>360000||v.logo.length<100||!/^[A-Za-z0-9+/]+={0,2}$/.test(v.logo))return err(400,'Endast PNG upp till cirka 250 KB är tillåten');
+   const raw=atob(v.logo);if(raw.length>250000||!raw.startsWith('\x89PNG\r\n\x1a\n'))return err(400,'Ogiltig PNG');
+   const view=new DataView(Uint8Array.from(raw,c=>c.charCodeAt(0)).buffer);const w=view.getUint32(16),h=view.getUint32(20);if(w<1||h<1||w>2400||h>2400)return err(400,'Orimlig bildstorlek');
+   await env.DB.prepare('INSERT INTO work_branding(id,png_base64,updated_at) VALUES(1,?,?) ON CONFLICT(id) DO UPDATE SET png_base64=excluded.png_base64,updated_at=excluded.updated_at').bind(v.logo,new Date().toISOString()).run();return out({ok:true});
+  }
   const collab=await handleCollaboration(req,env,user);if(collab)return collab;
   if(path==='/api/private/motions'&&method==='GET')return out({motions:await documentList(env,user)});
   if(path==='/api/private/motions'&&method==='POST'){
