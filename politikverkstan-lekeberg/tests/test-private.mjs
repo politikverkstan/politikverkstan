@@ -8,6 +8,7 @@ if(!globalThis.crypto)globalThis.crypto=webcrypto;
 const db=new DatabaseSync(':memory:');db.exec('PRAGMA foreign_keys=ON;');
 db.exec(readFileSync(new URL('../migrations/0001_analytics.sql',import.meta.url),'utf8'));
 db.exec(readFileSync(new URL('../migrations/0002_workroom.sql',import.meta.url),'utf8'));
+db.exec(readFileSync(new URL('../migrations/0003_collaboration.sql',import.meta.url),'utf8'));
 const DB={prepare(sql){let args=[];return {bind(...v){args=v;return this;},async run(){const x=db.prepare(sql).run(...args);return {success:true,meta:{changes:Number(x.changes)}};},async first(){return db.prepare(sql).get(...args)||null;},async all(){return {results:db.prepare(sql).all(...args)};}}},async batch(stmts){const outputs=[];db.exec('BEGIN');try{for(const st of stmts)outputs.push(await st.run());db.exec('COMMIT');return outputs;}catch(e){db.exec('ROLLBACK');throw e;}}};
 const {privateKey,publicKey}=await crypto.subtle.generateKey({name:'RSASSA-PKCS1-v1_5',modulusLength:2048,publicExponent:new Uint8Array([1,0,1]),hash:'SHA-256'},true,['sign','verify']);
 const pub=await crypto.subtle.exportKey('jwk',publicKey);pub.kid='private-key';pub.alg='RS256';
@@ -36,7 +37,7 @@ assert.equal((await fetcher('/api/private/motions/'+id,'user@example.se')).statu
 assert.equal((await fetcher('/api/private/motions/'+id,'user@example.se','PUT',{...draft,revision:44})).status,409);
 r=await fetcher('/api/private/motions/'+id,'user@example.se','PUT',{...draft,revision:1,title:'Uppdaterad rubrik'});assert.equal(r.status,200);assert.equal((await r.json()).revision,2);
 r=await fetcher('/api/private/motions/'+id+'/versions','user@example.se');assert.equal(r.status,200);assert.equal((await r.json()).versions.length,1);
-r=await fetcher('/api/private/motions/'+id+'/restore','user@example.se','POST',{revision:1});assert.equal(r.status,200);assert.equal((await r.json()).title,draft.title);
+r=await fetcher('/api/private/motions/'+id+'/restore','user@example.se','POST',{revision:1,current_revision:2});assert.equal(r.status,200);assert.equal((await r.json()).title,draft.title);
 assert.equal((await fetcher('/api/private/motions','user@example.se')).status,200);
 assert.equal((await fetcher('/api/private/users','user@example.se')).status,403);
 const update='/api/private/users/'+encodeURIComponent('user@example.se');

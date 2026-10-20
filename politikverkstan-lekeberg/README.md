@@ -1,41 +1,48 @@
-# Politikverkstan Lekeberg — version 0.5.0 (5.0-funktioner i första etappen)
+# Politikverkstan Lekeberg — 0.5.1
 
-Vidareutveckling av den **befintliga** Mandatportalen: den publika kartellbyggaren och valmotorn har behållits. En ny, skyddad applikationsdel, **SD Arbetsrum**, har tillkommit.
+**Uppdatering av befintliga Politikverkstan, inte en ny applikation.** Huvudfilen för den publika portalen är alltid `dist/index.html`, med en kopia som `index.html` i projektroten. Cloudflare Workern har namnet `politikverkstan` och den avsedda adressen är `https://politikverkstan.joel-wennstrom.workers.dev/`.
 
-## Vad fungerar
+## Innehåll
 
-**Publikt, utan inloggning** (`/`, `dist/index.html`): drag-and-drop mellan partier/karteller, mandatmatris, kandidatbaserade valsedlar, lottningar, sannolikheter, beroende val, inflytande, förhandling, sammanslagningar, scenarier och export från den tidigare versionen.
+**Offentliga delen**: den befintliga mandat-/kartellbyggaren, kandidatberäkning, lottningar, inflytande, förhandling, organisationsregister, export och scenarier. Oförändrade beräkningskällfiler.
 
-**Privat efter Cloudflare Access-inloggning** (`/arbetsrum`): privat dokumentarkiv, skapa/redigera motion, autosparning, versionshistorik och återställning, manuell idébank, enklare kvalitetskontroll av att-satser, två PDF-mallar, användaradministration och inaktivering av konton. Inloggning görs genom Cloudflare Access, åtkomst beslutas separat med serverbaserad allow-list i D1.
+**SD Arbetsrum** (`/arbetsrum`, skyddat via Cloudflare Access och serverbaserade D1-behörigheter):
 
-**Dokumentens integritet:** En administratör hanterar användarna men får inte automatiskt åtkomst till andra användares privata motioner. Dokument hämtas och ändras endast efter kontroll av JWT-signatur, audience, issuer, aktiv kontobehörighet och ägarskap. Äldre statistik över publika kartellsimuleringar har inte kopplats till dokumenten.
+- **Mina motioner**: privata och av ägaren delade utkast, sökning, autosparning, versionshistorik och PDF-export.
+- **Våra motioner**: dokument som delats med hela gruppen eller enskilda personer. Dokumentägaren kan ge behörigheterna `read`, `comment`, `edit` eller ingen behörighet. *Privat är standard.* Enbart aktivt godkända användare kan se dokument.
+- **Kommentarer**: interna kommentarer, markera åtgärdade, författare och tid. Kommentarer exporteras inte i PDF.
+- **Versionskontroll**: optimistisk dokumentrevision förhindrar tyst överskrivning, och versionerna anger redaktör för ändringar gjorda efter migreringen.
+- **Våra idéer**: aktiva standardanvändare kan skapa idéer och kommentera. Idéansvarig eller administratör kan ange status. En idé kan bli ett nytt *privat* motionsutkast. Endast användare som har behörighet ser kopplade motioner.
+- **Användaradministration**: från 0.5.0, administratör hanterar konton utan generell dokumentåtkomst.
 
-## Bygg och kontrollera
+Inget AI-API behövs; ingen koppling finns mellan privata dokument och den publika besöksstatistiken. Inget förslag är automatiskt ett officiellt ställningstagande. Verktyget ersätter inte juridisk och saklig granskning.
 
-```sh
-python build.py
+## Uppgradera en installerad 0.5.0
+
+1. **Ta säkerhetskopia på befintlig D1-databas och projektkod.**
+2. Läs `INSTALLATION_CLOUDFLARE.md`. **Återanvänd exakt samma databas-ID, Worker-variabler, Access-konfiguration och konto**. Denna ZIP innehåller bara en platshållare för D1 UUID, eftersom vi inte har ditt verkliga ID. Skriv aldrig över din fungerande konfiguration med en platshållare.
+3. Kör SQL-migreringen `migrations/0003_collaboration.sql` **en gång** på befintlig databas, efter `0001` och `0002`. Via webbläsaren kan den köras i D1 Console, med stegvis vägledning i installationsguiden.
+4. Uppdatera projektkoden i GitHub och publicera via Cloudflares Git-integration. Byggkommandot är `npm run build`; distributionskommandot är `npx wrangler deploy`.
+5. Testa åtkomst med två separata godkända användare innan verkliga motioner delas.
+
+Databasmigreringen **raderar inga befintliga konton, motioner, idéer eller versioner**. Nya `work_motions.team_permission` får `none` och det finns inga delningsposter förrän ägaren delar aktivt. Kör inte om samma `ALTER TABLE`-satser om de redan genomförts.
+
+## Utveckling och tester
+
+```bash
+npm run build
 npm test
 npm run test:browser
 ```
 
-`build.py` genererar **`dist/index.html`** för publik åtkomst och en separat servermodul `worker/workroom-page.mjs` för skyddat arbetsrum. Ingen alternativ primär HTML-fil används. Den skyddade applikationen kan inte köras fullt ut genom att öppna `index.html` lokalt; den kräver Worker, Cloudflare Access och D1.
+`npm run build` kör Python och genererar `dist/index.html` samt den skyddade servermodulen `worker/workroom-page.mjs` från `src/workroom.js` och CSS. De genererade filerna ingår i paketet för enkel GitHub-publicering. `npm test` behöver Node.js 22 för inbyggt test-SQLite; en vanlig installation av Workern behöver inte Node SQLite.
 
-## Produktion
+## Säkerhetsmodell
 
-Se `INSTALLATION_CLOUDFLARE.md` för stegvis installation och `SAKERHET_OCH_BEGRANSNINGAR.md` för säkerhet, integritet och återstående arbete.
+- Cloudflare Access RS256-JWT kontrolleras på servern: signatur, issuer, audience och utgångstid.
+- En extra intern lista i D1 kräver aktiv användare. `admin` innebär inte generellt tillträde till dokument.
+- Alla listningar, läsningar, ändringar, kommentarer, PDF-underlagskontroller och delningar har kontroll på serversidan.
+- Begärda ändringar måste matcha aktuell dokumentrevision. Delningsändringar görs i en databastransaktion.
+- Fullständiga dokument, kommentarer och upphovsmän lagras inte i statistiktabellerna.
 
-Projektet behåller Worker-namnet **`mandatportal`** för att bevara befintlig workers.dev-adress. Det ändrade varumärket på sidan är **Politikverkstan Lekeberg**. Uppdatera inte Worker-namnet om adressen ska vara oförändrad.
-
-## Juridisk grund för motionsmallen
-
-Lekebergs officiella e-tjänst och kommunens publicerade riktlinje beskriver: (1) kortfattad rubrik, (2) bakgrund och motivering, (3) ett eller flera självständiga och tydliga beslutsförslag i att-satser och (4) namn, parti och datum. Kravet på vanligen **1–2 att-satser** i arbetsrummet är en **skrivrekommendation**, inte en juridisk övre gräns.
-
-Källor:
-- https://minasidor.lekeberg.se/oversikt/overview/417
-- https://lekeberg.se/download/18.3e9921517917d3f143d857/1619695665232/Riktlinje%20f%C3%B6r%20motioner%20och%20medborgarf%C3%B6rslag.pdf
-
-Verktyget är **inte en officiell kommunal tjänst** och har inte någon AI-API-integration. Sakuppgifter, kommunal kompetens och rätt inlämningsförfarande måste kontrolleras av användaren. Originalen till historiska SD-motioner har inte genomgått en fullständig textjämförande formgranskning i denna etapp.
-
-## Status
-
-Funktionerna är implementerade och lokalt testade, **inte driftsatta i användarens Cloudflare-konto**. Verifiering i faktisk produktionsmiljö och extern säkerhetsgranskning återstår.
+**Status:** lokalt testad releasekandidat. Inte driftsatt eller penetrationstestad på ditt Cloudflare-konto. Undvik att behandla känsligt arbetsmaterial i produktion före verifierad Access-konfiguration, säkerhetskopiering och test av kontogränserna.

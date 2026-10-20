@@ -13,9 +13,13 @@ window.fetch=async (path,options={})=>{
  let method=options.method||'GET',data=options.body?JSON.parse(options.body):null,docs=window.testDocs;
  let result={},status=200;
  if(path==='/api/private/me') result={user:{email:'editor@example.se',name:'Testredaktör',role:'admin'}};
+ else if(path==='/api/private/motions?scope=shared') result={motions:[]};
+ else if(path==='/api/private/directory') result={users:[{email:'editor@example.se',display_name:'Testredaktör'},{email:'other@example.se',display_name:'Kollega'}]};
+ else if(path==='/api/private/motions/'+window.testId+'/shares') result={team_permission:'none',shares:[]};
+ else if(path==='/api/private/motions/'+window.testId+'/comments') result={comments:[]};
  else if(path==='/api/private/motions'&&method==='GET') result={motions:Object.values(docs)};
  else if(path==='/api/private/motions'&&method==='POST'){
-  result={...data,id:window.testId,revision:1,created_at:'2026-10-20T11:00:00Z',updated_at:'2026-10-20T11:00:00Z'};docs[window.testId]=result;status=201;
+  result={...data,permission:'owner',owner_email:'editor@example.se',team_permission:'none',id:window.testId,revision:1,created_at:'2026-10-20T11:00:00Z',updated_at:'2026-10-20T11:00:00Z'};docs[window.testId]=result;status=201;
  }else if(path==='/api/private/motions/'+window.testId&&method==='PUT'){
   result={...data,id:window.testId,revision:data.revision+1,updated_at:'2026-10-20T11:00:00Z'};docs[window.testId]=result;
  }else if(path==='/api/private/motions/'+window.testId)result={motion:docs[window.testId]};

@@ -1,32 +1,17 @@
-# Säkerhet, integritet och kända begränsningar
+# Säkerhet och kända begränsningar – 0.5.1
 
-## Behörighetsmodell
+Systemet är avsett för en liten, behörighetsstyrd grupp som skriver politiska arbetsutkast. Detta är inte ett officiellt system för kommunala handlingar.
 
-Cloudflare Access tillhandahåller signerad autentisering. Workern kontrollerar JWT-signatur, issuer, audience och giltighetstid och läser endast användaridentitet från en verifierad token. Databasen kontrollerar separat rollen `admin` eller `user` samt att kontot är aktivt. Endast ägaren kan läsa, uppdatera, återställa eller ta bort en privat motion. Inte ens administratören får generell åtkomst till andras utkast.
+**Tillgång:** Cloudflare Access ska skydda arbetsrummet och varje privat API-anrop. Workern verifierar dessutom Access-JWT kryptografiskt och slår upp en **aktiv** användare i D1. Dokumentnivå: ägare, direktdelning eller aktiv gruppdelning. Administratörsroll ger ingen implicit läsrätt till motioner.
 
-Privata HTML- och API-rutter returnerar `no-store` och nekas som standard om Access/D1-konfiguration saknas eller är felaktig. Arbetsrummets JS och CSS genereras inuti Workern, inte som publika filer i `dist`.
+**Standardsekretess:** gamla och nya motioner är privata tills ägaren delar. Kommentarer syns bara för personer med dokumentåtkomst, och kommentarer exporteras inte till PDF. Användare som fått ta del av ett dokument kan ha sparat en kopia; att återkalla delning förhindrar framtida serverhämtningar men kan inte ta bort redan utlämnad information.
 
-## Sekretess och personuppgifter
+**Versionskonflikter:** En revision kontrolleras vid varje uppdatering, och versionsarkivering och ändring sker i en D1-batch. Real-tidssamredigering (Google Docs-stil) finns inte. Vid konflikt måste användaren själv hantera skillnaden, och lokala osparade ändringar ska inte skrivas över automatiskt.
 
-Privata utkast kan innehålla namn, politiska uppfattningar och arbetsmaterial. Driftansvarig måste före lansering dokumentera personuppgiftsansvar, syften, rättslig grund, lagring och radering, biträden och hur rättigheter tillgodoses. Använd inte verkliga sekretessbelagda personuppgifter i motioner.
+**PDF:** PDF skapas lokalt efter kontroll att dokumentet kan hämtas. Inga interna kommentarer eller delningsbehörigheter inkluderas. Användaren ansvarar för att texten är sakligt korrekt och lämplig för formell inlämning.
 
-Befintlig aggregerad kartellstatistik är frivillig och är avstängd som standard. Säkerhetsloggning med IP är också avstängd som standard. Ingen privat motionstext skickas till publik användningsstatistik. Ingen extern AI-tjänst kontaktas.
+**Integritet:** Säkerhetsloggar/IP-loggning och publik kartelltelemetri är avstängda som standard i exempelkonfigurationen. Privata motioner och interna idéer skickas inte till externt AI-API. D1 hos Cloudflare är fortfarande tredjepartsdrift och personuppgiftsansvar behöver bedömas.
 
-## Funktionella begränsningar
+**Driftgräns:** Endast lokal testning. Separat säkerhetsgranskning, backup-/återställningstest och behörighetsprov med minst två faktiska Access-identiteter rekommenderas före skarpt grupparbete.
 
-- Ingen integrerad AI-API-anslutning; idébanken fylls på manuellt av administratör.
-- Ingen automatisk kontroll mot kommunens faktiska beslutsdatabas; möjlig dubbelreglering och kommunal kompetens måste kontrolleras manuellt.
-- Mallens disposition följer Lekebergs publicerade motionsanvisningar. Tidigare SD-motioner har ännu **inte genomgått fullständig originaldokumentanalys**, och mallens ton har därför inte påståtts vara kopierad ur verkliga motioner.
-- Grundläggande statusar finns, men ingen automatisk överföring till kommunens e-tjänst eller digital signering.
-- Delning av privata utkast mellan användare är inte byggd i denna etapp. De förblir privata.
-- PDF-export har neutralt respektive marinblått/gult inspirerat format. Ingen partilogotyp finns inbyggd. PDF-font använder standard PDF Helvetica/WinAnsi och ersätter sällsynta tecken som inte stöds av den kodningen.
-- Arbetsrummet kräver serverbaserad Worker + D1; den publika kartellbyggaren fungerar som lokal `index.html`.
-- Inloggning och drift kan inte verifieras i användarens Cloudflare-konto utan åtkomst till kontots Access- och D1-konfiguration. Genomför produktionskontroller innan verkligt internt arbetsmaterial lagras där.
-- Befintlig mandatmotor har separata juridiska begränsningar dokumenterade i `JURIDISK_VERIFIERING.md`.
-
-## Fortsatt prioritet
-
-1. Fullständig verifiering av motionsmallens historiska originaldokument och aktuell arbetsordning.
-2. Säkerhetsgranskning i den faktiska Cloudflare-miljön, inklusive Access sökvägsmatchning, återställning och dataskyddsbedömning.
-3. Versionshanterad delning/gemensam granskning efter uttrycklig behörighet.
-4. Genomgång av långtidslagring, säkerhetskopiering, radering och utökade PDF-typsnitt.
+**SQL:** `migrations/0003_collaboration.sql` är en engångsmigrering från korrekt installerad 0.5.0. Upprepa inte `ALTER TABLE`-satser och kör inte migrationen mot en felaktig eller okänd databas. Säkerhetskopiera innan körning.

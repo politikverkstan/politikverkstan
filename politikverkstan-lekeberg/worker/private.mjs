@@ -1,3 +1,4 @@
+import {handleCollaboration} from './collaboration.mjs';
 /* Private political workroom. All authorization is server-side, fail closed.
  * Cloudflare Access JWT signature + issuer + audience; D1 user allow-list & role.
  * No visitor IP / coalition telemetry is ever combined with document content. */
@@ -90,7 +91,12 @@ export async function handlePrivate(req,env){
   const user=await requireUser(req,env);if(!user)return err(403,'Ditt konto är inte godkänt i arbetsrummet');
   if(path==='/arbetsrum'||path==='/arbetsrum/')return method==='GET'?htmlPage():err(405,'Metod tillåts inte');
   if(path==='/api/private/me'&&method==='GET')return out({user:{email:user.email,name:user.display_name,role:user.role}});
+  if(path==='/api/private/directory'&&method==='GET'){
+   const records=await env.DB.prepare('SELECT email,display_name FROM work_users WHERE active=1 ORDER BY display_name,email LIMIT 120').all();
+   return out({users:records.results||[]});
+  }
   if(path.startsWith('/api/private/users'))return userAdmin(req,env,user,path);
+  const collab=await handleCollaboration(req,env,user);if(collab)return collab;
   if(path==='/api/private/motions'&&method==='GET')return out({motions:await documentList(env,user)});
   if(path==='/api/private/motions'&&method==='POST'){
    const v=normalizeMotion(await bodyJson(req));const id=crypto.randomUUID(),now=new Date().toISOString();

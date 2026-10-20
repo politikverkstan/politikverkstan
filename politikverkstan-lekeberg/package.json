@@ -1,11 +1,11 @@
 {
   "name": "politikverkstan-lekeberg",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "scripts": {
     "build": "python build.py",
-    "test": "node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs",
-    "test:browser": "python tests/test-ui.py && python tests/test-candidate-ui.py && python tests/test-v4-ui.py && python tests/test-workroom-ui.py"
+    "test": "node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs",
+    "test:browser": "python tests/test-ui.py && python tests/test-candidate-ui.py && python tests/test-v4-ui.py && python tests/test-workroom-ui.py && python tests/test-collaboration-ui.py"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"

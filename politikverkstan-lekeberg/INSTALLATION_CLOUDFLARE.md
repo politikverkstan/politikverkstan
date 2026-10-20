@@ -1,121 +1,78 @@
-# Installera Politikverkstan Lekeberg i Cloudflare
+# Uppdatera Politikverkstan 0.5.0 → 0.5.1 via GitHub och Cloudflare
 
-**Viktigt:** Den nya lösningen är inte enbart en fristående HTML-fil. För riktig inloggning, användarhantering och privat lagring behövs en Worker och en D1-databas. Ladda därför upp/distribuera **hela projektet**, inte bara `index.html`.
+**Avsedd webbadress:** `https://politikverkstan.joel-wennstrom.workers.dev/`. Befintligt SD Arbetsrum och D1-databas ska återanvändas. Du behöver inte installera Wrangler på din dator om du redan använder Cloudflares GitHub-anslutna byggning.
 
-## 1. Säkerhetskopiera befintlig lösning
+## A. Säkerhetskopiera först
 
-Spara aktuell deploy och exportera befintlig D1-databas om en sådan finns. Behåll Worker-namnet `mandatportal` för att bevara adressen `https://mandatportal.joel-wennstrom.workers.dev`.
+1. Logga in på Cloudflare Dashboard och öppna **Storage & databases → D1**. Identifiera den D1-databas som den fungerande `politikverkstan`-Workern använder. Notera databasens **namn och UUID**; ändra dem inte.
+2. Kontrollera databasens tillgängliga **backup-/återställningsfunktioner** i Dashboard och gör en återställningsbar säkerhetskopia innan SQL körs. Ta gärna även en SQL-export enligt D1:s aktuella anvisningar. Om du inte kan verifiera återställningsmöjligheten: **kör inte migreringen på enda produktionskopian**.
+3. Spara en kopia av den fungerande GitHub-versionen och `wrangler.jsonc` med ditt riktiga databas-ID, och dokumentera befintliga Secrets i Cloudflare utan att skriva ut deras innehåll.
 
-## 2. Bygg projektet
+## B. Uppdatera D1 – via webbläsaren
 
-Från projektmappen:
+**Förutsättning:** 0.5.0:s tabeller `work_users`, `work_motions`, `work_motion_versions` och `work_ideas` finns redan. Kör **inte** `0001` eller `0002` igen.
 
-```bash
-python build.py
-npm install
-npm test
-npm run test:browser
+1. Gå till D1-databasen i Cloudflare och öppna **Console**.
+2. Kontrollera den gamla strukturen:
+
+```sql
+SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'work_%' ORDER BY name;
 ```
 
-Verifiera att `dist/index.html` finns. Filen `worker/workroom-page.mjs` genereras samtidigt från de skyddade arbetsrumsfilerna. `dist` ska innehålla den publika startsidan, inte privata dokument eller hemligheter.
+3. Öppna `migrations/0003_collaboration.sql` från paketet. Kopiera SQL och kör den i **samma befintliga databas**, en gång, i angiven ordning. Om konsolen bara accepterar en sats åt gången, kör varje `ALTER TABLE`, `CREATE TABLE`, `CREATE INDEX` och `UPDATE` för sig i exakt den ordning de förekommer.
+4. Kontrollera att de nya tabellerna finns:
 
-## 3. D1-databas
-
-Öppna `wrangler.jsonc`. Om du använder databasen från tidigare version, **behåll samma databass UUID**. Om databasen inte finns, skapa en och ersätt `REPLACE_WITH_REAL_D1_DATABASE_UUID`:
-
-```bash
-npx wrangler d1 create mandatportal-analytics
+```sql
+SELECT name FROM sqlite_master WHERE type='table' AND name IN ('work_motion_shares','work_motion_comments','work_idea_comments') ORDER BY name;
 ```
 
-Den behöver inte döpas om enbart för att portalens visningsnamn ändras.
+5. Kontrollera att ingen gammal motion blivit delad:
 
-Kör databasmigreringar på rätt databas:
-
-```bash
-npx wrangler d1 migrations apply mandatportal-analytics --remote
+```sql
+SELECT COUNT(*) AS oavsiktligt_delade FROM work_motions WHERE team_permission <> 'none';
 ```
 
-Migration `0002_workroom.sql` lägger till privata tabeller. Befintlig statistik i `0001_analytics.sql` bevaras. Kontrollera resultatet i Cloudflare Dashboard under D1.
+Resultatet bör vara **0** direkt efter migreringen, förutsatt att ingen har delat dokument med den nya versionen ännu.
 
-## 4. Cloudflare Access – skydda endast privata paths
+**OBS:** SQLite/D1 stöder inte pålitlig återkörning av samma kolumntillägg i alla miljöer. Kör `0003_collaboration.sql` **bara en gång**. Om du tidigare utfört migreringar manuellt i Console kan Wranglers migrationshistorik fortfarande vara osynkroniserad. Kör därför inte `wrangler d1 migrations apply --remote` blint i efterhand; den kan försöka köra redan utförda migrationer. Håll migrationshistoriken dokumenterad.
 
-I **Zero Trust > Access > Applications** skapar du en **Self-hosted**-applikation som täcker privat arbetsrum och dess API på nuvarande hostname. Lägg till regler för båda vägtyperna i samma Access-applikation om gränssnittet tillåter det:
+### Vad migreringen gör
 
-- `mandatportal.joel-wennstrom.workers.dev/arbetsrum*`
-- `mandatportal.joel-wennstrom.workers.dev/api/private/*`
+Nya kolumner i `work_motions`, `work_motion_versions` och `work_ideas`, samt tre nya tabeller för behörigheter och kommentarer. Den tar **inte** bort konton, motioner, idéer eller gamla versioner. Alla tidigare motioner får explicit *privat* som standard (`team_permission='none'`).
 
-Beakta att specifik matchning och wildcardformulär kan skilja sig beroende på Cloudflares UI. Kontrollera därför faktiskt vilka URL:er som skyddas. Hela den publika rotadressen `/` ska fortfarande vara öppen.
+## C. Uppdatera befintligt GitHub-projekt
 
-**Använd INTE Cloudflares enklicksalternativ för att skydda hela Workern.** Då kan även den publika mandatdelen börja kräva inloggning.
+1. Öppna **det befintliga** GitHub-repositoryt för Politikverkstan. Skapa inte ett nytt repo, Worker eller D1 för uppgraderingen.
+2. Ersätt projektets källfiler med 0.5.1-paketets filer (håll samma projektrot som tidigare och kontrollera var `package.json` finns). **Behåll värdena från din redan fungerande `wrangler.jsonc` för `database_id` och eventuella miljöinställningar.** Skriv inte över detta med paketets `REPLACE_WITH_REAL_D1_DATABASE_UUID`.
+3. Kontrollera att `wrangler.jsonc` har `"name":"politikverkstan"`, korrekt verkligt D1 UUID, `binding:"DB"` och `assets.directory:"./dist"`. Behåll `ACCESS_TEAM_DOMAIN`, `ACCESS_AUD` och andra Secrets som redan fungerar i Workerns inställningar. Lägg **inte** in hemliga värden i GitHub.
+4. Kontrollera att `worker/collaboration.mjs`, `migrations/0003_collaboration.sql` och uppdaterade `worker/private.mjs`, `src/workroom.js`, `src/workroom.css` samt genererade `worker/workroom-page.mjs` finns i repo. Även `dist/index.html` ska ingå.
+5. Publicera via **Commit changes**. GitHub-integrationen ska starta Cloudflare-byggningen. Om den inte gör det, använd **Retry deployment**.
 
-Aktivera exempelvis e-post med engångskod som inloggningsmetod. Använd Access Allow-policy för godkända e-postadresser. Om användaradministrationen inne i arbetsrummet ska vara den enda allow-list som behöver uppdateras kan Access i stället tillåta autentiserade identiteter med engångskod, medan D1-registret blockerar alla som inte är godkända. **Använd aldrig Access Bypass för privata vägar.** Det senare alternativet bör bedömas ur riskperspektiv innan driftsättning.
+Byggkonfiguration i Cloudflare Workers:
 
-Notera din Access **Team Domain** och **Application Audience (AUD) Tag**. Välj samma Access-app för arbetsrum och API så att en giltig identitet verifieras konsekvent.
+- **Root directory:** den undermapp där `package.json` ligger, eller tomt om den ligger direkt i GitHub-repots rot. Namnet på GitHub-repot är inte i sig en root directory.
+- **Build command:** `npm run build`
+- **Deploy command:** `npx wrangler deploy`
 
-Cloudflare referenser:
-- https://developers.cloudflare.com/workers/configuration/cloudflare-access/
-- https://developers.cloudflare.com/cloudflare-one/access-controls/policies/app-paths/
+Publicera inte enbart `index.html`: det ger ingen riktig serverbaserad delning eller datalagring. Kom också ihåg att ett ombyggt Github-projekt kan skriva över manuella `vars`-inställningar om du tar bort dem från `wrangler.jsonc`. Styr konfigurationen konsekvent och lagra känsliga värden som Cloudflare Secrets.
 
-## 5. Konfigurera Worker-hemligheter
+## D. Behåll Cloudflare Access
 
-Kör följande och ange värden när CLI frågar efter dem:
+Den befintliga Access-applikationen för `politikverkstan.joel-wennstrom.workers.dev` ska skydda **både**:
 
-```bash
-npx wrangler secret put ACCESS_TEAM_DOMAIN
-npx wrangler secret put ACCESS_AUD
-npx wrangler secret put BOOTSTRAP_ADMIN_EMAIL
-```
+- `/arbetsrum` och `/arbetsrum/*`
+- `/api/private/*`
 
-- `ACCESS_TEAM_DOMAIN`: t.ex. `ditt-team.cloudflareaccess.com` utan `https://`.
-- `ACCESS_AUD`: exakt audience-värde från din Access-app.
-- `BOOTSTRAP_ADMIN_EMAIL`: din egen e-postadress som ska få rollen första administratör.
+Det är viktigt att även API:erna är skyddade. Workern kontrollerar dessutom signerat token och D1-behörighet. Rotadressen `/` ska vara publik. Behåll samma Audience (AUD) som den nu fungerande Access-inloggningen. Om en ny Access-applikation skapas av misstag kan tidigare token sluta fungera.
 
-Sätt aldrig dessa värden eller andra hemligheter i `dist/index.html`.
+## E. Verifiera med två konton innan verkligt bruk
 
-Tidigare administrationsmodul `/admin` använder separat `ADMIN_EMAILS`, om du väljer att fortsätta använda den. Den modulen är inte detsamma som användaradministrationen i SD Arbetsrum.
+1. Logga in som administratör och kontrollera att tidigare motioner fortfarande finns under **Mina motioner**, privata som standard.
+2. Se till att en andra person har ett aktivt D1-konto **och** tillåts i Cloudflare Access.
+3. Skapa ett *testdokument*, dela med den andra användaren med **Kan läsa**. Kontrollera att personen kan läsa och exportera men inte redigera eller kommentera.
+4. Ändra till **Kan kommentera** och prova kommentar. Ändra till **Kan redigera** och prova att spara ett dokument med nytt revisionsnummer.
+5. Återkalla delningen och kontrollera att åtkomst nekas vid nästa API-anrop (observera att redan visade lokala kopior inte kan raderas från någons webbläsare).
+6. Skapa en idé under **Våra idéer** med standardanvändaren; låt den andra kommentera. Välj **Skapa motion av idé** och kontrollera att det nya utkastet är privat.
+7. Kontrollera att `/` fortfarande visar den publika Mandatportalen utan inloggning.
 
-## 6. Publicera hela applikationen
-
-```bash
-npx wrangler deploy
-```
-
-Verifiera följande adresser:
-
-- `/` – offentlig startsida, ska inte kräva inloggning.
-- `/arbetsrum` – ska kräva giltig Access-inloggning och D1-konto.
-- `/api/private/me` – ska ge 403 för obehörig användare.
-- `/api/private/motions` – ska inte lämna ut dokument utan rätt inloggning/ägarskap.
-
-## 7. Skapa första administratören
-
-Med Access-inloggningen för den e-postadress du satte som `BOOTSTRAP_ADMIN_EMAIL`, öppna:
-
-`https://mandatportal.joel-wennstrom.workers.dev/arbetsrum/setup`
-
-Klicka på **Aktivera administratören**. Detta skapar det första kontot endast om användartabellen är tom och den kryptografiskt verifierade e-postadressen matchar bootstrap-konfigurationen.
-
-Därefter kan administratören lägga till standardanvändare via arbetsrummets meny **Användare**. Kom ihåg att personen även behöver passera Cloudflare Access policy, om den begränsats till särskilt angivna adresser.
-
-När det första kontot är skapat kan du ta bort bootstrap-hemligheten:
-
-```bash
-npx wrangler secret delete BOOTSTRAP_ADMIN_EMAIL
-```
-
-## 8. Kontrollera funktioner efter installation
-
-1. Anonymt besök på `/` fungerar och kan använda kartellbyggaren.
-2. Privat `/arbetsrum` kräver inloggning.
-3. Obekant inloggad person kan inte se arbetsrummet.
-4. Administratör kan lägga till användare.
-5. Standardanvändare kan skapa och spara motion.
-6. Andra standardanvändaren kan inte läsa den första användarens utkast, även om dokument-ID är känt.
-7. PDF-export från motionsverkstaden fungerar i vanlig webbläsare.
-8. Ingen personuppgift eller privat text exponeras via publik källa eller telemetri.
-
-## 9. Backup och drift
-
-Ta regelbundna, åtkomstskyddade säkerhetskopior av D1. Rensa inte arbetsrumsdatabasen när du vill rensa statistik. Framtida ändringar görs genom nya databas-migreringar, inte genom att ta bort gamla tabeller.
-
-**Driftsättningen har inte utförts av utvecklingsleveransen.** Tester är lokala; JWT-signaturkontroll och D1-åtkomst har testats med en lokal SQLite-anpassare, inte i din verkliga Cloudflare-organisation.
+**Driftsättning har inte utförts i ditt Cloudflare-konto av denna kodleverans.** Lokala tester ersätter inte ovanstående verkliga åtkomstprov eller oberoende säkerhetsgranskning. Om något misslyckas: avbryt användningen av nya delningsfunktioner och behåll den föregående fungerande Workerversionen medan felet undersöks.
