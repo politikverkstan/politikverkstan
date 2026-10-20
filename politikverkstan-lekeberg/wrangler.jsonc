@@ -33,7 +33,7 @@
     "BOOTSTRAP_ADMIN_EMAIL": "joel.wennstrom@outlook.com",
     "ADMIN_EMAILS": "joel.wennstrom@outlook.com",
     "SECURITY_LOG_ENABLED": "false",
-    "TELEMETRY_ENABLED": "false"
+    "TELEMETRY_ENABLED": "true"
   },
 
   "triggers": {
