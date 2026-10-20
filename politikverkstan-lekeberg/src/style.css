@@ -109,3 +109,10 @@
 @media(max-width:450px){
   .main-card:has(> .candidate-setup) > .candidate-setup{grid-template-columns:1fr}
 }
+
+/* Registry selection: preserve the scroll context and make model choices visible. */
+.registry-help{max-width:680px;margin-top:10px!important;line-height:1.5!important;color:#5b708b!important}
+.registry-selection-status{min-height:17px;margin-top:5px!important;color:#2b5a85!important;font-size:11px!important}
+.registry-table [data-org-toggle]:not(:disabled){cursor:pointer;width:16px;height:16px}
+.registry-table [data-org-toggle]:disabled{cursor:not-allowed;opacity:.45}
+.registry-table .registry-selected td:first-child{background:#f1f7ff}
