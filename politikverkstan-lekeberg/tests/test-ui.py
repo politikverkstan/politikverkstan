@@ -1,0 +1,58 @@
+from playwright.sync_api import sync_playwright
+from pathlib import Path
+PROJECT=Path(__file__).resolve().parents[1]
+h=(PROJECT/'dist/index.html').read_text(encoding='utf-8')
+with sync_playwright() as p:
+ b=p.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox','--disable-dev-shm-usage'])
+ c=b.new_context(viewport={'width':1440,'height':900},accept_downloads=True)
+ page=c.new_page();errs=[];page.on('pageerror',lambda e:errs.append(str(e)))
+ page.set_content(h,wait_until='domcontentloaded')
+ page.screenshot(path=str(PROJECT/'preview-desktop.png'),full_page=False)
+ assert page.locator('.coalition-card').count()==9
+ # Open all orgs registry, disabled for unknown legal rules
+ page.locator('[data-page=registry]').click()
+ assert page.locator('.registry-row').count()==57
+ assert page.locator('[data-org-toggle=org21]').is_disabled()
+ page.locator('#search-org').fill('IT-nämnd')
+ assert page.locator('.registry-row:visible').count()==1
+ # Switch back and use preset
+ page.locator('[data-page=workspace]').click()
+ page.locator('[data-preset=example]').click()
+ assert page.locator('.coalition-card').count()==3
+ # Check exactly expected for KS cell group 20 block
+ ks=page.locator('.results-table tbody tr').filter(has_text='Kommunstyrelsen (') if False else page.locator('.results-table tbody tr').filter(has_text='Kommunstyrelsen')
+ assert ks.count()>=1
+ page.locator('[data-cell="org03:0:main"]').click()
+ assert '7–8' in page.locator('.drawer').text_content()
+ page.locator('#close-drawer').click()
+ # move SD from FL+SD to M+S by keyboard/mouse click menu
+ page.locator('.party-chip[data-party="SD"]').click()
+ assert page.locator('.modal-title').text_content()=='Flytta Sverigedemokraterna'
+ page.locator('[data-destination="M-S"]').click()
+ assert page.locator('.coalition-card').count()==3
+ assert '24' in page.locator('.coalition-card').first.text_content()
+ page.locator('#undo-btn').click()
+ assert '20' in page.locator('.coalition-card').first.text_content()
+ # mergers
+ page.locator('[data-page=mergers]').click()
+ assert page.locator('.merger-card').count()==3
+ page.locator('[data-merge]').first.click()
+ assert page.locator('.coalition-card').count()==2 if page.locator('.coalition-card').count() else True
+ # save with prompt
+ page.on('dialog',lambda dialog:dialog.accept('UI-test scenario'))
+ page.locator('#save-btn').click()
+ assert page.locator('.saved-row').count()>=1
+ page.locator('[data-compare-save]').first.click()
+ assert page.locator('.compare-grid').count()==1
+ # Export CSV page matrix
+ page.locator('[data-page=matrix]').click()
+ with page.expect_download() as download:
+  page.locator('#export-csv').click()
+ assert download.value.suggested_filename.endswith('.csv')
+ print('Desktop UI tests passed; page errors:',errs)
+ page.set_viewport_size({'width':390,'height':844})
+ page.locator('#mobile-toggle').click()
+ page.locator('[data-page=workspace]').click()
+ page.screenshot(path=str(PROJECT/'preview-mobile.png'),full_page=False)
+ assert not errs,errs
+ b.close()
