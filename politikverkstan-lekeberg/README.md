@@ -1,3 +1,5 @@
+> **Nyhet 0.5.3:** Professionell SD-inspirerad motionsmall, frivillig godkänd PNG-logotyp, förbättrad PDF-export och redigerbara visningsnamn. Se [uppgraderingsguiden](UPPGRADERING_0.5.3_CLOUDFLARE.md) och [testrapporten](TESTRAPPORT_0.5.3.md). Kräver D1-migreringen `0005_branding.sql` för logotypstöd.
+
 # Politikverkstan Lekeberg 0.5.2
 
 Läs **UPPGRADERING_0.5.2_CLOUDFLARE.md** före installation mot en befintlig databas.
