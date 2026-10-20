@@ -13,6 +13,19 @@ with sync_playwright() as p:
  page.locator('[data-page=registry]').click()
  assert page.locator('.registry-row').count()==57
  assert page.locator('[data-org-toggle=org21]').is_disabled()
+ # Selectable registry checkboxes must update simulation without rerendering the scrolling table.
+ assert page.locator('[data-org-toggle=org07]').is_enabled()
+ page.locator('.registry-table').evaluate('(e)=>e.scrollTop=250')
+ scrolled=page.locator('.registry-table').evaluate('(e)=>e.scrollTop')
+ assert scrolled>0
+ page.locator('[data-org-toggle=org07]').uncheck()
+ assert not page.locator('[data-org-toggle=org07]').is_checked()
+ assert not page.locator('[data-org-toggle=org08]').is_checked(), 'Dependent workgroup should be unchecked too'
+ assert page.locator('.registry-table').evaluate('(e)=>e.scrollTop')>0, 'Checkbox must not reset table scroll'
+ assert '11 organ' in page.locator('#registry-selection-status').text_content()
+ page.locator('[data-org-toggle=org08]').check()
+ assert page.locator('[data-org-toggle=org07]').is_checked(), 'Checking child must select parent'
+ assert page.locator('#registry-enabled-count').text_content()=='13'
  page.locator('#search-org').fill('IT-nämnd')
  assert page.locator('.registry-row:visible').count()==1
  # Switch back and use preset
