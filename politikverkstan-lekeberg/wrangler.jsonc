@@ -11,7 +11,7 @@
   "d1_databases": [{
     "binding": "DB",
     "database_name": "mandatportal-analytics",
-    "database_id": "REPLACE_WITH_REAL_D1_DATABASE_UUID",
+    "database_id": "b469a112-d804-4e7f-868f-4ab8aaafdd26",
     "migrations_dir": "migrations"
   }],
   "vars": {
