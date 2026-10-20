@@ -35,6 +35,13 @@ const profile=await fetcher('/api/private/users/'+encodeURIComponent('root@examp
 assert.equal((await (await fetcher('/api/private/me','root@example.se')).json()).user.name,'Kommunpolitikern');
 assert.equal((await fetcher('/api/private/users/'+encodeURIComponent('root@example.se'),'user@example.se','PATCH',{display_name:'Otillåten'})).status,403);
 assert.equal((await fetcher('/api/private/branding','root@example.se')).status,200);
+const smallPng='iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAIAAAD91JpzAAAAFklEQVR4nGP8//8/AwMDEwMDAwMDAwAkBgMB/DXemwAAAABJRU5ErkJggg==';
+assert.equal((await fetcher('/api/private/branding','user@example.se','POST',{logo:smallPng})).status,403,'Only admin may upload a branding image');
+assert.equal((await fetcher('/api/private/branding','root@example.se','POST',{logo:smallPng})).status,200);
+const branding=await (await fetcher('/api/private/branding','user@example.se')).json();
+assert.ok(branding.logo.startsWith('data:image/png;base64,'));
+assert.equal((await fetcher('/api/private/branding','root@example.se','POST',{logo:null})).status,200);
+assert.equal((await (await fetcher('/api/private/branding','user@example.se')).json()).logo,null);
 let draft={title:'Skolvägar och trygghet',problem:'Tydligt lokalt problem',motivation:'Motivering',clauses:['att kommunstyrelsen undersöker skolvägar.'],party:'Sverigedemokraterna',signer:'Redaktör'};
 assert.equal(normalizeMotion(draft).clauses.length,1);
 r=await fetcher('/api/private/motions','user@example.se','POST',draft);assert.equal(r.status,201);const created=await r.json();const id=created.id;assert.ok(/^[0-9a-f-]{36}$/.test(id));
