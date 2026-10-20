@@ -22,7 +22,7 @@
     {
       "binding": "DB",
       "database_name": "mandatportal-analytics",
-      "database_id": "DITT_BEFlNTLIGA_D1_DATABASE_ID",
+      "database_id": "b469a112-d804-4e7f-868f-4ab8aaafdd26",
       "migrations_dir": "migrations"
     }
   ],
