@@ -37,6 +37,12 @@ let bad=request('/api/admin/summary',{headers:{'Cf-Access-Jwt-Assertion':await m
 assert.ok(await authorize(good,authenv));assert.equal(await authorize(bad,authenv),null);
 assert.equal((await worker.fetch(good,authenv)).status,200);
 assert.equal((await worker.fetch(bad,authenv)).status,403);
+// The admin page and its summary must use the same Access-protected URL path.
+const adminSummaryUrl='/admin?summary=1';
+assert.equal((await worker.fetch(request(adminSummaryUrl),authenv)).status,403);
+assert.equal((await worker.fetch(request(adminSummaryUrl,{headers:{'Cf-Access-Jwt-Assertion':await makeJwt('admin@example.se')}}),authenv)).status,200);
+assert.equal((await worker.fetch(request(adminSummaryUrl,{headers:{'Cf-Access-Jwt-Assertion':await makeJwt('outsider@example.se')}}),authenv)).status,403);
+
 assert.equal((await worker.fetch(request('/admin',{headers:{'Cf-Access-Jwt-Assertion':await makeJwt('admin@example.se')}}),authenv)).status,200);
 // Mandatory protections: CSP nonces; no public access to admin page, no JWT secret in static HTML.
 const adminPage=await worker.fetch(request('/admin',{headers:{'Cf-Access-Jwt-Assertion':await makeJwt('admin@example.se')}}),authenv);
