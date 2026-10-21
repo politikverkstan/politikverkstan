@@ -141,39 +141,76 @@ function casePrintPage(c){
  return '<article class="case-print" id="case-print"><div class="case-print-head"><small>POLITIKVERKSTAN · INTERNT ARBETSUNDERLAG</small><h1>'+h(c.title)+'</h1><p>'+h(c.committee)+' · '+h(caseStatuses[c.status]||'Utkast')+(c.meeting_date?' · Möte '+h(c.meeting_date):'')+'</p><p class="case-private-marker">Arbetsmaterial. Personliga mötesanteckningar ingår inte. Ej kommunalt beslutsprotokoll eller officiellt partiyttrande.</p></div>'+linked+fields+
  '<p class="case-print-foot">Sammanställt i Politikverkstan. Verifiera källor, belopp och beslutsstatus före extern användning.</p></article>';
 }
+
 function casesPage(){
- // Filtering by status and query is intentionally explicit to avoid a stale item ever appearing.
- const filtered=state.caseItems.filter(c=>(state.caseFilter==='all'||c.status===state.caseFilter)&&(!state.caseSearch||[c.title,c.committee,c.status,c.summary,c.questions,...(c.labels||[])].join(' ').toLocaleLowerCase('sv-SE').includes(state.caseSearch.toLocaleLowerCase('sv-SE'))));
+ const filtered=state.caseItems.filter(c=>
+  (state.caseVisibility==='all'||(state.caseVisibility==='mine'?c.scope!=='team'&&c.is_owner:c.scope==='team'))&&
+  (state.caseFilter==='all'||c.status===state.caseFilter)&&
+  (!state.caseSearch||[c.title,c.committee,c.status,c.summary,c.questions,...(c.labels||[])].join(' ').toLocaleLowerCase('sv-SE').includes(state.caseSearch.toLocaleLowerCase('sv-SE')))
+ );
  const selected=state.caseCurrent;
+ const editable=selected?.can_edit!==false,owner=selected?.is_owner!==false;
  return `
-  ${header('ÄRENDEN & MÖTESFÖRBEREDELSER','Mina ärenden','Din privata ärendelogg med underlag, frågor, mötesanteckningar, ställningstaganden och uppföljning. Ärenden delas inte automatiskt med andra.','<button class="btn btn-primary" id="case-new">'+icons.plus+' Nytt ärende</button>')}
+  ${header('ÄRENDEN & MÖTESFÖRBEREDELSER','Mina och våra ärenden','Egna ärenden är privata tills du delar dem uttryckligen. Gruppens godkända användare kan läsa och kommentera delade ärenden. Personliga anteckningar delas aldrig.','<button class="btn btn-primary" id="case-new">'+icons.plus+' Nytt ärende</button>')}
   <section class="case-layout">
    <div class="card case-list-pane">
-    <div class="case-list-controls"><label class="field"><span>Sök ärenden och etiketter</span><input id="case-search" value="${h(state.caseSearch)}" placeholder="Rubrik, nämnd, etikett eller fråga" autocomplete="off"></label>
-    <label class="field"><span>Status</span><select id="case-filter"><option value="all">Alla statusar</option>${Object.entries(caseStatuses).map(([k,v])=>`<option value="${k}" ${state.caseFilter===k?'selected':''}>${h(v)}</option>`).join('')}</select></label></div>
-    <div class="case-results" aria-live="polite">${filtered.length?filtered.map(c=>`<button type="button" class="case-result ${selected?.id===c.id?'selected':''}" data-case-open="${h(c.id)}"><strong>${h(c.title)}</strong><small>${h(c.committee)} · ${h(caseStatuses[c.status]||c.status)}${c.meeting_date?' · '+h(c.meeting_date):''}</small><span class="case-tags">${(c.labels||[]).map(x=>`<span>${h(x)}</span>`).join('')}</span></button>`).join(''):'<p class="empty">Inga ärenden motsvarar urvalet. Skapa ett nytt ärende för att börja.</p>'}</div>
+    <div class="case-scope-tabs" role="group" aria-label="Ärendetyp">${[['all','Alla'],['mine','Mina privata'],['team','Våra gemensamma']].map(([v,label])=>`<button type="button" class="btn btn-sm ${state.caseVisibility===v?'btn-primary':''}" data-case-visibility="${v}">${label}</button>`).join('')}</div>
+    <div class="case-list-controls">
+     <label class="field"><span>Sök ärenden och etiketter</span><input id="case-search" value="${h(state.caseSearch)}" placeholder="Rubrik, nämnd, etikett eller fråga" autocomplete="off"></label>
+     <label class="field"><span>Status</span><select id="case-filter"><option value="all">Alla statusar</option>${Object.entries(caseStatuses).map(([k,v])=>`<option value="${k}" ${state.caseFilter===k?'selected':''}>${h(v)}</option>`).join('')}</select></label>
+    </div>
+    <div class="case-results" aria-live="polite">${filtered.length?filtered.map(c=>`<button type="button" class="case-result ${selected?.id===c.id?'selected':''}" data-case-open="${h(c.id)}">
+     <strong>${h(c.title)}</strong>
+     <span class="case-scope-label">${c.scope==='team'?'Gemensamt ärende':'Privat ärende'}${c.scope==='team'&&c.assignee_email?' · Ansvarig: '+h(c.assignee_email):''}</span>
+     <small>${h(c.committee)} · ${h(caseStatuses[c.status]||c.status)}${c.meeting_date?' · '+h(c.meeting_date):''}</small><span class="case-tags">${(c.labels||[]).map(x=>`<span>${h(x)}</span>`).join('')}</span>
+    </button>`).join(''):'<p class="empty">Inga ärenden motsvarar urvalet. Skapa ett nytt ärende för att börja.</p>'}</div>
    </div>
    <div class="case-editor-pane">${selected?`
     <form id="case-form" class="card case-editor">
-     <div class="case-edit-head"><div><span class="eyebrow">PRIVAT ARBETSMATERIAL</span><h2>${selected.id?'Redigera ärende':'Nytt ärende'}</h2></div><span class="chip">${selected.id?'Revision '+selected.revision:'Ej sparat'}</span></div>
-     <div class="formgrid">
-      <label class="field"><span>Ärenderubrik</span><input name="title" required maxlength="160" value="${h(selected.title)}"></label>
-      <label class="field"><span>Nämnd / instans</span><select name="committee">${['Kommunfullmäktige','Kommunstyrelsen','Barn- och utbildningsnämnden','Socialnämnden','Bygg- och miljönämnden','Valnämnden','Sydnärkes IT-nämnd','Sydnärkes miljö- och byggnämnd','Annat'].map(v=>`<option ${selected.committee===v?'selected':''}>${h(v)}</option>`).join('')}</select></label>
-      <label class="field"><span>Status</span><select name="status">${Object.entries(caseStatuses).map(([v,k])=>`<option value="${v}" ${selected.status===v?'selected':''}>${h(k)}</option>`).join('')}</select></label>
-      <label class="field"><span>Mötesdatum (om känt)</span><input name="meeting_date" type="date" value="${h(selected.meeting_date||'')}"></label>
+     <div class="case-edit-head"><div><span class="eyebrow">${selected.scope==='team'?'GEMENSAMT ARBETSMATERIAL':'PRIVAT ARBETSMATERIAL'}</span><h2>${selected.id?'Ärende':'Nytt ärende'}</h2></div>
+      <span class="chip">${selected.id?'Revision '+selected.revision:'Ej sparat'}</span></div>
+     <p class="case-hint">${selected.id?'Ägare: '+h(selected.owner_email||state.user.email)+(selected.assignee_email?' · Ansvarig: '+h(selected.assignee_email):''):'Det nya ärendet är privat tills du själv delar det.'}</p>
+     <fieldset class="case-main-fields" ${editable?'':'disabled'}>
+      <div class="formgrid">
+       <label class="field"><span>Ärenderubrik</span><input name="title" required maxlength="160" value="${h(selected.title)}"></label>
+       <label class="field"><span>Nämnd / instans</span><select name="committee">${['Kommunfullmäktige','Kommunstyrelsen','Barn- och utbildningsnämnden','Socialnämnden','Bygg- och miljönämnden','Valnämnden','Sydnärkes IT-nämnd','Sydnärkes miljö- och byggnämnd','Annat'].map(v=>`<option ${selected.committee===v?'selected':''}>${h(v)}</option>`).join('')}</select></label>
+       <label class="field"><span>Status</span><select name="status">${Object.entries(caseStatuses).map(([v,k])=>`<option value="${v}" ${selected.status===v?'selected':''}>${h(k)}</option>`).join('')}</select></label>
+       <label class="field"><span>Mötesdatum (om känt)</span><input name="meeting_date" type="date" value="${h(selected.meeting_date||'')}"></label>
+      </div>
+      <label class="field"><span>Etiketter (högst åtta, högst 30 tecken per etikett)</span><input name="labels" value="${h((selected.labels||[]).join(', '))}" placeholder="Budget, BUN, skolskjuts"></label>
+      ${owner?`<div class="formgrid">
+       <label class="field"><span>Koppla egen motion</span><select name="motion_id"><option value="">Ingen motion</option>${state.motions.filter(m=>!m.trashed_at).map(m=>`<option value="${h(m.id)}" ${selected.motion_id===m.id?'selected':''}>${h(m.title||'Namnlös motion')}</option>`).join('')}</select></label>
+       <label class="field"><span>Koppla privat fil</span><select name="file_id"><option value="">Ingen fil</option>${state.caseFiles.filter(f=>f.scope==='mine').map(f=>`<option value="${h(f.id)}" ${selected.file_id===f.id?'selected':''}>${h(f.name)}</option>`).join('')}</select></label>
+      </div>`:'<p class="case-hint">Ägarens privata fil- och motionskopplingar är inte tillgängliga för övriga.</p>'}
+      ${owner&&selected.motion_id&&state.motions.some(x=>x.id===selected.motion_id)?`<p><button class="btn btn-sm" type="button" data-open="${h(selected.motion_id)}">Öppna kopplad motion ${icons.arrow}</button></p>`:''}
+      ${owner&&selected.file_id&&state.caseFiles.some(x=>x.id===selected.file_id)?`<p><a class="btn btn-sm" href="/api/private/files/${encodeURIComponent(selected.file_id)}/download">Hämta kopplad privat fil ${icons.download}</a></p>`:''}
+      ${caseFields.map(([key,label,tip])=>`<label class="field"><span>${h(label)}</span><small class="case-hint">${h(tip)}</small><textarea name="${key}" maxlength="${key==='summary'?6000:key==='recommendation'||key==='decision'||key==='follow_up'||key==='sources'?3500:4500}" rows="3">${h(selected[key]||'')}</textarea></label>`).join('')}
+     </fieldset>
+     <div class="case-form-actions">
+      ${editable?`<button class="btn btn-primary" type="submit">${icons.write} Spara ärendet</button>`:'<p class="case-hint">Du kan läsa och kommentera. Bara ägaren eller utsedd ansvarig får redigera.</p>'}
+      ${selected.id?`<button class="btn" type="button" id="case-print-btn">${icons.download} Skriv ut / spara som PDF</button>`:''}
+      ${selected.id&&owner?`<button class="btn btn-danger" type="button" id="case-delete">Ta bort</button>`:''}
+      <span class="case-save-info" id="case-save-info" role="status">${state.caseDirty?'Osparade ändringar':''}</span>
      </div>
-     <label class="field"><span>Etiketter (kommaseparerade, högst åtta och högst 30 tecken vardera)</span><input name="labels" value="${h((selected.labels||[]).join(', '))}" placeholder="Budget, BUN, skolskjuts"></label>
-     <div class="formgrid">
-      <label class="field"><span>Koppla egen motion</span><select name="motion_id"><option value="">Ingen motion</option>${state.motions.filter(m=>!m.trashed_at).map(m=>`<option value="${h(m.id)}" ${selected.motion_id===m.id?'selected':''}>${h(m.title||'Namnlös motion')}</option>`).join('')}</select></label>
-      <label class="field"><span>Koppla privat fil</span><select name="file_id"><option value="">Ingen fil</option>${state.caseFiles.filter(f=>f.scope==='mine').map(f=>`<option value="${h(f.id)}" ${selected.file_id===f.id?'selected':''}>${h(f.name)}</option>`).join('')}</select></label>
-     </div>
-     ${selected.motion_id&&state.motions.some(x=>x.id===selected.motion_id)?`<p><button class="btn btn-sm" type="button" data-open="${h(selected.motion_id)}">Öppna kopplad motion ${icons.arrow}</button></p>`:''}
-     ${selected.file_id&&state.caseFiles.some(f=>f.id===selected.file_id)?`<p><a class="btn btn-sm" href="/api/private/files/${encodeURIComponent(selected.file_id)}/download">Hämta kopplad privat fil ${icons.download}</a></p>`:''}
-     ${caseFields.map(([key,label,tip])=>`<label class="field"><span>${h(label)}</span><small class="case-hint">${h(tip)}</small><textarea name="${key}" maxlength="${key==='summary'?6000:key==='recommendation'||key==='decision'||key==='follow_up'||key==='sources'?3500:4500}" rows="3">${h(selected[key]||'')}</textarea></label>`).join('')}
-     <div class="case-form-actions"><button class="btn btn-primary" type="submit">${icons.write} Spara ärendet</button>${selected.id?`<button class="btn" type="button" id="case-print-btn">${icons.download} Skriv ut / spara som PDF</button>`:''}${selected.id?`<button class="btn btn-danger" type="button" id="case-delete">Ta bort</button>`:''}<span class="case-save-info" id="case-save-info" role="status">${state.caseDirty?'Osparade ändringar':'Spara före export'}</span></div>
     </form>
-    ${selected.id?casePrintPage(selected):''}
-   `:'<div class="card case-empty"><h2>Välj ett ärende</h2><p>Öppna ett befintligt ärende till vänster eller skapa ett nytt. Privata uppgifter visas inte på den publika sidan.</p></div>'}</div>
+    ${selected.id&&owner?`<section class="card case-sharing">
+     <h2>Delning och ansvar</h2>
+     <p>Privat är standard. Om du väljer gemensamt kan alla aktiva, godkända konton i SD Lekebergs Arbetsyta läsa och kommentera ärendet. Utsedd ansvarig får också redigera. Privata anteckningar, filer och egna motioner delas inte automatiskt.</p>
+     <form id="case-sharing-form">
+      <div class="formgrid">
+       <label class="field"><span>Åtkomst</span><select name="scope"><option value="mine" ${selected.scope!=='team'?'selected':''}>Privat (bara jag)</option><option value="team" ${selected.scope==='team'?'selected':''}>Gemensamt (alla godkända användare)</option></select></label>
+       <label class="field"><span>Ansvarig för delat ärende</span><select name="assignee_email"><option value="">Ingen utsedd ansvarig</option>${state.caseDirectory.filter(u=>u.email!==state.user.email).map(u=>`<option value="${h(u.email)}" ${selected.assignee_email===u.email?'selected':''}>${h(u.display_name||u.email)}</option>`).join('')}</select></label>
+      </div><button type="submit" class="btn">Spara delning och ansvar</button>
+     </form></section>`:''}
+    ${selected.id?`<section class="card case-private-notes"><h2>Mina personliga mötesanteckningar</h2><p>Syns bara för dig, även när ärendet är gemensamt. Ingår inte i beslutsunderlagets utskrift.</p>
+     <form id="case-note-form"><label class="field"><span>Mina anteckningar</span><textarea name="meeting_notes" maxlength="4500" rows="4">${h(selected.meeting_notes||'')}</textarea></label><button class="btn" type="submit">Spara mina privata anteckningar</button><span id="case-note-info" class="case-save-info" role="status">${state.caseNoteDirty?'Osparade anteckningar':''}</span></form>
+    </section>
+    <section class="card case-discussion"><h2>Ärendediskussion</h2><p>Kommentarer i gemensamma ärenden är synliga för alla godkända användare. Kommentarer i privata ärenden ser bara ägaren.</p>
+     <div class="case-comments">${state.caseComments.map(c=>`<div class="case-comment"><div><strong>${h(c.author_name||c.author_email)}</strong><small>${h((c.created_at||'').slice(0,16).replace('T',' '))}</small></div><p>${h(c.body)}</p></div>`).join('')||'<p class="case-hint">Inga kommentarer ännu.</p>'}</div>
+     <form id="case-comment-form"><label class="field"><span>Ny kommentar</span><textarea name="body" required maxlength="3000" rows="3"></textarea></label><button class="btn btn-primary" type="submit">Publicera kommentar</button></form>
+    </section>
+    ${casePrintPage(selected)}`:''}
+   `:'<div class="card case-empty"><h2>Välj ett ärende</h2><p>Öppna ett ärende till vänster eller skapa ett nytt. Privata ärenden och anteckningar visas aldrig på den publika sidan.</p></div>'}</div>
   </section>
  `;
 }
