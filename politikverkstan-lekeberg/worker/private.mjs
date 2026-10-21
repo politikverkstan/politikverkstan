@@ -1,6 +1,7 @@
 import {handleCollaboration} from './collaboration.mjs';
 import {handleFiles} from './files.mjs';
 import {handleCases} from './cases.mjs';
+import {handleMeetings} from './meetings.mjs';
 /* Private political workroom. All authorization is server-side, fail closed.
  * Cloudflare Access JWT signature + issuer + audience; D1 user allow-list & role.
  * No visitor IP / coalition telemetry is ever combined with document content. */
@@ -115,6 +116,7 @@ export async function handlePrivate(req,env){
    const view=new DataView(Uint8Array.from(raw,c=>c.charCodeAt(0)).buffer);const w=view.getUint32(16),h=view.getUint32(20);if(w<1||h<1||w>2400||h>2400)return err(400,'Orimlig bildstorlek');
    await env.DB.prepare('INSERT INTO work_branding(id,png_base64,updated_at) VALUES(1,?,?) ON CONFLICT(id) DO UPDATE SET png_base64=excluded.png_base64,updated_at=excluded.updated_at').bind(v.logo,new Date().toISOString()).run();return out({ok:true});
   }
+  const meetings=await handleMeetings(req,env,user);if(meetings)return meetings;
   const cases=await handleCases(req,env,user);if(cases)return cases;
   const files=await handleFiles(req,env,user);if(files)return files;
   const collab=await handleCollaboration(req,env,user);if(collab)return collab;
