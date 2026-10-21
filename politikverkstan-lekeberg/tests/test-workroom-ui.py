@@ -8,15 +8,20 @@ subprocess.run(['node','--input-type=module','-e',"import {WORKROOM_HTML} from '
 html=html_path.read_text(encoding='utf8');docid='f4b3c46c-e879-4667-881c-f79d36dd4e61'
 docs={};now='2026-10-20T11:00:00Z'
 mock = r"""
-window.testDocs={};window.testId='f4b3c46c-e879-4667-881c-f79d36dd4e61';
+window.testDocs={};window.testFiles=[];window.testId='f4b3c46c-e879-4667-881c-f79d36dd4e61';
 window.fetch=async (path,options={})=>{
- let method=options.method||'GET',data=options.body?JSON.parse(options.body):null,docs=window.testDocs;
+ let method=options.method||'GET',data=options.body instanceof FormData?options.body:(options.body?JSON.parse(options.body):null),docs=window.testDocs;
  let result={},status=200;
  if(path==='/api/private/me') result={user:{email:'editor@example.se',name:'Testredaktör',role:'admin'}};
  else if(path==='/api/private/motions?scope=shared') result={motions:Object.values(docs)};
  else if(path==='/api/private/motions?scope=shared&lifecycle=archived')result={motions:[]};
  else if(path==='/api/private/motions?scope=mine&lifecycle=archived')result={motions:[]};
  else if(path==='/api/private/motions?scope=mine&lifecycle=trash')result={motions:[]};
+ else if(path==='/api/private/files?scope=mine') result={files:window.testFiles,folders:[]};
+ else if(path==='/api/private/files?scope=team') result={files:[],folders:[]};
+ else if(path==='/api/private/files'&&method==='POST'){
+  const file=data.get('file');const saved={id:'11111111-1111-1111-1111-'+String(window.testFiles.length+1).padStart(12,'0'),name:file.name,scope:'mine',folder_id:null,owner_email:'editor@example.se',size_bytes:file.size,created_at:'2026-10-20T11:00:00Z'};window.testFiles.push(saved);result=saved;status=201;
+ }
  else if(path==='/api/private/directory') result={users:[{email:'editor@example.se',display_name:'Testredaktör'},{email:'other@example.se',display_name:'Kollega'}]};
  else if(path==='/api/private/motions/'+window.testId+'/shares') result={team_permission:'none',shares:[]};
  else if(path==='/api/private/motions/'+window.testId+'/comments') result={comments:[]};
@@ -59,6 +64,8 @@ with sync_playwright() as p:
     assert 'kommunstyrelsen' in pdftext,pdftext
     assert 'Exempelperson' in pdftext,pdftext
     assert len(document)>=1
+    assert page.evaluate('window.testFiles.length')==1, 'First PDF must also be archived'
+    assert page.evaluate('window.testFiles[0].name.endsWith(".pdf")')
     document[0].get_pixmap(matrix=fitz.Matrix(1.2,1.2)).save(str(root/'preview-pdf-motion.png'))
     document.close()
     page.locator('#pdf-template').select_option('neutral')
@@ -68,6 +75,10 @@ with sync_playwright() as p:
     assert 'Tryggare skolvägar i Fjugesta' in neutral_doc[0].get_text()
     assert len(neutral_doc)>=1
     neutral_doc.close()
+    assert page.evaluate('window.testFiles.length')==2, 'Both PDF templates must archive privately'
+    page.locator('[data-tab="files"]').first.click()
+    assert page.get_by_role('heading',name='Dokumentarkiv').is_visible()
+    assert page.locator('.file-row').count()==2
     assert not errors, errors
     mobile=browser.new_page(viewport={'width':390,'height':820},is_mobile=True)
     mobile.set_content(html)
