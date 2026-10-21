@@ -346,6 +346,49 @@ html[data-theme="dark"] .header-button.global-search{background:#263740;color:#d
 html[data-theme="dark"] .global-search kbd{background:#354751;color:#e4e9eb}
 html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;color:#f6bea8;border-color:#584139}
 @media print{.pv-hero,.pv-home-links,.pv-protected{display:none!important}}
+
+
+/* Etapp 1: guided mandate analysis, accessible in both light and dark modes. */
+.guide-panel{background:var(--pv-panel,#fff);border:1px solid var(--pv-border,#e5e6e5);border-radius:14px;margin:0 0 28px;padding:23px 25px;box-shadow:0 8px 30px #1c27310e;scroll-margin-top:25px}
+.guide-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.guide-head h2{margin:9px 0 14px;letter-spacing:-.6px;font-size:24px;color:var(--pv-ink,#1c2731)}
+.guide-exit{border:1px solid var(--pv-border,#e5e6e5);border-radius:8px;background:var(--pv-panel,#fff);color:var(--pv-ink,#1c2731);padding:8px}
+.guide-exit:hover{background:var(--pv-raised,#f3f1ee)}
+.guide-steps{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.guide-steps span{border:1px solid var(--pv-border,#e5e6e5);background:var(--pv-raised,#f3f1ee);color:var(--pv-muted,#657383);border-radius:20px;padding:7px 13px;font-size:11px;font-weight:750}
+.guide-steps span.current{background:var(--pv-accent,#be5137);border-color:var(--pv-accent,#be5137);color:#fff}
+.guide-steps span.done{color:var(--pv-ink,#1c2731);background:var(--pv-panel,#fff)}
+.guide-body{margin:0 0 18px}
+.guide-body>p{font-size:13px;line-height:1.65;color:var(--pv-muted,#657383);margin:0 0 18px;max-width:750px}
+.guide-body>p strong{color:var(--pv-ink,#1c2731)}
+.guide-field{display:flex;flex-direction:column;gap:8px;font-size:12px;font-weight:800;color:var(--pv-ink,#1c2731);max-width:520px}
+.guide-field select{display:block;background:var(--pv-panel,#fff);color:var(--pv-ink,#1c2731);border:1px solid var(--pv-border,#e5e6e5);padding:12px;border-radius:9px;font-size:13px}
+.guide-caution{margin-top:17px;padding:13px;display:flex;align-items:flex-start;gap:11px;border:1px solid #e8d4c7;background:#fef6ef;border-radius:9px;color:#84513b;font-size:12px;line-height:1.6}
+.guide-caution svg{flex:none;margin-top:1px}
+.guide-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.guide-choice{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--pv-border,#e5e6e5);background:var(--pv-panel,#fff);padding:16px;border-radius:9px;cursor:pointer}
+.guide-choice:has(input:checked){border-color:var(--pv-accent,#be5137);box-shadow:inset 0 0 0 1px var(--pv-accent,#be5137)}
+.guide-choice input{accent-color:var(--pv-accent,#be5137);margin-top:4px}
+.guide-choice strong,.guide-choice small{display:block}
+.guide-choice strong{font-size:12px;color:var(--pv-ink,#1c2731);margin-bottom:5px}
+.guide-choice small{font-size:11px;color:var(--pv-muted,#657383);line-height:1.5}
+.guide-footer{display:flex;justify-content:flex-end;gap:11px;border-top:1px solid var(--pv-border,#e5e6e5);padding-top:15px}
+.guide-footer button:disabled{opacity:.45;cursor:not-allowed}
+.guide-footer button:focus-visible,.guide-field select:focus-visible,.guide-exit:focus-visible{outline:3px solid #cf7858;outline-offset:2px}
+.guide-scroll{max-width:100%;overflow-x:auto;border:1px solid var(--pv-border,#e5e6e5);border-radius:9px}
+.guide-result{border-collapse:collapse;width:100%;font-size:12px;min-width:580px}
+.guide-result th,.guide-result td{padding:11px 13px;border-bottom:1px solid var(--pv-border,#e5e6e5);text-align:right;color:var(--pv-ink,#1c2731)}
+.guide-result th:first-child{text-align:left}
+.guide-result thead th{background:var(--pv-raised,#f3f1ee);font-weight:800}
+.guide-result tbody tr:last-child th,.guide-result tbody tr:last-child td{border-bottom:0}
+.registry-source-summary{background:var(--pv-raised,#f3f1ee);border:1px solid var(--pv-border,#e5e6e5);padding:11px 13px;margin-bottom:12px;border-radius:8px;font-size:12px;color:var(--pv-muted,#657383);line-height:1.6}
+.registry-source-summary strong{color:var(--pv-ink,#1c2731)}
+.registry-validation{color:var(--pv-muted,#657383);font-size:11px;line-height:1.45}
+html[data-theme="dark"] .guide-caution{background:#362d29;border-color:#665143;color:#f2c5a9}
+html[data-theme="dark"] .guide-steps span.current{color:#171f22;background:#eda582}
+html[data-theme="dark"] .guide-steps span.done{color:#e7f1f2}
+@media(max-width:780px){.guide-panel{padding:18px 16px}.guide-choices{grid-template-columns:1fr}.guide-steps span{font-size:10px;padding:6px 9px}.guide-footer{flex-wrap:wrap}.guide-footer button{flex:1}}
+@media print{.guide-panel{display:none!important}}
 </style></head><body><div id="root"></div><input type="file" id="file-import" accept="application/json,.json" hidden><script type="application/json" id="org-data">[
   {
     "id": "org01",
@@ -356,7 +399,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org02",
@@ -367,7 +411,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org03",
@@ -379,7 +424,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 13,
     "lekebergSubs": 6,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org04",
@@ -391,7 +440,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "väljs av respektive överordnad styrelse eller nämnd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet."
+    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org05",
@@ -403,7 +453,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 9,
     "lekebergSubs": 5,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org06",
@@ -415,7 +469,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "väljs av respektive överordnad styrelse eller nämnd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet."
+    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org07",
@@ -427,7 +482,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 9,
     "lekebergSubs": 5,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org08",
@@ -439,7 +498,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "väljs av respektive överordnad styrelse eller nämnd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet."
+    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org09",
@@ -452,7 +512,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "lekebergSeats": 5,
     "lekebergSubs": 3,
     "ruleUrl": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-04-27",
-    "ruleNote": "5 ledamöter + 3 ersättare föreslogs med ikraftträdande 2027-01-01. Beslutsstatus måste kontrolleras i fullmäktiges justerade protokoll."
+    "ruleNote": "5 ledamöter + 3 ersättare föreslogs med ikraftträdande 2027-01-01. Beslutsstatus måste kontrolleras i fullmäktiges justerade protokoll.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org10",
@@ -464,7 +525,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 5,
     "lekebergSubs": 5,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org11",
@@ -476,7 +541,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "bolagsrättslig tillsättning, kontrollera bolagsordning och bolagsstämma",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval."
+    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org12",
@@ -488,7 +554,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "bolagsrättslig tillsättning, kontrollera bolagsordning och bolagsstämma",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval."
+    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org13",
@@ -500,7 +567,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "bolagsrättslig tillsättning, kontrollera bolagsordning och bolagsstämma",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval."
+    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org14",
@@ -511,7 +579,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org15",
@@ -522,7 +591,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org16",
@@ -533,7 +603,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org17",
@@ -544,7 +615,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org18",
@@ -555,7 +627,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org19",
@@ -566,7 +639,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org20",
@@ -578,7 +652,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "okänd",
     "lekebergSeats": 1,
     "lekebergSubs": 1,
-    "ruleNote": "Lekeberg har 1 ledamot + 1 ersättare i 2025 års reglemente. Importens 4+4 är inte Lekebergs eget platsantal. Fördela inte fyra platser som Lekebergs platser."
+    "ruleNote": "Lekeberg har 1 ledamot + 1 ersättare i 2025 års reglemente. Importens 4+4 är inte Lekebergs eget platsantal. Fördela inte fyra platser som Lekebergs platser.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org21",
@@ -590,7 +668,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "okänd",
     "lekebergSeats": 3,
     "lekebergSubs": 3,
-    "ruleNote": "2025 års reglemente anger 3+3 för Lekeberg; medverkan planeras upphöra 2027-01-01. Kontrollera slutligt beslut."
+    "ruleNote": "2025 års reglemente anger 3+3 för Lekeberg; medverkan planeras upphöra 2027-01-01. Kontrollera slutligt beslut.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org22",
@@ -602,7 +684,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "okänd",
     "lekebergSeats": 1,
     "lekebergSubs": 1,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org23",
@@ -613,7 +699,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org24",
@@ -625,7 +712,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "okänd",
     "lekebergSeats": 1,
     "lekebergSubs": 1,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org25",
@@ -636,7 +727,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org26",
@@ -647,7 +739,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org27",
@@ -658,7 +751,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org28",
@@ -669,7 +763,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org29",
@@ -680,7 +775,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org30",
@@ -691,7 +787,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org31",
@@ -702,7 +799,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org32",
@@ -713,7 +811,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org33",
@@ -724,7 +823,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org34",
@@ -735,7 +835,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org35",
@@ -746,7 +847,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org36",
@@ -757,7 +859,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org37",
@@ -768,7 +871,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org38",
@@ -779,7 +883,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org39",
@@ -790,7 +895,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org40",
@@ -801,7 +907,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org41",
@@ -812,7 +919,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org42",
@@ -823,7 +931,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org43",
@@ -834,7 +943,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org44",
@@ -845,7 +955,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org45",
@@ -857,7 +968,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 5,
     "lekebergSubs": 5,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org46",
@@ -869,7 +984,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "okänd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Särskilda politiska funktioner: använd inte automatisk proportionell platsfördelning."
+    "ruleNote": "Särskilda politiska funktioner: använd inte automatisk proportionell platsfördelning.",
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org47",
@@ -880,7 +996,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org48",
@@ -891,7 +1008,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org49",
@@ -902,7 +1020,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org50",
@@ -913,7 +1032,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org51",
@@ -925,7 +1045,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "okänd",
     "lekebergSeats": 1,
     "lekebergSubs": 1,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org52",
@@ -936,7 +1060,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org53",
@@ -948,7 +1073,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "selectionMethod": "okänd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Särskilda politiska funktioner: använd inte automatisk proportionell platsfördelning."
+    "ruleNote": "Särskilda politiska funktioner: använd inte automatisk proportionell platsfördelning.",
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org54",
@@ -959,7 +1085,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org55",
@@ -970,7 +1097,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org56",
@@ -981,7 +1109,8 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org57",
@@ -992,9 +1121,11 @@ html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;colo
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   }
-]</script><script>/* Mandatportal Lekeberg — fristående simuleringsmotor, version 0.2.0.
+]
+</script><script>/* Mandatportal Lekeberg — fristående simuleringsmotor, version 0.2.0.
    Förenklad gruppbaserad modell enligt huvudregeln i lag (2022:629), 17–18 §§.
    Innehåller INTE kandidatbaserade undantag enligt 18–20 §§. */
 (function (root, factory) {
@@ -1255,7 +1386,7 @@ const defaultActive=new Set([...primaryIds,...Object.keys(parentMap)]);
 const originStatus={org11:'Bolagsval: kontrollera bolagsordning och vilken instans som utser ledamöter.',org12:'Bolagsval: kontrollera bolagsordning och vilken instans som utser ledamöter.',org13:'Bolagsval: kontrollera bolagsordning och vilken instans som utser ledamöter.',org09:'Egen bygg- och miljönämnd avses från 2027; kontrollera slutligt reglemente.'};
 const pageNames={candidates:'Kandidatval',workspace:'Start',matrix:'Mandatfördelning',influence:'Inflytande',negotiation:'Förhandling',mergers:'Sammanslagningar',compare:'Scenarier',registry:'Organisationer',legal:'Metod & källor',privacy:'Integritet'};
 let saved=[];try{saved=JSON.parse(localStorage.getItem('mandatportal-saved')||'[]');if(!Array.isArray(saved))saved=[];}catch{saved=[];}
-let state={layout:clone(defaultLayout),title:'Nytt scenario',selected:'workspace',compact:false,all:false,enabled:[...defaultActive],present:35,focus:null, drawer:null, savedView:null, previous:null, history:[],future:[],error:'',changeMark:0,candidateOrg:'org03',candidateRole:'main',candidateSeats:13,candidatePresent:35,candidateMemberProportional:false,candidateRows:[],candidateResult:null,negotiations:{},negotiationOrg:'org03',telemetryConsent:false,telemetryInfo:''};
+let state={layout:clone(defaultLayout),title:'Nytt scenario',selected:'workspace',compact:false,all:false,enabled:[...defaultActive],present:35,focus:null, drawer:null, savedView:null, previous:null, history:[],future:[],error:'',changeMark:0,candidateOrg:'org03',candidateRole:'main',candidateSeats:13,candidatePresent:35,candidateMemberProportional:false,candidateRows:[],candidateResult:null,negotiations:{},negotiationOrg:'org03',telemetryConsent:false,telemetryInfo:'',guide:{open:false,step:1,org:'org03',mode:'current'}};
 function clone(a){return JSON.parse(JSON.stringify(a));}
 function lookup(id){return allOrgs.find(o=>o.id===id);}
 function sanitizeLayout(layout){if(!Array.isArray(layout))throw Error('Ogiltigt scenario');let seen=new Set();let groups=[];for(const l of layout){if(!Array.isArray(l))throw Error('Ogiltig kartell');const grp=[];for(const p of l){if(!P[p]||seen.has(p))throw Error('Felaktigt parti i kartell');seen.add(p);grp.push(p);}if(grp.length)groups.push(grp);}for(let p of Object.keys(P))if(!seen.has(p))groups.push([p]);return groups;}
@@ -1302,7 +1433,7 @@ function tableHtml(limit=null){const {groups,results}=current();let entries=allO
  if(!entries.length)return '<div class="empty">Inga organ är aktiverade. Gå till Organisationer för att aktivera en beräkning.</div>';
  return `<div class="table-scroll"><table class="results-table"><thead><tr><th class="organ-head">Organ <span class="count-inline">${shown}</span></th>${groups.map(g=>`<th title="${groupName(g)}"><span class="table-group-label">${escapeHtml(groupName(g))}</span><small>${g.votes} mandat</small></th>`).join('')}</tr></thead><tbody>${entries.map(({org,main,subs})=>`<tr class="${parentMap[org.id]?'nested-row':''}"><th><span class="organ-name">${parentMap[org.id]?'<span class="nest-arrow">↳</span>':''}${escapeHtml(org.name)}</span><small>${org.seats} ord. ${org.subs?`· ${org.subs} ers.`:''}${originStatus[org.id]?' · kontrollkrav':''}</small></th>${groups.map((g,i)=>`<td><div class="seat-wrap">${cellContents(main,i,'main',org.id)}${subs?`<span class="seat-separator">/</span>${cellContents(subs,i,'subs',org.id)}`:''}</div></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
-function upperShell(){return `<aside class="sidebar"><div class="brand"><div class="brand-mark" aria-hidden="true">P</div><div><div class="brand-title">Politikverkstan</div><div class="brand-caption">LEKEBERG · 2026–2030</div></div></div><div class="side-section-label">POLITIKVERKSTAN</div><nav>${navItem('workspace','grid','Start')}${navItem('matrix','chart','Mandatfördelning')}${navItem('candidates','users','Kandidatval')}${navItem('influence','scale','Inflytande')}${navItem('negotiation','split','Förhandling')}${navItem('mergers','layers','Sammanslagningar')}${navItem('compare','split','Scenarier')}</nav><div class="side-section-label secondary-label">REFERENS</div><nav>${navItem('registry','list','Organisationer')}${navItem('legal','shield','Metod & källor')}${navItem('privacy','info','Integritet')}</nav><div class="portal-workroom"><span>SKYDDAD INLOGGNING</span><a href="/arbetsrum" title="Öppna inloggad arbetsyta">Arbetsyta <span>↗</span></a><small>Privat arbetsområde för behöriga användare</small></div><div class="sidebar-bottom"><div class="side-dot"></div><div><strong>Förenklad simulering</strong><span>Version 0.5.6 · motor ${E.VERSION}</span></div></div></aside>
+function upperShell(){return `<aside class="sidebar"><div class="brand"><div class="brand-mark" aria-hidden="true">P</div><div><div class="brand-title">Politikverkstan</div><div class="brand-caption">LEKEBERG · 2026–2030</div></div></div><div class="side-section-label">POLITIKVERKSTAN</div><nav>${navItem('workspace','grid','Start')}${navItem('matrix','chart','Mandatfördelning')}${navItem('candidates','users','Kandidatval')}${navItem('influence','scale','Inflytande')}${navItem('negotiation','split','Förhandling')}${navItem('mergers','layers','Sammanslagningar')}${navItem('compare','split','Scenarier')}</nav><div class="side-section-label secondary-label">REFERENS</div><nav>${navItem('registry','list','Organisationer')}${navItem('legal','shield','Metod & källor')}${navItem('privacy','info','Integritet')}</nav><div class="portal-workroom"><span>SKYDDAD INLOGGNING</span><a href="/arbetsrum" title="Öppna inloggad arbetsyta">Arbetsyta <span>↗</span></a><small>Privat arbetsområde för behöriga användare</small></div><div class="sidebar-bottom"><div class="side-dot"></div><div><strong>Förenklad simulering</strong><span>Version 0.6.0 · motor ${E.VERSION}</span></div></div></aside>
  <div class="main-wrap"><header class="topbar"><div class="breadcrumb"><button class="mobile-nav" id="mobile-toggle" aria-label="Visa meny">${icon('menu')}</button><span>LEKEBERG</span><span class="slash">/</span><b>${pageNames[state.selected]}</b></div><div class="top-actions"><button type="button" class="header-button global-search" id="global-search" title="Sök bland organisationer" aria-label="Sök bland organisationer">${icon("search",16)} <span>Sök organisationer</span><kbd>/</kbd></button><button type="button" class="header-button theme-toggle" id="theme-toggle" aria-label="${currentTheme==='dark'?'Byt till ljust tema':'Byt till mörkt tema'}" title="Växla ljust/mörkt tema">${icon(currentTheme==='dark'?'sun':'moon',17)} <span>${currentTheme==='dark'?'Ljust':'Mörkt'}</span></button><a class="header-button workroom-shortcut" href="/arbetsrum">Logga in ↗</a><button class="header-button" id="save-btn">${icon('save',16)} Spara</button><button class="primary-button" id="share-btn">${icon('share',16)} Dela</button></div></header><main class="content" id="page-content">${renderPage()}</main></div>${state.drawer?drawerHtml():''}${state.error?`<div class="toast error">${escapeHtml(state.error)} <button id="dismiss-error">×</button></div>`:''}`;
 }
 function headline(overline,title,sub){return `<div class="page-head"><div class="overline">${overline}</div><h1>${title}</h1><p>${sub}</p></div>`;}
@@ -1313,7 +1444,7 @@ function publicHero(){return `
  <div class="pv-hero-copy">
   <div class="pv-overline">VÄLKOMMEN TILL</div><h1>Politikverkstan</h1>
   <p>En öppen plattform för att analysera mandat, valteknisk samverkan och möjliga fördelningar av kommunala uppdrag i Lekeberg. Utforska olika scenarier utan att logga in.</p>
-  <div class="pv-hero-actions"><button class="pv-cta" data-page="matrix">Utforska mandatfördelning ${icon('arrow',16)}</button><button class="pv-ghost" data-page="legal">Metod och källor ${icon('arrow',16)}</button></div>
+  <div class="pv-hero-actions"><button class="pv-cta" id="pv-guide-open" type="button">Guidad mandatberäkning ${icon("arrow",16)}</button><button class="pv-ghost" data-page="matrix">Avancerad analys ${icon('arrow',16)}</button><button class="pv-ghost" data-page="legal">Metod och källor ${icon('arrow',16)}</button></div>
  </div><span class="pv-hero-scenery" aria-hidden="true"></span>
 </section>
 <section class="pv-home-links" aria-label="Välj analys">
@@ -1322,7 +1453,41 @@ function publicHero(){return `
 </section>
 <div class="pv-home-section"><div><span class="pv-overline">ÖPPEN ANALYS</span><h2>Utforska olika scenarier</h2><p>Beräkningarna nedan är öppna för alla. Inga privata dokument eller motioner visas på denna sida.</p></div><a href="/arbetsrum" class="pv-protected"><span class="pv-lock-icon" aria-hidden="true">${icon('shield',23)}</span><span class="pv-overline">SKYDDAD ARBETSYTA</span><strong>Arbetsyta</strong><small>För inloggade användare. Privata dokument och gemensamt arbete är endast tillgängliga efter behörighetskontroll.</small><span class="pv-protected-link">Till arbetsytan ${icon('arrow',17)}</span></a></div>
 `;}
-function workspacePage(){return `${publicHero()}${headline('SCENARIOVERKSTAD','Bygg dina samarbeten','Flytta partier mellan karteller och se hur platser, lottningar och majoriteter påverkas. Varje resultat beräknas direkt.')}${statCards()}<div class="main-card"><div class="card-top"><div><h2>Valtekniska karteller</h2><p>Alla partier kan flyttas med drag-and-drop eller genom att klicka på partikortet.</p></div><div class="card-actions"><button class="small-button" id="undo-btn" ${state.history.length?'':'disabled'} title="Ångra">${icon('undo',16)} Ångra</button><button class="small-button icon-only" id="redo-btn" ${state.future.length?'':'disabled'} title="Gör om">${icon('redo',16)}</button></div></div>${groupCards()}<div class="presets"><span>SNABBVAL</span><button data-preset="individual">Alla partier separat</button><button data-preset="example">Exempel · 20 / 10 / 5</button><button data-preset="possible">M + KD + FL + SD</button></div></div><div class="main-card result-summary"><div class="card-top"><div><h2>Fördelning av politiska uppdrag</h2><p>Ordinarie / ersättare. Osäkra platser visas med lottningens sannolikhet.</p></div><div class="card-actions"><label class="toggle-inline"><input type="checkbox" id="compact-toggle" ${state.compact?'checked':''}> Förväntningsvärden</label><button data-page="influence" class="small-button">Analysera inflytande ${icon('arrow',16)}</button><button data-page="matrix" class="small-button">Alla resultat ${icon('arrow',16)}</button></div></div>${tableHtml(9)}<div class="card-footer"><span>${icon('info',16)} Alltid en simulerad fördelning, inte ett garanterat faktiskt valresultat.</span><button class="text-button" data-page="legal">Så räknar vi ${icon('arrow',14)}</button></div></div>`;}
+const GUIDE_ORGAN_IDS=['org03','org05','org07','org10'];
+const GUIDE_PRESETS={current:null,individual:'individual',possible:'possible',example:'example'};
+function guideLayout(){const key=state.guide.mode;return key==='current'?clone(state.layout):clone(presetLayouts[GUIDE_PRESETS[key]]||defaultLayout);}
+function guidePage(){
+ const g=state.guide;if(!g.open)return '';
+ const org=lookup(g.org)||lookup('org03');
+ const steps=['Välj organ','Välj samverkan','Granska resultat'];
+ let content='';
+ if(g.step===1){
+  content='<p>Välj vilken nämnd du vill undersöka. För enkelhetens skull visas här nämnder med tidigare dokumenterade platstal.</p>'+
+   '<label class="guide-field" for="guide-org">Nämnd eller styrelse<select id="guide-org">'+GUIDE_ORGAN_IDS.map(id=>{const o=lookup(id);return '<option value="'+id+'" '+(g.org===id?'selected':'')+'>'+escapeHtml(o.name)+' · '+o.seats+' ledamöter</option>';}).join('')+'</select></label>'+
+   '<div class="guide-caution">'+icon('info',17)+' Platstalen är belagda i 2025 års reglemente. De är ännu inte bekräftade som slutliga för hela perioden 2026–2030.</div>';
+ }else if(g.step===2){
+  const opts=[['current','Nuvarande scenario','Utgå från din aktuella indelning utan att ändra den.'],['individual','Partierna var för sig','Varje parti beräknas som en egen valteknisk grupp.'],['possible','Illustrativt samarbete','Exempel: M + KD + FL + SD; S + V + MP; C + L.'],['example','Illustrativt 20 / 10 / 5','Tre hypotetiska grupper för att visa hur samarbete kan förändra resultat.']];
+  content='<p>Välj ett beräkningsantagande för '+escapeHtml(org.name)+'. Ett samarbete är en hypotetisk modell, inte ett avtal eller beslut.</p><div class="guide-choices">'+opts.map(([k,label,sub])=>'<label class="guide-choice"><input type="radio" name="guide-mode" value="'+k+'" '+(g.mode===k?'checked':'')+'><span><strong>'+label+'</strong><small>'+sub+'</small></span></label>').join('')+'</div>';
+ }else{
+  const result=compute(guideLayout(),[g.org]);const item=result.results[g.org],groups=result.groups;
+  const rows=groups.map((grp,i)=>{const val=item?.main?E.summarize(item.main,i):null;return '<tr><th scope="row">'+escapeHtml(groupName(grp))+'</th><td>'+(val?val.guaranteed:'–')+'</td><td>'+(val?num(val.expected,2):'–')+'</td><td>'+(val?val.guaranteed+'–'+val.maximum:'–')+'</td></tr>';}).join('');
+  content='<p><strong>'+escapeHtml(org.name)+'</strong>: '+org.seats+' ordinarie platser enligt angivet underlag. Resultatet gäller den hypotetiska gruppering du valt.</p>'+
+    '<div class="guide-scroll"><table class="guide-result"><thead><tr><th scope="col">Valteknisk grupp</th><th scope="col">Säkra i modellen</th><th scope="col">Förväntat</th><th scope="col">Möjligt intervall</th></tr></thead><tbody>'+rows+'</tbody></table></div>'+
+    '<div class="guide-caution">'+icon('shield',17)+' Siffrorna är simuleringar, inte förutsägelser om verkliga personval. Faktisk närvaro, valförfarande, ersättare och slutliga reglementen måste kontrolleras. Från 2025 års reglemente; ej verifierat för hela nya mandatperioden.</div>';
+ }
+ return '<section class="guide-panel" id="guide-panel" aria-label="Guidad mandatberäkning"><div class="guide-head"><div><span class="pv-overline">GUIDAD ANALYS</span><h2>Mandatberäkning steg för steg</h2></div><button type="button" id="guide-close" class="guide-exit" aria-label="Stäng guiden">'+icon('close',19)+'</button></div>'+
+  '<div class="guide-steps" aria-label="Förlopp">'+steps.map((x,i)=>'<span class="'+(g.step===i+1?'current':g.step>i+1?'done':'')+'">'+(i+1)+'. '+x+'</span>').join('')+'</div>'+
+  '<div class="guide-body">'+content+'</div>'+
+  '<div class="guide-footer"><button type="button" class="pv-ghost" id="guide-back" '+(g.step===1?'disabled':'')+'>Tillbaka</button>'+
+  (g.step===3?'<button type="button" class="pv-cta" id="guide-apply">Visa i mandatmatrisen '+icon('arrow',16)+'</button>':'<button type="button" class="pv-cta" id="guide-next">Nästa steg '+icon('arrow',16)+'</button>')+'</div></section>';
+}
+function guideApply(){
+ const org=state.guide.org,layout=guideLayout();
+ state.guide.open=false;state.guide.step=1;
+ state.enabled=[org];state.all=true;state.selected='matrix';state.drawer=null;
+ setLayout(layout);memoKey=null;persistDraft();render();window.scrollTo(0,0);
+}
+function workspacePage(){return `${publicHero()}${guidePage()}${headline('SCENARIOVERKSTAD','Bygg dina samarbeten','Flytta partier mellan karteller och se hur platser, lottningar och majoriteter påverkas. Varje resultat beräknas direkt.')}${statCards()}<div class="main-card"><div class="card-top"><div><h2>Valtekniska karteller</h2><p>Alla partier kan flyttas med drag-and-drop eller genom att klicka på partikortet.</p></div><div class="card-actions"><button class="small-button" id="undo-btn" ${state.history.length?'':'disabled'} title="Ångra">${icon('undo',16)} Ångra</button><button class="small-button icon-only" id="redo-btn" ${state.future.length?'':'disabled'} title="Gör om">${icon('redo',16)}</button></div></div>${groupCards()}<div class="presets"><span>SNABBVAL</span><button data-preset="individual">Alla partier separat</button><button data-preset="example">Exempel · 20 / 10 / 5</button><button data-preset="possible">M + KD + FL + SD</button></div></div><div class="main-card result-summary"><div class="card-top"><div><h2>Fördelning av politiska uppdrag</h2><p>Ordinarie / ersättare. Osäkra platser visas med lottningens sannolikhet.</p></div><div class="card-actions"><label class="toggle-inline"><input type="checkbox" id="compact-toggle" ${state.compact?'checked':''}> Förväntningsvärden</label><button data-page="influence" class="small-button">Analysera inflytande ${icon('arrow',16)}</button><button data-page="matrix" class="small-button">Alla resultat ${icon('arrow',16)}</button></div></div>${tableHtml(9)}<div class="card-footer"><span>${icon('info',16)} Alltid en simulerad fördelning, inte ett garanterat faktiskt valresultat.</span><button class="text-button" data-page="legal">Så räknar vi ${icon('arrow',14)}</button></div></div>`;}
 function matrixPage(){return `${headline('BERÄKNINGSRESULTAT','Mandatfördelning','Granska de möjliga utfallen för samtliga aktiverade organ. Klicka på ett resultat för exakt sannolikhetsfördelning och underliggande beräkning.')}<div class="main-card"><div class="card-top"><div><h2>Fullständig fördelningsmatris</h2><p>Ordinarie / ersättare · grupperna sorteras efter mandatstyrka.</p></div><div class="card-actions"><label class="toggle-inline"><input type="checkbox" id="compact-toggle" ${state.compact?'checked':''}> Förväntningsvärden</label><button class="small-button" id="export-csv">${icon('download',16)} CSV</button></div></div>${tableHtml()}<div class="card-footer"><span>Resultaten gäller om proportionella val genomförs och förenklade antaganden håller.</span></div></div>`;}
 function previewMerged(groups,i,j){const combined=E.mergeGroupSets(groups,i,j);const a=groups[i],b=groups[j];const merged=combined.find(g=>g.parties.length===a.parties.length+b.parties.length && [...g.parties].sort().join(',')===[...a.parties,...b.parties].sort().join(',')); const base=current().results;let changed=[];let deltaTotal=E.zero();
  const bySeat=new Map();for(const {org,main} of Object.values(base)){
@@ -1340,9 +1505,9 @@ function mergersPage(){const {groups}=current();if(groups.length<2)return `${hea
 function workspaceShortcut(){return `<div class="main-card empty" style="padding:36px">Gå till <button class="text-button" data-page="workspace">Kartellbyggaren</button> och skapa flera grupper.</div>`;}
 function comparePage(){return `${headline('SCENARIOHANTERING','Sparade scenarier','Spara olika valtekniska konstellationer och återgå till dem utan att tidigare alternativ påverkas.')}<div class="main-card"><div class="card-top"><div><h2>Aktuellt arbetsläge</h2><p>Namnsätt scenariot och spara en fryst kopia lokalt i din webbläsare.</p></div></div><div class="scenario-editor"><label>Scenarionamn<input id="scenario-name" maxlength="90" value="${escapeHtml(state.title)}"></label><button class="primary-button" id="save-inner">${icon('save',16)} Spara scenario</button><button class="small-button" id="export-json">${icon('download',16)} Exportera JSON</button></div><p class="note">Sparade scenarier lagras i den här webbläsaren. Använd JSON-export om du vill säkerhetskopiera eller flytta dem.</p></div><div class="main-card"><div class="card-top"><div><h2>Scenariobibliotek</h2><p>${saved.length} sparade scenarier. Klicka på Öppna för att arbeta vidare.</p></div><button class="small-button" id="import-json">${icon('plus',16)} Importera JSON</button></div>${saved.length?`<div class="saved-list">${saved.map((s,i)=>`<div class="saved-row"><div><h3>${escapeHtml(s.title)}</h3><p>${new Date(s.stamp).toLocaleString('sv-SE')} · ${s.layout.length} karteller · ${s.layout.map(a=>a.join('+')).join(' / ')}</p></div><div class="card-actions"><button class="small-button" data-open-save="${i}">Öppna</button><button class="small-button" data-compare-save="${i}">Jämför</button><button class="delete-button" data-delete-save="${i}" title="Ta bort">${icon('close',17)}</button></div></div>`).join('')}</div>`:'<div class="empty">Inga sparade scenarier ännu. Använd Spara scenario för att börja bygga ditt bibliotek.</div>'}</div>${state.savedView!==null&&saved[state.savedView]?comparisonHtml(saved[state.savedView]):''}`;}
 function comparisonHtml(other){let a=compute(other.layout,other.enabled||state.enabled),b=current(), lookupOther=new Map(a.groups.map((g,i)=>[g.id,i]));return `<div class="main-card"><div class="card-top"><div><h2>Jämförelse: ${escapeHtml(state.title)} / ${escapeHtml(other.title)}</h2><p>Siffrorna avser förväntat antal ordinarie platser. ”–” betyder att kartellen saknas i scenariot.</p></div><button id="close-compare" class="small-button">${icon('close',15)} Stäng</button></div><div class="compare-grid"><div><h3>Aktuellt scenario</h3><p>${b.groups.map(g=>`${groupName(g)} (${g.votes})`).join(' · ')}</p></div><div><h3>${escapeHtml(other.title)}</h3><p>${a.groups.map(g=>`${groupName(g)} (${g.votes})`).join(' · ')}</p></div></div><div class="compare-table"><table><thead><tr><th>Organ</th><th>Aktuellt · ${b.groups.map(g=>groupName(g)).join(' / ')}</th><th>Sparat · ${a.groups.map(g=>groupName(g)).join(' / ')}</th></tr></thead><tbody>${['org03','org07','org05','org09','org10','org14'].map(id=>{const x=b.results[id]?.main,y=a.results[id]?.main;if(!x&&!y)return '';return `<tr><th>${escapeHtml(lookup(id).name)}</th><td>${x?b.groups.map((g,i)=>`${groupName(g)}: ${num(x.expected[i],2)}`).join('<br>'):'–'}</td><td>${y?a.groups.map((g,i)=>`${groupName(g)}: ${num(y.expected[i],2)}`).join('<br>'):'–'}</td></tr>`;}).join('')}</tbody></table></div></div>`;}
-function registryPage(){const shown=allOrgs;return `${headline('REGISTER OCH OMFATTNING','Organisationer och uppdrag','57 poster ur en preliminär uppdragsförteckning, kompletterade med tillgängliga beslut och reglementen. Kontrollera källstatus innan platstalen används som fastställda uppgifter.')}
+function registryPage(){const shown=allOrgs;return `${headline('REGISTER OCH OMFATTNING','Organisationer och uppdrag','Sammanställning av 57 uppdrag och organ. Uppgivet platstal är inte automatiskt en beslutad platsfördelning för 2026–2030. Granska underlag, datum och status före användning.')}
  <div class="info-strip">${icon('shield',18)} <span><b>Ingen fullständig juridisk verifiering har gjorts.</b> Uppgifter från 2025 års reglemente är märkta historiska. En ny bygg- och miljönämnd har föreslagits för 2027; kontrollera fullmäktiges slutliga beslut.</span></div>
- <div class="main-card"><div class="card-top"><div><h2>Organisationer och uppdrag</h2><p><span id="org-count">${shown.length}</span> poster · <strong><span id="registry-enabled-count">${state.enabled.length}</span> organ valda för simulering.</strong></p><p class="registry-help">Kryssa i vilka organ som ska ingå i Kartellbyggare och Mandatfördelning. Grå rutor kan inte beräknas med modellens nuvarande underlag. Ett utskott kräver att dess överordnade nämnd är vald.</p><p id="registry-selection-status" class="registry-selection-status" role="status" aria-live="polite"></p></div><div class="searchbar">${icon('search',16)}<input id="search-org" placeholder="Sök organisation ..." aria-label="Sök organisation"></div></div><div class="registry-table"><table><thead><tr><th>Simulera</th><th>Organisation och källa</th><th>Uppgivet platstal</th><th>Separat dokumenterat platstal</th><th>Regelstatus</th></tr></thead><tbody>${shown.map(o=>`<tr class="registry-row ${state.enabled.includes(o.id)?'registry-selected':''}" data-name="${escapeHtml(o.name.toLowerCase())}"><td><input type="checkbox" data-org-toggle="${o.id}" aria-label="Simulera ${escapeHtml(o.name)}" ${state.enabled.includes(o.id)?'checked':''} ${(o.seats===null||o.seats<1||(!primaryIds.has(o.id)&&!parentMap[o.id]))?'disabled title="Kan inte simuleras med nuvarande modell eller platstal"':''}></td><td>${escapeHtml(o.name)}<small>${escapeHtml(o.ruleNote||'Tillsättningsregler ännu inte kontrollerade.')}<br><span class="small-copy">Källa: ${escapeHtml(o.ruleSource||'okänd')} ${o.ruleUrl?`<a href="${escapeHtml(o.ruleUrl)}" target="_blank" rel="noopener noreferrer">Öppna ärendet ↗</a>`:''}</span></small></td><td>${o.seats??'–'} + ${o.subs??'–'}</td><td>${o.lekebergSeats??'Ej verifierat'}${o.lekebergSeats!==null?' + '+(o.lekebergSubs??'–'):''}</td><td><span class="status-pill ${o.ruleStatus==='historisk'||o.ruleStatus==='förslag 2026'?'review':''}">${escapeHtml(o.ruleStatus||'okänd')}</span></td></tr>`).join('')}</tbody></table></div><div class="card-footer"><span>Viktigt: kolumnen ”Uppgivet platstal” kommer delvis från ett preliminärt arbetsunderlag och är inte ett fastställt beslut. Den anger inte alltid hela organets storlek eller Lekebergs rätt att tillsätta platser. Där regler saknas visas ingen rättsligt bekräftad fördelning.</span></div></div>`;}
+ <div class="main-card"><div class="card-top"><div><h2>Organisationer och uppdrag</h2><div class="registry-source-summary"><strong>${shown.filter(o=>o.ruleStatus==="historisk").length}</strong> historiskt dokumenterade (2025), <strong>${shown.filter(o=>o.ruleStatus==="okänd").length}</strong> ej verifierade och <strong>${shown.filter(o=>["preliminär","förslag 2026"].includes(o.ruleStatus)).length}</strong> preliminära/förslagsuppgifter. Ingen post är här markerad som slutligt bekräftad för hela 2026–2030.</div><p><span id="org-count">${shown.length}</span> poster · <strong><span id="registry-enabled-count">${state.enabled.length}</span> organ valda för simulering.</strong></p><p class="registry-help">Kryssa i vilka organ som ska ingå i Kartellbyggare och Mandatfördelning. Grå rutor kan inte beräknas med modellens nuvarande underlag. Ett utskott kräver att dess överordnade nämnd är vald.</p><p id="registry-selection-status" class="registry-selection-status" role="status" aria-live="polite"></p></div><div class="searchbar">${icon('search',16)}<input id="search-org" placeholder="Sök organisation ..." aria-label="Sök organisation"></div></div><div class="registry-table"><table><thead><tr><th>Simulera</th><th>Organisation och källa</th><th>Uppgivet platstal</th><th>Separat dokumenterat platstal</th><th>Regelstatus</th></tr></thead><tbody>${shown.map(o=>`<tr class="registry-row ${state.enabled.includes(o.id)?'registry-selected':''}" data-name="${escapeHtml(o.name.toLowerCase())}"><td><input type="checkbox" data-org-toggle="${o.id}" aria-label="Simulera ${escapeHtml(o.name)}" ${state.enabled.includes(o.id)?'checked':''} ${(o.seats===null||o.seats<1||(!primaryIds.has(o.id)&&!parentMap[o.id]))?'disabled title="Kan inte simuleras med nuvarande modell eller platstal"':''}></td><td>${escapeHtml(o.name)}<small>${escapeHtml(o.ruleNote||'Tillsättningsregler ännu inte kontrollerade.')}<br><span class="small-copy">Underlag: ${escapeHtml(o.ruleSource||'okänd')} ${o.ruleUrl?`<a href="${escapeHtml(o.ruleUrl)}" target="_blank" rel="noopener noreferrer">Källsida ↗</a>`:''}</span><br><span class="registry-validation">${escapeHtml(o.validationNote||"Status för mandatperioden är inte verifierad.")}${o.reviewedOn?` Granskat ${escapeHtml(o.reviewedOn)}.`:""}</span></small></td><td>${o.seats??'–'} + ${o.subs??'–'}</td><td>${o.lekebergSeats??'Ej verifierat'}${o.lekebergSeats!==null?' + '+(o.lekebergSubs??'–'):''}</td><td><span class="status-pill ${o.ruleStatus==='historisk'||o.ruleStatus==='förslag 2026'?'review':''}">${escapeHtml(o.ruleStatus||'okänd')}</span></td></tr>`).join('')}</tbody></table></div><div class="card-footer"><span>Viktigt: kolumnen ”Uppgivet platstal” kommer delvis från ett preliminärt arbetsunderlag och är inte ett fastställt beslut. Den anger inte alltid hela organets storlek eller Lekebergs rätt att tillsätta platser. Där regler saknas visas ingen rättsligt bekräftad fördelning.</span></div></div>`;}
 function legalPage(){return `${headline('KÄLLOR OCH AVGRÄNSNINGAR','Metod & transparens','Här beskrivs vad programmet faktiskt beräknar, vilka regler som används och vad som måste kontrolleras innan siffrorna kan användas i ett formellt val.')}<div class="legal-grid"><section class="main-card"><h2>Detta kan motorn beräkna</h2><p>Förenklad mandatbaserad gruppfördelning med ett jämförelsetal som motsvarar röstetalet dividerat med redan tilldelade platser plus ett. Alla exakta lika jämförelsetal grenas till olika lottningsutfall.</p><p>Beräkningarna använder <strong>BigInt och exakta rationella tal</strong>, utan att avrundning påverkar platsfördelningen.</p><p>Utskott kan simuleras genom att samtliga möjliga utfall i överordnat organ följs upp som separata grenar. Resultatet är fortfarande ett hypotetiskt scenario.</p></section><section class="main-card"><h2>Detta ingår ännu inte</h2><p>Kandidatbaserade valsedlar och specialregeln för kandidater på flera listor finns nu som separat simuleringsläge. Fullständig juridisk verifiering av alla tolknings- och tillämpningsfall saknas fortfarande. Systemet kan därför inte användas som en verifierad juridisk valförrättare.</p><p>Faktiskt beslutad ersättarordning, kontrollerad personvalbarhet, bolagsordningar, presidieposter och samtliga särskilda tillsättningsregler ingår inte i beräkningsmotorn.</p><p>Kartellmatrisen är därför fortfarande märkt som <strong>förenklad simulering</strong>; kandidatvyn är en särskild hypotetisk juridisk valberäkning.</p></section><section class="main-card"><h2>Tröskel för proportionellt val</h2><p>2 § lagen (2022:629) anger att antalet väljande som behöver begära ett proportionellt val är antalet närvarande ledamöter dividerat med antalet personer valet avser plus ett, avrundat uppåt.</p><label class="number-control">Närvarande väljande <input id="present-input" type="number" min="1" max="70" value="${state.present}"></label><div class="threshold-grid">${[13,9,6,5,3,1].map(n=>`<div><span>${n} platser</span><strong>${E.threshold(state.present,n)} röster</strong></div>`).join('')}</div><p>3 § begränsar proportionella ersättarval till fall då ledamotsvalet varit proportionellt.</p></section><section class="main-card"><h2>Primärkällor</h2><p><a href="https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/lag-2022629-om-proportionella-val-i-kommuner_sfs-2022-629/" target="_blank" rel="noopener">Lag (2022:629) om proportionella val i kommuner och regioner ↗</a></p><p><a href="https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/kommunallag-2017725_sfs-2017-725/" target="_blank" rel="noopener">Kommunallag (2017:725), bland annat 5 kap. 58 § ↗</a></p><p><a href="https://www.val.se/" target="_blank" rel="noopener">Valmyndigheten – kontroll av mandatfördelning ↗</a></p><p><a href="https://meetings.lekeberg.se/" target="_blank" rel="noopener">Lekebergs protokoll och beslutsunderlag ↗</a></p><p>Lokalt underlag: 57 uppdrag i Excel samt kommunens allmänna reglemente, fastställt 2025-03-03. Senare beslut kan ha ändrat sammansättningen.</p></section></div><div class="bottom-alert">${icon('info',18)} <div><strong>Tolka resultaten korrekt</strong><p>”Säker plats” betyder att gruppen får platsen i samtliga lottningsgrenar under modellens förutsättningar. Det betyder inte en juridiskt garanterad rätt eller ett verifierat faktiskt valresultat.</p></div></div>`;}
 function namesFromInput(raw){
  return String(raw||'').split(/\r?\n/).map(line=>line.trim()).filter(Boolean).map((line)=>{
@@ -1444,6 +1609,14 @@ function drawerHtml(){const {id,i,kind}=state.drawer;const org=lookup(id),res=re
  let canDemand=grp.votes>=t && !parentMap[id];const isParent=!!parentMap[id];const isSubs=kind==='subs';
  return `<div class="drawer-backdrop" id="drawer-backdrop"></div><aside class="drawer" role="dialog" aria-label="Beräkningsdetalj"><div class="drawer-head"><div><span class="overline">FÖRDELNINGSANALYS</span><h2>${escapeHtml(org.name)}</h2><p>${isSubs?'Ersättarplatser':'Ordinarie platser'} · ${selected.seats} platser</p></div><button class="close-button" id="close-drawer" aria-label="Stäng">${icon('close',21)}</button></div><div class="drawer-body"><div class="drawer-group">${grp.parties.map(p=>partyChip(p,false)).join('')}<span>${escapeHtml(groupName(grp))}</span></div><div class="drawer-lead"><div><span>Säkra platser i modellen</span><strong>${result.guaranteed}</strong></div><div><span>Förväntat antal</span><strong>${num(result.expected,3)}</strong></div><div><span>Möjligt intervall</span><strong>${result.guaranteed}–${result.maximum}</strong></div></div><h3>Samtliga möjliga resultat</h3>${result.dist.map(x=>`<div class="prob-row"><div><span>${x.places} ${x.places===1?'plats':'platser'}</span><b>${pct(x.prob)}</b></div><div class="prob-track"><div style="width:${(Number(x.prob.n)/Number(x.prob.d)*100).toFixed(4)}%"></div></div></div>`).join('')}<h3>Juridisk kontroll</h3><div class="note-box"><div><strong>Proportionellt val kräver</strong><span>${t} av ${isParent?lookup(parentMap[id]).seats:state.present} närvarande för ett val av ${selected.seats} platser.</span></div><div><strong>Gruppens mandat</strong><span>${grp.votes} mandat i fullmäktige.</span></div><p>${isParent?'Utskottsvalet förrättas av överordnat organ. Förutsätter samma valtekniska grupper i det organet; faktisk närvaro och röstning kan skilja sig.':isSubs?'Ersättarval får vara proportionellt endast om ledamotsvalet varit proportionellt. Tröskeln ovan är en illustrativ beräkning under det villkoret.':canDemand?'Kartellen når tröskeln med sina fullmäktigemandat om samtliga dessa ledamöter är närvarande och röstar för att begära proportionellt val.':'Kartellen når inte ensam tröskeln med sina mandat i detta scenario.'}</p></div><h3>Beräkningsmodell</h3><p class="drawer-copy">${isParent?'Varje möjligt utfall i det överordnade organet används separat som underlag. De betingade sannolikheterna vägs ihop exakt med rationella bråk.':'Jämförelsetal beräknas som kartellens simulerade röstantal dividerat med antal tidigare tilldelade platser + 1. Vid exakt lika jämförelsetal görs förgrening motsvarande lottning.'}</p><div class="drawer-exact">Exakt förväntningsvärde: <strong>${E.simple(result.expected)}</strong><br>Antal möjliga gruppfördelningar: <strong>${selected.variantCount}</strong></div><div class="warning-mini">${icon('info',16)} Gruppbaserad simulering utan kandidatlistor och specialregler enligt 18–20 §§. Inte juridiskt fastställt resultat.</div></div></aside>`;}
 function bindPageActions(){
+ const showGuide=el('pv-guide-open');if(showGuide)showGuide.addEventListener('click',()=>{state.guide.open=true;state.guide.step=1;render();el('guide-panel')?.scrollIntoView({behavior:'smooth',block:'start'});});
+ el('guide-close')?.addEventListener('click',()=>{state.guide.open=false;render();});
+ el('guide-back')?.addEventListener('click',()=>{state.guide.step=Math.max(1,state.guide.step-1);render();});
+ el('guide-next')?.addEventListener('click',()=>{state.guide.step=Math.min(3,state.guide.step+1);render();});
+ el('guide-org')?.addEventListener('change',e=>{if(GUIDE_ORGAN_IDS.includes(e.target.value))state.guide.org=e.target.value;});
+ document.querySelectorAll('[name="guide-mode"]').forEach(r=>r.addEventListener('change',()=>{if(Object.hasOwn(GUIDE_PRESETS,r.value))state.guide.mode=r.value;}));
+ el('guide-apply')?.addEventListener('click',guideApply);
+
  document.querySelectorAll('[data-cand-input]').forEach(input=>input.addEventListener('input',()=>{const i=Number(input.dataset.index),field=input.dataset.candInput;if(!state.candidateRows[i])return;state.candidateRows[i][field]=input.type==='checkbox'?input.checked:field==='count'?Number(input.value):input.value;state.candidateResult=null;persistDraft();}));
  document.querySelectorAll('[data-cand-remove]').forEach(b=>b.addEventListener('click',()=>{state.candidateRows.splice(Number(b.dataset.candRemove),1);state.candidateResult=null;persistDraft();render();}));
  const candAdd=el('cand-add');if(candAdd)candAdd.addEventListener('click',()=>{state.candidateRows.push({label:'',count:1,names:'',sealed:true,formatValid:true});state.candidateResult=null;persistDraft();render();});
