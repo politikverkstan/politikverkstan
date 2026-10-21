@@ -114,7 +114,7 @@ const caseFields=[
  ['finances','Ekonomiska konsekvenser','Budget/utfall, investerings- och driftskostnader, finansiering och långsiktig effekt.'],
  ['risks','Risker och konsekvenser','Risk, sannolikhet, konsekvens och möjliga motåtgärder.'],
  ['questions','Frågor till förvaltningen','Vad behöver kompletteras eller kontrolleras före beslut?'],
- ['recommendation','Min preliminära bedömning','Förslag till ställningstagande, inte ett officiellt partiyttrande.'],
+ ['recommendation','Förslag till ställningstagande','Arbetsförslag, inte ett officiellt partiyttrande. Texten blir synlig för andra om ärendet delas.'],
  ['decision','Beslut / faktiskt utfall','Fyll i efter att beslut har fattats. Ange beslutskälla.'],
  ['follow_up','Uppföljning och ansvar','Vad ska följas upp, av vem och när?'],
  ['sources','Källor och dokumentreferenser','Ange dokumenttitel, datum, sidnummer eller URL.']
