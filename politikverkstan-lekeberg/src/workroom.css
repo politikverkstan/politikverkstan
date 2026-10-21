@@ -60,3 +60,114 @@
 .file-row-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px}
 .file-row-actions a.btn{text-decoration:none}
 @media(max-width:720px){.file-row{flex-direction:column;align-items:stretch}.file-row-actions{justify-content:flex-start}.file-actions form{align-items:stretch}.file-picker input{width:100%}}
+
+
+/* 0.5.5: Neutral visual system shared with the public portal. */
+:root{
+ --navy:#18333f;--blue:#24656c;--yellow:#cfece7;--ink:#1a2e3c;
+ --muted:#607382;--border:#dae4ea;--bg:#f3f6f8;--card:#fff;
+ background:var(--bg);color:var(--ink);color-scheme:light;
+}
+body{background:var(--bg);color:var(--ink)}
+.sidebar{background:#142a35;color:#e2eef2;box-shadow:none}
+.brand-icon{background:#65c5b7;color:#102a35}
+.brand small{color:#acc1ca}
+.side-section{color:#95afba}
+.sidebutton{color:#c1d2db}
+.sidebutton:hover,.sidebutton.active{background:#234754;color:#fff}
+.sidebutton.active{box-shadow:inset 3px 0 #6bd0c0}
+.sidebar-tail{border-color:#34505c;color:#b4cbd4}
+.sidebar-tail a{color:#a0e3d9}
+.topbar{background:#fff;border-color:var(--border);box-shadow:0 2px 13px #1c354509}
+.eyebrow{color:#4f7580}
+.btn-primary{background:#24656c;border-color:#24656c;color:white}
+.btn-primary:hover{background:#1c5157;color:white}
+.btn-yellow{background:#d7eee9;border-color:#bddfd8;color:#18454b}
+.btn-yellow:hover{background:#c4e7de}
+.intro{background:linear-gradient(120deg,#183541,#21505a);color:#fff}
+.intro p{color:#d1e6eb}
+.tile .tile-icon{background:#e4f3ef;color:#28646b}
+.btn:focus-visible,.sidebutton:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+ outline:2px solid #319c90;outline-offset:3px;
+}
+.btn.theme-toggle{display:inline-flex;align-items:center;gap:7px;background:#fff;color:#254f59;border-color:var(--border);min-width:105px}
+.theme-symbol{font-size:17px;line-height:1}
+.btn.theme-toggle:hover{background:#edf7f5}
+.paper-blue{border-top-color:#141b4d}/* The optional SD paper remains visually distinct. */
+@media(max-width:690px){
+ .topactions .chip{display:none}
+ .topactions .theme-toggle{min-width:0}
+ .topbar{gap:10px}
+}
+@media print{.theme-toggle{display:none!important}}
+
+/* Both workroom and portal read the same origin-scoped theme preference. */
+html[data-theme="dark"]{
+ --navy:#0e1d28;--blue:#80d6ca;--yellow:#a7dcd3;--ink:#e5eff4;
+ --muted:#acc0cb;--border:#324654;--bg:#0f1922;--card:#172733;
+ background:#0f1922;color:#e5eff4;color-scheme:dark;
+}
+html[data-theme="dark"] body{background:#0f1922;color:#e5eff4}
+html[data-theme="dark"] .sidebar{background:#0d1d28;border-right:1px solid #263c48}
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .tile{
+ background:#172733;border-color:#324654;color:#e5eff4;box-shadow:none;
+}
+html[data-theme="dark"] .intro{background:linear-gradient(120deg,#1c3a46,#24525b)}
+html[data-theme="dark"] .btn:not(.btn-primary):not(.btn-yellow){
+ background:#233744;color:#e3eff5;border-color:#395361;
+}
+html[data-theme="dark"] .btn:not(.btn-primary):not(.btn-yellow):hover{background:#2c4755;border-color:#567785}
+html[data-theme="dark"] .btn-primary{background:#41988f;color:#092127;border-color:#41988f}
+html[data-theme="dark"] .btn-primary:hover{background:#65c2b7}
+html[data-theme="dark"] .btn-yellow{background:#b8e5dc;color:#18363e;border-color:#b8e5dc}
+html[data-theme="dark"] .btn-danger:not(.btn-primary){color:#ffc0c6}
+html[data-theme="dark"] .chip{background:#223c49;border-color:#42606c;color:#c8e2e6}
+html[data-theme="dark"] .tile .tile-icon{background:#26434a;color:#a6eee1}
+html[data-theme="dark"] .tile small,
+html[data-theme="dark"] :is(.headline p,.card p,.docrow small,.saving,.footer-note,.empty){color:#acc0cb}
+html[data-theme="dark"] .card h2,
+html[data-theme="dark"] .card h3,
+html[data-theme="dark"] .headline h1,
+html[data-theme="dark"] .topbar h2,
+html[data-theme="dark"] .tile strong,
+html[data-theme="dark"] .docrow strong{color:#eef6fa}
+html[data-theme="dark"] :is(.empty,.review,.idea-thread,.comment,
+ .action-options,.actions-menu summary,.file-warning,.a-note){
+ background:#203441;border-color:#395462;color:#dcebf1;
+}
+html[data-theme="dark"] .file-warning,
+html[data-theme="dark"] .a-note{background:#303a2e;border-color:#516345;color:#e5edd5}
+html[data-theme="dark"] :is(.file-row,.docrow,.share-person){border-color:#324654}
+html[data-theme="dark"] .docrow:hover{background:#223745}
+html[data-theme="dark"] :is(.action-options button,.action-options button:hover){background:#233744;color:#e5eff4}
+html[data-theme="dark"] .action-options button:hover{background:#314c59}
+html[data-theme="dark"] .field input,
+html[data-theme="dark"] .field textarea,
+html[data-theme="dark"] .field select,
+html[data-theme="dark"] :is(.pdf-template,.share-person select,.admin-table select,
+ .account-name,.file-picker input,.file-scope-tabs select),
+html[data-theme="dark"] .card input:not([type=checkbox]):not([type=radio]):not([type=file]),
+html[data-theme="dark"] .card textarea,
+html[data-theme="dark"] .card select{
+ background:#13242f;color:#e5eff4;border-color:#456170;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder{color:#9db4c1}
+html[data-theme="dark"] .file-row small{color:#a9c0c8}
+html[data-theme="dark"] :is(.admin-table td,.admin-table th){border-color:#324654;color:#dcebf1}
+html[data-theme="dark"] .theme-toggle .theme-symbol{color:#87d9ce}
+html[data-theme="dark"] .toast{background:#244d57}
+html[data-theme="dark"] .brand small{color:#b5cbd4}
+/* Keep A4 motion-preview paper white and legible in either interface theme. */
+html[data-theme="dark"] .paper{
+ background:#fff;color:#162249;border-color:#dfe6ec;box-shadow:0 9px 22px #0005;color-scheme:light;
+}
+html[data-theme="dark"] .paper :is(h2,p,strong,.paper-brand,.decision,.signature,.clauses p){color:#253046}
+html[data-theme="dark"] .paper-brand strong{color:#142452}
+html[data-theme="dark"] .paper .paper-overline{color:#68798b}
+@media print{
+ html[data-theme="dark"]{color-scheme:light;background:#fff;color:#17233b}
+ html[data-theme="dark"] body{background:#fff;color:#17233b}
+}
