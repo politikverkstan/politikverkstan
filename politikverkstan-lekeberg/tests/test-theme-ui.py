@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 root=Path(__file__).resolve().parents[1]
 public=(root/'dist/index.html').read_text(encoding='utf-8')
 assert 'SD Arbetsrum' not in public
-assert 'Arbetsyta ↗' in public
+assert 'class="pv-protected"' in public and 'Logga in ↗' in public
 # Resolve the Worker export without reading a live account or Cloudflare secrets.
 import subprocess
 private=json.loads(subprocess.run([
