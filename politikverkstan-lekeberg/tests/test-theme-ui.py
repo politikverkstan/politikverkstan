@@ -46,7 +46,7 @@ with sync_playwright() as p:
  assert page.evaluate("localStorage.getItem('politikverkstan-theme')")=='dark'
  page.screenshot(path=str(root/'preview-dark-public.png'))
  page.goto('https://portal.example.test/arbetsrum')
- page.get_by_text('Välkommen till din arbetsyta').wait_for()
+ page.locator('.aw-hero h1').get_by_text('Politikverkstan').wait_for()
  assert page.title().startswith('Arbetsyta |')
  assert page.locator('html').get_attribute('data-theme')=='dark'
  assert page.locator('#theme-toggle').is_visible()
