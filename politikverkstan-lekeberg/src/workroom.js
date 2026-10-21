@@ -273,7 +273,7 @@ function attachCaseActions(){
   state.caseCurrent[field]=field==='labels'?e.target.value.split(',').map(x=>x.trim()).filter(Boolean):e.target.value;
   state.caseDirty=true;const mark=$('case-save-info');if(mark)mark.textContent='Ändringarna är inte sparade';
  });
- form?.addEventListener('change',e=>{const field=e.target.name;if(field&&state.caseCurrent){state.caseCurrent[field]=e.target.value;state.caseDirty=true;}});
+ form?.addEventListener('change',e=>{const field=e.target.name;if(field&&state.caseCurrent){state.caseCurrent[field]=field==='labels'?e.target.value.split(',').map(x=>x.trim()).filter(Boolean):e.target.value;state.caseDirty=true;}});
  form?.addEventListener('submit',async e=>{e.preventDefault();const current=state.caseCurrent;if(!current)return;
   const payload={...current,labels:[...new Set((current.labels||[]).map(x=>x.trim()).filter(Boolean))],motion_id:current.motion_id||null,file_id:current.file_id||null};
   const submit=form.querySelector('[type="submit"]');submit.disabled=true;
