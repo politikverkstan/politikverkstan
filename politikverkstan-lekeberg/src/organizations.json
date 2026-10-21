@@ -8,7 +8,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org02",
@@ -19,7 +20,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org03",
@@ -31,7 +33,11 @@
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 13,
     "lekebergSubs": 6,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org04",
@@ -43,7 +49,8 @@
     "selectionMethod": "väljs av respektive överordnad styrelse eller nämnd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet."
+    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org05",
@@ -55,7 +62,11 @@
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 9,
     "lekebergSubs": 5,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org06",
@@ -67,7 +78,8 @@
     "selectionMethod": "väljs av respektive överordnad styrelse eller nämnd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet."
+    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org07",
@@ -79,7 +91,11 @@
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 9,
     "lekebergSubs": 5,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org08",
@@ -91,7 +107,8 @@
     "selectionMethod": "väljs av respektive överordnad styrelse eller nämnd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet."
+    "ruleNote": "Antalet platser anges i uppdragsfilen; reglementet anger att respektive nämnd/styrelse bestämmer antalet.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org09",
@@ -104,7 +121,8 @@
     "lekebergSeats": 5,
     "lekebergSubs": 3,
     "ruleUrl": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-04-27",
-    "ruleNote": "5 ledamöter + 3 ersättare föreslogs med ikraftträdande 2027-01-01. Beslutsstatus måste kontrolleras i fullmäktiges justerade protokoll."
+    "ruleNote": "5 ledamöter + 3 ersättare föreslogs med ikraftträdande 2027-01-01. Beslutsstatus måste kontrolleras i fullmäktiges justerade protokoll.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org10",
@@ -116,7 +134,11 @@
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 5,
     "lekebergSubs": 5,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org11",
@@ -128,7 +150,8 @@
     "selectionMethod": "bolagsrättslig tillsättning, kontrollera bolagsordning och bolagsstämma",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval."
+    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org12",
@@ -140,7 +163,8 @@
     "selectionMethod": "bolagsrättslig tillsättning, kontrollera bolagsordning och bolagsstämma",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval."
+    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org13",
@@ -152,7 +176,8 @@
     "selectionMethod": "bolagsrättslig tillsättning, kontrollera bolagsordning och bolagsstämma",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval."
+    "ruleNote": "Gruppfördelningsmatrisen är en hypotetisk illustration, inte ett formellt bolagsval.",
+    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
   },
   {
     "id": "org14",
@@ -163,7 +188,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org15",
@@ -174,7 +200,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org16",
@@ -185,7 +212,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org17",
@@ -196,7 +224,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org18",
@@ -207,7 +236,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org19",
@@ -218,7 +248,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org20",
@@ -230,7 +261,11 @@
     "selectionMethod": "okänd",
     "lekebergSeats": 1,
     "lekebergSubs": 1,
-    "ruleNote": "Lekeberg har 1 ledamot + 1 ersättare i 2025 års reglemente. Importens 4+4 är inte Lekebergs eget platsantal. Fördela inte fyra platser som Lekebergs platser."
+    "ruleNote": "Lekeberg har 1 ledamot + 1 ersättare i 2025 års reglemente. Importens 4+4 är inte Lekebergs eget platsantal. Fördela inte fyra platser som Lekebergs platser.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org21",
@@ -242,7 +277,11 @@
     "selectionMethod": "okänd",
     "lekebergSeats": 3,
     "lekebergSubs": 3,
-    "ruleNote": "2025 års reglemente anger 3+3 för Lekeberg; medverkan planeras upphöra 2027-01-01. Kontrollera slutligt beslut."
+    "ruleNote": "2025 års reglemente anger 3+3 för Lekeberg; medverkan planeras upphöra 2027-01-01. Kontrollera slutligt beslut.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org22",
@@ -254,7 +293,11 @@
     "selectionMethod": "okänd",
     "lekebergSeats": 1,
     "lekebergSubs": 1,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org23",
@@ -265,7 +308,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org24",
@@ -277,7 +321,11 @@
     "selectionMethod": "okänd",
     "lekebergSeats": 1,
     "lekebergSubs": 1,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org25",
@@ -288,7 +336,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org26",
@@ -299,7 +348,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org27",
@@ -310,7 +360,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org28",
@@ -321,7 +372,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org29",
@@ -332,7 +384,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org30",
@@ -343,7 +396,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org31",
@@ -354,7 +408,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org32",
@@ -365,7 +420,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org33",
@@ -376,7 +432,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org34",
@@ -387,7 +444,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org35",
@@ -398,7 +456,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org36",
@@ -409,7 +468,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org37",
@@ -420,7 +480,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org38",
@@ -431,7 +492,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org39",
@@ -442,7 +504,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org40",
@@ -453,7 +516,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org41",
@@ -464,7 +528,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org42",
@@ -475,7 +540,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org43",
@@ -486,7 +552,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org44",
@@ -497,7 +564,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org45",
@@ -509,7 +577,11 @@
     "selectionMethod": "väljs av kommunfullmäktige (kontrollera aktuellt beslut)",
     "lekebergSeats": 5,
     "lekebergSubs": 5,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org46",
@@ -521,7 +593,8 @@
     "selectionMethod": "okänd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Särskilda politiska funktioner: använd inte automatisk proportionell platsfördelning."
+    "ruleNote": "Särskilda politiska funktioner: använd inte automatisk proportionell platsfördelning.",
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org47",
@@ -532,7 +605,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org48",
@@ -543,7 +617,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org49",
@@ -554,7 +629,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org50",
@@ -565,7 +641,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org51",
@@ -577,7 +654,11 @@
     "selectionMethod": "okänd",
     "lekebergSeats": 1,
     "lekebergSubs": 1,
-    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod."
+    "ruleNote": "Sammansättning enligt 2025 års reglemente; kontrollera beslut för ny mandatperiod.",
+    "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
+    "sourceYear": 2025,
+    "reviewedOn": "2026-10-21",
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
   },
   {
     "id": "org52",
@@ -588,7 +669,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org53",
@@ -600,7 +682,8 @@
     "selectionMethod": "okänd",
     "lekebergSeats": null,
     "lekebergSubs": null,
-    "ruleNote": "Särskilda politiska funktioner: använd inte automatisk proportionell platsfördelning."
+    "ruleNote": "Särskilda politiska funktioner: använd inte automatisk proportionell platsfördelning.",
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org54",
@@ -611,7 +694,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org55",
@@ -622,7 +706,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org56",
@@ -633,7 +718,8 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   },
   {
     "id": "org57",
@@ -644,6 +730,7 @@
     "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
     "selectionMethod": "okänd",
     "lekebergSeats": null,
-    "lekebergSubs": null
+    "lekebergSubs": null,
+    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
   }
 ]
