@@ -5,7 +5,7 @@
   "scripts": {
     "build": "python build.py",
     "test": "node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs",
-    "test:browser": "python tests/test-ui.py && python tests/test-candidate-ui.py && python tests/test-v4-ui.py && python tests/test-workroom-ui.py && python tests/test-collaboration-ui.py && python tests/test-layout-052.py"
+    "test:browser": "python tests/test-ui.py && python tests/test-candidate-ui.py && python tests/test-v4-ui.py && python tests/test-workroom-ui.py && python tests/test-collaboration-ui.py && python tests/test-layout-052.py && python tests/test-theme-ui.py"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
