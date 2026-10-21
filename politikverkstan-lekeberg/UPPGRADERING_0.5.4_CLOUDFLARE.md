@@ -41,7 +41,7 @@ GitHub-commit kan utlösa automatisk publicering, men det måste kontrolleras i 
 
 ## 4. Begränsningar och säkerhet
 
-- Maximalt **5 MiB per fil** och **100 MiB totalt per ägare**, inklusive ägarens delade filer. Detta är ett mindre dokumentarkiv, inte avsett för stora mediafiler eller fullskalig molnlagring.
+- Maximalt **10 MiB per fil** och **100 MiB totalt per ägare**, inklusive ägarens delade filer. Detta är ett mindre dokumentarkiv, inte avsett för stora mediafiler eller fullskalig molnlagring.
 - Alla filer laddas ned som **bilagor**, inte som körbar HTML på webbplatsens domän; åtkomsten kontrolleras vid varje nedladdning.
 - Ingen versionshistorik, per-fil-delning med enskilda personer, förhandsgranskning, virusskanning eller återställning från papperskorg finns i den här första versionen.
 - `Våra dokument` innebär åtkomst för **hela den aktiva arbetsgruppen**. Filer med särskild sekretess, känsliga personuppgifter eller begränsad spridningsrätt ska inte laddas upp utan separat rättslig och teknisk bedömning.
