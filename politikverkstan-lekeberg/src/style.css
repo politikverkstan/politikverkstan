@@ -116,3 +116,120 @@
 .registry-table [data-org-toggle]:not(:disabled){cursor:pointer;width:16px;height:16px}
 .registry-table [data-org-toggle]:disabled{cursor:not-allowed;opacity:.45}
 .registry-table .registry-selected td:first-child{background:#f1f7ff}
+
+
+/* 0.5.5 — Neutral portal identity and two deliberate viewing modes.
+   Party identifiers retain their own colours; only the application chrome changes. */
+:root{
+ --ink:#1a2e3c;--muted:#607382;--border:#dae4ea;--blue:#24656c;--accent:#24656c;
+ --sidebar:#142a35;--card:#fff;--surface:#fff;--text:#1a2e3c;
+ color:#1a2e3c;background:#f3f6f8;color-scheme:light;
+}
+body{background:inherit;color:var(--ink)}
+.sidebar{background:var(--sidebar);color:#dceaf0;box-shadow:none}
+.brand{padding-bottom:35px}
+.brand-mark{background:#65c5b7;border-color:#65c5b7;color:#102a35;box-shadow:none}
+.brand-caption{color:#acc1ca}
+.side-section-label{color:#95aeba}
+.nav-link{color:#c1d2db}
+.nav-link.active{background:#234754;box-shadow:inset 3px 0 #6bd0c0;color:#fff}
+.nav-link:not(.active):hover{background:#203d49;color:white}
+.sidebar-bottom{border-color:#32505c}
+.side-dot{background:#6bd0c0;box-shadow:0 0 0 4px #25464d}
+.portal-workroom{background:#1b3744;border:1px solid #345461;padding:15px 14px;border-radius:12px;margin-top:22px}
+.portal-workroom>span{color:#a9c4d0;letter-spacing:1.15px}
+.portal-workroom a{color:#e5faf6;font-size:14px;align-items:center;margin-top:8px}
+.portal-workroom a span{font-size:16px;color:#84d7cc}
+.portal-workroom small{color:#acc2ca;margin-top:6px;line-height:1.6}
+.topbar{background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 13px #1c354509}
+.breadcrumb b{color:#253c4a}
+.page-head h1{color:#18303f}
+.page-head p{color:var(--muted)}
+.main-card,.stat{border-color:var(--border);box-shadow:0 6px 22px #1d354708}
+.coalition-card{background:#f8fafb;border-color:var(--border)}
+.coalition-title,.coalition-strength,.card-top h2,.legal-grid h2,.stat-value{color:#183747}
+.primary-button{background:#24656c;border-color:#24656c;color:#fff;box-shadow:none}
+.primary-button:hover{background:#1c5157}
+.header-button.workroom-shortcut{background:#f2f8f8;color:#245962;border-color:#d7e5e5}
+.header-button.workroom-shortcut:hover{background:#e5f3f1}
+.header-button.theme-toggle{display:inline-flex;gap:7px;background:#fff;border-color:var(--border);color:#284b59}
+.header-button.theme-toggle:hover{background:#eef7f5}
+.info-strip{background:#eaf4f3;border-color:#d2e7e4;color:#315963}
+:where(button,a,input,textarea,select):focus-visible{outline:2px solid #2f9d91;outline-offset:3px}
+@media(max-width:720px){.top-actions .theme-toggle{padding:8px 10px}.top-actions .theme-toggle span{display:none}}
+@media print{.theme-toggle,.portal-workroom{display:none!important}}
+
+/* Dark mode: scope every change to the interface, not to party-coloured chips. */
+html[data-theme="dark"]{
+ --ink:#e5eff4;--muted:#a9bdca;--border:#314554;--blue:#80d6ca;--accent:#80d6ca;
+ --sidebar:#0e1c27;--card:#172733;--surface:#172733;--text:#e5eff4;
+ background:#0f1922;color:#e5eff4;color-scheme:dark;
+}
+html[data-theme="dark"] body{background:#0f1922;color:var(--ink)}
+html[data-theme="dark"] .sidebar{background:#0d1d28;border-right:1px solid #263d4a}
+html[data-theme="dark"] .topbar,html[data-theme="dark"] .main-card,
+html[data-theme="dark"] .stat,html[data-theme="dark"] .merger-card,
+html[data-theme="dark"] .drawer,html[data-theme="dark"] .modal{
+ background:#172733;border-color:#314554;color:#e5eff4;box-shadow:none;
+}
+html[data-theme="dark"] .portal-workroom{background:#183441;border-color:#365460}
+html[data-theme="dark"] .header-button,html[data-theme="dark"] .small-button,
+html[data-theme="dark"] .text-button,html[data-theme="dark"] .close-button,
+html[data-theme="dark"] .header-button.workroom-shortcut,
+html[data-theme="dark"] .header-button.theme-toggle,
+html[data-theme="dark"] .mobile-nav,
+html[data-theme="dark"] .presets button,
+html[data-theme="dark"] .move-options button{
+ background:#223744;border-color:#395462;color:#deedf3;
+}
+html[data-theme="dark"] .header-button:hover,html[data-theme="dark"] .small-button:hover,
+html[data-theme="dark"] .presets button:hover,html[data-theme="dark"] .move-options button:hover{
+ background:#2c4755;border-color:#547381;
+}
+html[data-theme="dark"] .primary-button{background:#3c938c;border-color:#3c938c;color:#071d22}
+html[data-theme="dark"] .primary-button:hover{background:#63beb4}
+html[data-theme="dark"] :is(.page-head h1,.stat-value,.coalition-title,.coalition-strength,
+ .card-top h2,.legal-grid h2,.drawer-head h2,.drawer-body h3,.modal-title,
+ .table-group-label,.registry-table td,.results-table th,.breadcrumb b){color:#eef6fa}
+html[data-theme="dark"] :is(.page-head p,.card-top p,.stat-label,.stat-sub,
+ .drawer-copy,.drawer-head p,.card-footer,.modal p){color:#aac0cb}
+html[data-theme="dark"] :is(.coalition-card,.new-coalition,.compare-grid>div,
+ .threshold-grid>div,.drawer-lead>div,.note-box,.drawer-exact,.ballot-card,
+ .candidate-hint,.candidate-outcome>summary){background:#1d303d;border-color:#3a5361;color:#e5eff4}
+html[data-theme="dark"] .coalition-card:hover{border-color:#5b958f}
+html[data-theme="dark"] :is(.results-table thead th,.compare-table thead th,
+ .registry-table th,.candidate-result-table th){background:#223846;color:#deedf3;border-color:#3b5361}
+html[data-theme="dark"] :is(.results-table tbody tr:hover,.seat-cell:hover,
+ .nested-row,.registry-table .registry-selected td:first-child){background:#273e4b}
+html[data-theme="dark"] :is(.results-table td,.results-table th,
+ .compare-table td,.compare-table th,.registry-table td,.registry-table th,
+ .candidate-result-table td,.candidate-result-table th){border-color:#314554}
+html[data-theme="dark"] :is(input:not([type=checkbox]):not([type=radio]),
+ select,textarea,.scenario-editor input,.number-control input,
+ .candidate-setup input,.candidate-setup select,.ballot-card textarea,
+ .negotiation-selectors select,.negotiation-row input){
+ background:#13232e;border:1px solid #405c6a;color:#e5eff4;
+}
+html[data-theme="dark"] .searchbar input{background:transparent;border:0;color:#e5eff4}
+html[data-theme="dark"] input::placeholder,html[data-theme="dark"] textarea::placeholder{color:#9db4c1}
+html[data-theme="dark"] .searchbar,html[data-theme="dark"] .searchbar:focus-within{background:#1f3441;border-color:#3c5867}
+html[data-theme="dark"] :is(.info-strip,.bottom-alert,.warning-mini,.status-pill.review,
+ .candidate-hint,.trace-error,.error-inline){background:#27392f;color:#e2efda;border-color:#4b654d}
+html[data-theme="dark"] :is(.drawer-lead strong,.drawer-exact strong,.registry-selection-status){color:#8fe0d6!important}
+html[data-theme="dark"] .registry-help{color:#b5cbd5!important}
+html[data-theme="dark"] .status-pill{background:#243846;border-color:#3b5361;color:#c9dbe5}
+html[data-theme="dark"] .seat-safe,html[data-theme="dark"] .seat-extra{color:#abc9d0}
+html[data-theme="dark"] .prob-track{background:#304552}
+html[data-theme="dark"] .toast{background:#244d57;color:#fff}
+html[data-theme="dark"] a:not(.party-chip){color:#8dd9d0}
+html[data-theme="dark"] .header-button.workroom-shortcut,
+html[data-theme="dark"] .portal-workroom a{color:#d9f9f3}
+html[data-theme="dark"] .seat-cell{color:#e5eff4}
+html[data-theme="dark"] .page-head .overline{color:#8dd9d0}
+html[data-theme="dark"] .nav-link.active{background:#234754}
+html[data-theme="dark"] .card-footer{border-top-color:#314554}
+@media print{
+ html[data-theme="dark"]{background:#fff;color:#172a38;color-scheme:light}
+ html[data-theme="dark"] body{background:#fff;color:#172a38}
+ html[data-theme="dark"] .main-card{background:#fff;color:#172a38;box-shadow:none}
+}
