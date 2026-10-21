@@ -233,6 +233,119 @@ html[data-theme="dark"] .card-footer{border-top-color:#314554}
  html[data-theme="dark"] body{background:#fff;color:#172a38}
  html[data-theme="dark"] .main-card{background:#fff;color:#172a38;box-shadow:none}
 }
+
+
+/* 0.5.6 — Lekeberg-inspired Graphite & Clay.
+ * Public pages contain only local calculations and public methodology.
+ * Same colour tokens and component styling as the protected Arbetsyta. */
+:root{
+ --pv-bg:#f7f6f4;--pv-panel:#fff;--pv-ink:#1c2731;--pv-muted:#657383;
+ --pv-border:#e5e6e5;--pv-accent:#be5137;--pv-accent-hover:#a43f29;
+ --pv-side:#1c2328;--pv-raised:#f3f1ee;
+ --ink:var(--pv-ink);--muted:var(--pv-muted);--border:var(--pv-border);
+ --card:var(--pv-panel);--sidebar:var(--pv-side);--blue:var(--pv-accent);--accent:var(--pv-accent);
+ background:var(--pv-bg);color:var(--pv-ink);
+}
+body{background:var(--pv-bg);color:var(--pv-ink)}
+.sidebar{background:var(--pv-side);color:#e9eaeb;box-shadow:none}
+.brand-mark{background:linear-gradient(155deg,#ffd7bf,#d77e5d);border:0;color:#1b252b;border-radius:10px;box-shadow:none}
+.brand-title{color:#fff}.brand-caption{color:#afbbc1}
+.side-section-label{color:#a1afb7}
+.nav-link{color:#c8d1d5}
+.nav-link.active{background:#423430;box-shadow:inset 3px 0 #dc785d;color:#fff}
+.nav-link:not(.active):hover{background:#30383e;color:#fff}
+.sidebar-bottom{border-color:#485057}.side-dot{background:#d97558;box-shadow:0 0 0 4px #4d3330}
+.portal-workroom{background:#252c30;border:1px solid #455059}
+.portal-workroom>span{color:#dda38d}.portal-workroom a{color:#ffe2d1}
+.portal-workroom a span{color:#e98c6b}.portal-workroom small{color:#bac5c9}
+.topbar{background:#fff;border-bottom-color:var(--pv-border);box-shadow:none}
+.breadcrumb{color:#86919b}.breadcrumb b{color:#3a444d}
+.header-button,.small-button,.text-button{background:#fff;color:#263744;border-color:var(--pv-border)}
+.header-button:hover,.small-button:hover{background:#f8f1ec;border-color:#dfc4b7}
+.header-button.workroom-shortcut{background:#fff;color:#9f452f;border-color:#ead6cb}
+.header-button.workroom-shortcut:hover{background:#fff0e8}
+.header-button.theme-toggle{background:#fff;color:#394956;border-color:var(--pv-border)}
+.header-button.theme-toggle:hover{background:#f5eee9}
+.header-button.global-search{flex:1;max-width:365px;justify-content:flex-start;color:#76828d;font-weight:500}
+.global-search kbd{margin-left:auto;border-radius:5px;background:#f1f2f3;color:#687485;padding:4px 7px;font:700 10px system-ui}
+.top-actions{flex:1;justify-content:flex-end}
+.primary-button{background:var(--pv-accent);color:#fff;border-color:var(--pv-accent);box-shadow:none}
+.primary-button:hover{background:var(--pv-accent-hover)}
+.page-head h1,.stat-value,.coalition-title,.coalition-strength,.card-top h2,.legal-grid h2{color:#202e3a}
+.main-card,.stat{background:#fff;border-color:var(--pv-border);box-shadow:0 5px 18px #25313d08}
+.coalition-card,.new-coalition{background:#fcfbfa;border-color:#e8e5e1}
+.coalition-card:hover{border-color:#ce9985}
+.info-strip{background:#fff6f0;border-color:#f0e0d6;color:#795240}
+/* Open-public homepage: no private cards or example motions */
+.pv-hero{position:relative;isolation:isolate;overflow:hidden;min-height:340px;border-radius:15px;background:#f5eee6;display:flex;align-items:center;margin-bottom:20px;border:1px solid #eee8e2}
+.pv-hero-scenery{position:absolute;z-index:-1;inset:0;background-image:url('/lekeberg-landskap.svg');background-repeat:no-repeat;background-size:cover;background-position:center center}
+.pv-hero-copy{position:relative;padding:35px 38px 42px;max-width:650px}
+.pv-overline{font-size:10px;font-weight:850;letter-spacing:2px;color:#b34c35}
+.pv-hero h1{font:850 clamp(32px,4vw,56px)/1.12 'Manrope','Segoe UI',sans-serif;letter-spacing:-2.7px;color:#182530;margin:16px 0}
+.pv-hero p{max-width:485px;color:#4c5968;font-size:15px;line-height:1.65;margin:0 0 22px}
+.pv-hero-actions{display:flex;flex-wrap:wrap;gap:10px}
+.pv-cta,.pv-ghost{display:inline-flex;align-items:center;justify-content:center;gap:11px;padding:13px 19px;border-radius:9px;font-size:12px;font-weight:800;border:1px solid var(--pv-accent)}
+.pv-cta{background:var(--pv-accent);color:white}.pv-cta:hover{background:#a63f28}
+.pv-ghost{background:#fffbf8;color:#a8442e}.pv-ghost:hover{background:#fbe9dd}
+.pv-home-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-bottom:24px}
+.pv-feature{display:flex;align-items:center;text-align:left;gap:16px;padding:20px 24px;border:1px solid var(--pv-border);border-radius:11px;background:#fff;color:#1b2933;min-width:0}
+.pv-feature:hover{border-color:#e7bda7;background:#fffbf8}
+.pv-feature>span:nth-child(2){flex:1;min-width:0}
+.pv-feature-icon,.pv-lock-icon{width:49px;height:49px;flex:none;border-radius:11px;display:grid;place-items:center;background:#faeae2;color:#b94830}
+.pv-feature strong,.pv-feature small{display:block}.pv-feature strong{font-size:14px;margin-bottom:7px}
+.pv-feature small{font-size:12px;color:#657383;line-height:1.5;font-weight:400}
+.pv-feature>svg:last-child{color:var(--pv-accent)}
+.pv-home-section{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:center;margin:0 0 30px}
+.pv-home-section h2{font-size:23px;letter-spacing:-.6px;margin:10px 0 6px;color:#1b2a34}
+.pv-home-section p{color:#657383;max-width:650px;line-height:1.6;margin:0}
+.pv-protected{padding:21px 20px 19px;background:#1e282d;border-radius:13px;color:white!important;display:flex;flex-direction:column;align-items:flex-start;gap:9px;position:relative;overflow:hidden;text-decoration:none!important;border:1px solid #39464a}
+.pv-protected::after{content:'';position:absolute;right:-66px;top:-75px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,#ad563b45,transparent 68%);pointer-events:none}
+.pv-protected .pv-lock-icon{width:39px;height:39px;background:#443631;color:#e3a189}
+.pv-protected .pv-overline{font-size:9px;color:#ed9b7b;letter-spacing:1.6px}
+.pv-protected strong{font-size:22px}.pv-protected small{font-size:11px;font-weight:400;line-height:1.6;color:#d2d9d9}
+.pv-protected-link{align-self:stretch;text-align:center;display:flex;justify-content:center;align-items:center;gap:8px;border-radius:8px;background:#bd5439;color:#fff;font-size:12px;font-weight:800;padding:10px 14px;margin-top:8px}
+.pv-protected:hover .pv-protected-link{background:#a8422b}
+:where(.pv-cta,.pv-ghost,.pv-feature,.global-search,.pv-protected):focus-visible{outline:3px solid #cc7658;outline-offset:3px}
+@media(max-width:1100px){.global-search{display:none!important}.pv-home-section{grid-template-columns:minmax(0,1fr) 260px}}
+@media(max-width:780px){.pv-hero-copy{padding:26px 25px 32px}.pv-hero{min-height:325px}.pv-home-section{grid-template-columns:1fr}.pv-protected{max-width:none}.pv-home-links{grid-template-columns:1fr}}
+@media(max-width:530px){.pv-hero{min-height:365px}.pv-hero-scenery{opacity:.45;background-position:55% center}.pv-hero-copy{padding:25px 20px}.pv-hero h1{font-size:35px;letter-spacing:-1.4px}.pv-hero p{font-size:13px}.pv-feature{padding:16px}.pv-feature-icon{width:42px;height:42px}.pv-home-section h2{font-size:21px}}
+
+/* Same charcoal and clay direction at night. */
+html[data-theme="dark"]{
+ --pv-bg:#111b21;--pv-panel:#1c2a31;--pv-ink:#e8edf0;--pv-muted:#b2c1c9;
+ --pv-border:#364852;--pv-accent:#e08a6d;--pv-accent-hover:#f19a79;
+ --pv-side:#151e23;--pv-raised:#263740;
+ --ink:var(--pv-ink);--muted:var(--pv-muted);--border:var(--pv-border);
+ --card:var(--pv-panel);--sidebar:var(--pv-side);--blue:var(--pv-accent);--accent:var(--pv-accent);
+ background:var(--pv-bg);color:var(--pv-ink);
+}
+html[data-theme="dark"] body{background:var(--pv-bg);color:var(--pv-ink)}
+html[data-theme="dark"] .sidebar{background:#141d23}
+html[data-theme="dark"] .nav-link.active{background:#44322d;box-shadow:inset 3px 0 #e58e6f}
+html[data-theme="dark"] .topbar,html[data-theme="dark"] .main-card,
+html[data-theme="dark"] .stat{background:var(--pv-panel);border-color:var(--pv-border)}
+html[data-theme="dark"] :is(.page-head h1,.stat-value,.coalition-title,.coalition-strength,
+.card-top h2,.legal-grid h2,.breadcrumb b){color:#ecf2f3}
+html[data-theme="dark"] .primary-button{background:#bc5b41;color:white;border-color:#bc5b41}
+html[data-theme="dark"] .primary-button:hover{background:#d27758}
+html[data-theme="dark"] .pv-hero{background:#29353b;border-color:#45535b}
+html[data-theme="dark"] .pv-hero-scenery{opacity:.5}
+html[data-theme="dark"] .pv-hero::before{content:'';z-index:-1;position:absolute;inset:0;background:linear-gradient(90deg,#17242cee,#17242cbd 54%,transparent 90%)}
+html[data-theme="dark"] .pv-hero h1,html[data-theme="dark"] .pv-home-section h2{color:#f2f4f3}
+html[data-theme="dark"] .pv-hero p,html[data-theme="dark"] .pv-home-section p{color:#c6d2d8}
+html[data-theme="dark"] .pv-overline{color:#ffac88}
+html[data-theme="dark"] .pv-ghost{background:#283842;color:#ffd0bb;border-color:#bd6b4c}
+html[data-theme="dark"] .pv-cta{background:#c86648;border-color:#c86648}
+html[data-theme="dark"] .pv-feature{background:#1c2a31;border-color:#364852;color:#ebf1f4}
+html[data-theme="dark"] .pv-feature:hover{background:#26363e}
+html[data-theme="dark"] .pv-feature strong{color:#edf3f5}
+html[data-theme="dark"] .pv-feature small{color:#b8c6ce}
+html[data-theme="dark"] .pv-feature-icon{background:#3d322f;color:#f0a081}
+html[data-theme="dark"] .pv-protected{background:#182229;border-color:#44535b}
+html[data-theme="dark"] .header-button.global-search{background:#263740;color:#d1dee1;border-color:#44535b}
+html[data-theme="dark"] .global-search kbd{background:#354751;color:#e4e9eb}
+html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;color:#f6bea8;border-color:#584139}
+@media print{.pv-hero,.pv-home-links,.pv-protected{display:none!important}}
 </style></head><body><div id="root"></div><input type="file" id="file-import" accept="application/json,.json" hidden><script type="application/json" id="org-data">[
   {
     "id": "org01",
@@ -1140,7 +1253,7 @@ const primaryIds=new Set(['org02','org03','org05','org07','org09','org10','org11
 const parentMap={org04:'org03',org06:'org05',org08:'org07'};
 const defaultActive=new Set([...primaryIds,...Object.keys(parentMap)]);
 const originStatus={org11:'Bolagsval: kontrollera bolagsordning och vilken instans som utser ledamöter.',org12:'Bolagsval: kontrollera bolagsordning och vilken instans som utser ledamöter.',org13:'Bolagsval: kontrollera bolagsordning och vilken instans som utser ledamöter.',org09:'Egen bygg- och miljönämnd avses från 2027; kontrollera slutligt reglemente.'};
-const pageNames={candidates:'Kandidatval',workspace:'Kartellbyggare',matrix:'Mandatfördelning',influence:'Inflytande',negotiation:'Förhandling',mergers:'Sammanslagningar',compare:'Scenarier',registry:'Organisationer',legal:'Metod & källor',privacy:'Integritet'};
+const pageNames={candidates:'Kandidatval',workspace:'Start',matrix:'Mandatfördelning',influence:'Inflytande',negotiation:'Förhandling',mergers:'Sammanslagningar',compare:'Scenarier',registry:'Organisationer',legal:'Metod & källor',privacy:'Integritet'};
 let saved=[];try{saved=JSON.parse(localStorage.getItem('mandatportal-saved')||'[]');if(!Array.isArray(saved))saved=[];}catch{saved=[];}
 let state={layout:clone(defaultLayout),title:'Nytt scenario',selected:'workspace',compact:false,all:false,enabled:[...defaultActive],present:35,focus:null, drawer:null, savedView:null, previous:null, history:[],future:[],error:'',changeMark:0,candidateOrg:'org03',candidateRole:'main',candidateSeats:13,candidatePresent:35,candidateMemberProportional:false,candidateRows:[],candidateResult:null,negotiations:{},negotiationOrg:'org03',telemetryConsent:false,telemetryInfo:''};
 function clone(a){return JSON.parse(JSON.stringify(a));}
@@ -1189,13 +1302,27 @@ function tableHtml(limit=null){const {groups,results}=current();let entries=allO
  if(!entries.length)return '<div class="empty">Inga organ är aktiverade. Gå till Organisationer för att aktivera en beräkning.</div>';
  return `<div class="table-scroll"><table class="results-table"><thead><tr><th class="organ-head">Organ <span class="count-inline">${shown}</span></th>${groups.map(g=>`<th title="${groupName(g)}"><span class="table-group-label">${escapeHtml(groupName(g))}</span><small>${g.votes} mandat</small></th>`).join('')}</tr></thead><tbody>${entries.map(({org,main,subs})=>`<tr class="${parentMap[org.id]?'nested-row':''}"><th><span class="organ-name">${parentMap[org.id]?'<span class="nest-arrow">↳</span>':''}${escapeHtml(org.name)}</span><small>${org.seats} ord. ${org.subs?`· ${org.subs} ers.`:''}${originStatus[org.id]?' · kontrollkrav':''}</small></th>${groups.map((g,i)=>`<td><div class="seat-wrap">${cellContents(main,i,'main',org.id)}${subs?`<span class="seat-separator">/</span>${cellContents(subs,i,'subs',org.id)}`:''}</div></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
-function upperShell(){return `<aside class="sidebar"><div class="brand"><div class="brand-mark">P</div><div><div class="brand-title">Politikverkstan</div><div class="brand-caption">LEKEBERG · 2026–2030</div></div></div><div class="side-section-label">ANALYSVERKTYG</div><nav>${navItem('workspace','grid','Kartellbyggare')}${navItem('matrix','chart','Mandatfördelning')}${navItem('candidates','users','Kandidatval')}${navItem('influence','scale','Inflytande')}${navItem('negotiation','split','Förhandling')}${navItem('mergers','layers','Sammanslagningar')}${navItem('compare','split','Scenarier')}</nav><div class="side-section-label secondary-label">REFERENS</div><nav>${navItem('registry','list','Organisationer')}${navItem('legal','shield','Metod & källor')}${navItem('privacy','info','Integritet')}</nav><div class="portal-workroom"><span>FÖR INLOGGADE</span><a href="/arbetsrum" title="Öppna din inloggade arbetsyta">Arbetsyta <span>↗</span></a><small>Dokument · motioner · samarbete</small></div><div class="sidebar-bottom"><div class="side-dot"></div><div><strong>Förenklad simulering</strong><span>Version 0.5.5 · motor ${E.VERSION}</span></div></div></aside>
- <div class="main-wrap"><header class="topbar"><div class="breadcrumb"><button class="mobile-nav" id="mobile-toggle" aria-label="Visa meny">${icon('menu')}</button><span>MANDAT & SAMVERKAN</span><span class="slash">/</span><b>${pageNames[state.selected]}</b></div><div class="top-actions"><button type="button" class="header-button theme-toggle" id="theme-toggle" aria-label="${currentTheme==='dark'?'Byt till ljust tema':'Byt till mörkt tema'}" title="Växla ljust/mörkt tema">${icon(currentTheme==='dark'?'sun':'moon',17)} <span>${currentTheme==='dark'?'Ljust':'Mörkt'}</span></button><a class="header-button workroom-shortcut" href="/arbetsrum">Arbetsyta ↗</a><button class="header-button" id="save-btn">${icon('save',16)} Spara</button><button class="primary-button" id="share-btn">${icon('share',16)} Dela</button></div></header><main class="content" id="page-content">${renderPage()}</main></div>${state.drawer?drawerHtml():''}${state.error?`<div class="toast error">${escapeHtml(state.error)} <button id="dismiss-error">×</button></div>`:''}`;
+function upperShell(){return `<aside class="sidebar"><div class="brand"><div class="brand-mark" aria-hidden="true">P</div><div><div class="brand-title">Politikverkstan</div><div class="brand-caption">LEKEBERG · 2026–2030</div></div></div><div class="side-section-label">POLITIKVERKSTAN</div><nav>${navItem('workspace','grid','Start')}${navItem('matrix','chart','Mandatfördelning')}${navItem('candidates','users','Kandidatval')}${navItem('influence','scale','Inflytande')}${navItem('negotiation','split','Förhandling')}${navItem('mergers','layers','Sammanslagningar')}${navItem('compare','split','Scenarier')}</nav><div class="side-section-label secondary-label">REFERENS</div><nav>${navItem('registry','list','Organisationer')}${navItem('legal','shield','Metod & källor')}${navItem('privacy','info','Integritet')}</nav><div class="portal-workroom"><span>SKYDDAD INLOGGNING</span><a href="/arbetsrum" title="Öppna inloggad arbetsyta">Arbetsyta <span>↗</span></a><small>Privat arbetsområde för behöriga användare</small></div><div class="sidebar-bottom"><div class="side-dot"></div><div><strong>Förenklad simulering</strong><span>Version 0.5.5 · motor ${E.VERSION}</span></div></div></aside>
+ <div class="main-wrap"><header class="topbar"><div class="breadcrumb"><button class="mobile-nav" id="mobile-toggle" aria-label="Visa meny">${icon('menu')}</button><span>LEKEBERG</span><span class="slash">/</span><b>${pageNames[state.selected]}</b></div><div class="top-actions"><button type="button" class="header-button global-search" id="global-search" title="Sök bland organisationer" aria-label="Sök bland organisationer">${icon("search",16)} <span>Sök organisationer</span><kbd>/</kbd></button><button type="button" class="header-button theme-toggle" id="theme-toggle" aria-label="${currentTheme==='dark'?'Byt till ljust tema':'Byt till mörkt tema'}" title="Växla ljust/mörkt tema">${icon(currentTheme==='dark'?'sun':'moon',17)} <span>${currentTheme==='dark'?'Ljust':'Mörkt'}</span></button><a class="header-button workroom-shortcut" href="/arbetsrum">Logga in ↗</a><button class="header-button" id="save-btn">${icon('save',16)} Spara</button><button class="primary-button" id="share-btn">${icon('share',16)} Dela</button></div></header><main class="content" id="page-content">${renderPage()}</main></div>${state.drawer?drawerHtml():''}${state.error?`<div class="toast error">${escapeHtml(state.error)} <button id="dismiss-error">×</button></div>`:''}`;
 }
 function headline(overline,title,sub){return `<div class="page-head"><div class="overline">${overline}</div><h1>${title}</h1><p>${sub}</p></div>`;}
 function statCards(){const {groups,results}=current();let ks=results.org03?.main;let ties=ks?.ties;let numActive=Object.keys(results).length;return `<div class="stat-grid"><div class="stat"><div class="stat-label">Kommunfullmäktige ${icon('users',17)}</div><div class="stat-value">35 <span>mandat</span></div><div class="stat-sub">9 partier efter valet 2026</div></div><div class="stat"><div class="stat-label">Valtekniska grupper ${icon('layers',17)}</div><div class="stat-value">${groups.length} <span>karteller</span></div><div class="stat-sub">Dra partier för att ändra</div></div><div class="stat"><div class="stat-label">Analyserade organ ${icon('grid',17)}</div><div class="stat-value">${numActive} <span>organ</span></div><div class="stat-sub">Ur 57 registrerade uppdrag</div></div><div class="stat"><div class="stat-label">Kommunstyrelsen ${icon('spark',17)}</div><div class="stat-value">${ties?'Lottning':'Entydigt'}</div><div class="stat-sub">${ties?`${ks.variantCount} möjliga gruppfördelningar`:'En möjlig gruppfördelning'}</div></div></div>`;}
 function groupCards(){const {groups}=current();return `<div class="coalition-grid">${groups.map((g,index)=>`<section class="coalition-card drop-zone" data-target="${g.id}" aria-label="Kartell ${index+1}"><div class="coalition-top"><div class="coalition-number">KARTELL ${String(index+1).padStart(2,'0')}</div><span class="coalition-strength">${g.votes} <small>mandat</small></span></div><div class="coalition-title">${escapeHtml(groupName(g))}</div><div class="coalition-chips">${g.parties.map(p=>partyChip(p)).join('')}</div><div class="coalition-bottom"><span>${(g.votes/35*100).toLocaleString('sv-SE',{maximumFractionDigits:1})} % av fullmäktige</span><span>${g.votes>=18?'<span class="majority">Egen majoritet</span>':g.parties.length+' parti'+(g.parties.length===1?'':'er')}</span></div></section>`).join('')}<button class="new-coalition drop-zone" data-target="new" id="create-coalition">${icon('plus',20)}<strong>Ny kartell</strong><span>Dra hit ett parti eller klicka</span></button></div>`;}
-function workspacePage(){return `${headline('SCENARIOVERKSTAD','Bygg dina samarbeten','Flytta partier mellan karteller och se hur platser, lottningar och majoriteter påverkas. Varje resultat beräknas direkt.')}${statCards()}<div class="main-card"><div class="card-top"><div><h2>Valtekniska karteller</h2><p>Alla partier kan flyttas med drag-and-drop eller genom att klicka på partikortet.</p></div><div class="card-actions"><button class="small-button" id="undo-btn" ${state.history.length?'':'disabled'} title="Ångra">${icon('undo',16)} Ångra</button><button class="small-button icon-only" id="redo-btn" ${state.future.length?'':'disabled'} title="Gör om">${icon('redo',16)}</button></div></div>${groupCards()}<div class="presets"><span>SNABBVAL</span><button data-preset="individual">Alla partier separat</button><button data-preset="example">Exempel · 20 / 10 / 5</button><button data-preset="possible">M + KD + FL + SD</button></div></div><div class="main-card result-summary"><div class="card-top"><div><h2>Fördelning av politiska uppdrag</h2><p>Ordinarie / ersättare. Osäkra platser visas med lottningens sannolikhet.</p></div><div class="card-actions"><label class="toggle-inline"><input type="checkbox" id="compact-toggle" ${state.compact?'checked':''}> Förväntningsvärden</label><button data-page="influence" class="small-button">Analysera inflytande ${icon('arrow',16)}</button><button data-page="matrix" class="small-button">Alla resultat ${icon('arrow',16)}</button></div></div>${tableHtml(9)}<div class="card-footer"><span>${icon('info',16)} Alltid en simulerad fördelning, inte ett garanterat faktiskt valresultat.</span><button class="text-button" data-page="legal">Så räknar vi ${icon('arrow',14)}</button></div></div>`;}
+function publicHero(){return `
+<section class="pv-hero" aria-label="Välkommen till Politikverkstan">
+ <div class="pv-hero-copy">
+  <div class="pv-overline">VÄLKOMMEN TILL</div><h1>Politikverkstan</h1>
+  <p>En öppen plattform för att analysera mandat, valteknisk samverkan och möjliga fördelningar av kommunala uppdrag i Lekeberg. Utforska olika scenarier utan att logga in.</p>
+  <div class="pv-hero-actions"><button class="pv-cta" data-page="matrix">Utforska mandatfördelning ${icon('arrow',16)}</button><button class="pv-ghost" data-page="legal">Metod och källor ${icon('arrow',16)}</button></div>
+ </div><span class="pv-hero-scenery" aria-hidden="true"></span>
+</section>
+<section class="pv-home-links" aria-label="Välj analys">
+ <button type="button" class="pv-feature" data-page="matrix"><span class="pv-feature-icon">${icon('chart',23)}</span><span><strong>Mandat &amp; samverkan</strong><small>Beräkna möjliga mandatfördelningar och jämför valtekniska grupper.</small></span>${icon('arrow',20)}</button>
+ <button type="button" class="pv-feature" data-page="candidates"><span class="pv-feature-icon">${icon('users',23)}</span><span><strong>Kandidatval</strong><small>Undersök olika utfall och förutsättningar för kandidater.</small></span>${icon('arrow',20)}</button>
+</section>
+<div class="pv-home-section"><div><span class="pv-overline">ÖPPEN ANALYS</span><h2>Utforska olika scenarier</h2><p>Beräkningarna nedan är öppna för alla. Inga privata dokument eller motioner visas på denna sida.</p></div><a href="/arbetsrum" class="pv-protected"><span class="pv-lock-icon" aria-hidden="true">${icon('shield',23)}</span><span class="pv-overline">SKYDDAD ARBETSYTA</span><strong>Arbetsyta</strong><small>För inloggade användare. Privata dokument och gemensamt arbete är endast tillgängliga efter behörighetskontroll.</small><span class="pv-protected-link">Till arbetsytan ${icon('arrow',17)}</span></a></div>
+`;}
+function workspacePage(){return `${publicHero()}${headline('SCENARIOVERKSTAD','Bygg dina samarbeten','Flytta partier mellan karteller och se hur platser, lottningar och majoriteter påverkas. Varje resultat beräknas direkt.')}${statCards()}<div class="main-card"><div class="card-top"><div><h2>Valtekniska karteller</h2><p>Alla partier kan flyttas med drag-and-drop eller genom att klicka på partikortet.</p></div><div class="card-actions"><button class="small-button" id="undo-btn" ${state.history.length?'':'disabled'} title="Ångra">${icon('undo',16)} Ångra</button><button class="small-button icon-only" id="redo-btn" ${state.future.length?'':'disabled'} title="Gör om">${icon('redo',16)}</button></div></div>${groupCards()}<div class="presets"><span>SNABBVAL</span><button data-preset="individual">Alla partier separat</button><button data-preset="example">Exempel · 20 / 10 / 5</button><button data-preset="possible">M + KD + FL + SD</button></div></div><div class="main-card result-summary"><div class="card-top"><div><h2>Fördelning av politiska uppdrag</h2><p>Ordinarie / ersättare. Osäkra platser visas med lottningens sannolikhet.</p></div><div class="card-actions"><label class="toggle-inline"><input type="checkbox" id="compact-toggle" ${state.compact?'checked':''}> Förväntningsvärden</label><button data-page="influence" class="small-button">Analysera inflytande ${icon('arrow',16)}</button><button data-page="matrix" class="small-button">Alla resultat ${icon('arrow',16)}</button></div></div>${tableHtml(9)}<div class="card-footer"><span>${icon('info',16)} Alltid en simulerad fördelning, inte ett garanterat faktiskt valresultat.</span><button class="text-button" data-page="legal">Så räknar vi ${icon('arrow',14)}</button></div></div>`;}
 function matrixPage(){return `${headline('BERÄKNINGSRESULTAT','Mandatfördelning','Granska de möjliga utfallen för samtliga aktiverade organ. Klicka på ett resultat för exakt sannolikhetsfördelning och underliggande beräkning.')}<div class="main-card"><div class="card-top"><div><h2>Fullständig fördelningsmatris</h2><p>Ordinarie / ersättare · grupperna sorteras efter mandatstyrka.</p></div><div class="card-actions"><label class="toggle-inline"><input type="checkbox" id="compact-toggle" ${state.compact?'checked':''}> Förväntningsvärden</label><button class="small-button" id="export-csv">${icon('download',16)} CSV</button></div></div>${tableHtml()}<div class="card-footer"><span>Resultaten gäller om proportionella val genomförs och förenklade antaganden håller.</span></div></div>`;}
 function previewMerged(groups,i,j){const combined=E.mergeGroupSets(groups,i,j);const a=groups[i],b=groups[j];const merged=combined.find(g=>g.parties.length===a.parties.length+b.parties.length && [...g.parties].sort().join(',')===[...a.parties,...b.parties].sort().join(',')); const base=current().results;let changed=[];let deltaTotal=E.zero();
  const bySeat=new Map();for(const {org,main} of Object.values(base)){
@@ -1352,7 +1479,8 @@ function bindPageActions(){
  const name=el('scenario-name');if(name)name.addEventListener('input',()=>{state.title=name.value;persistDraft();});
  const present=el('present-input');if(present)present.addEventListener('change',()=>{let v=Number(present.value);if(!Number.isInteger(v)||v<1||v>70){state.error='Ange 1–70 närvarande väljande.';render();return;}state.present=v;persistDraft();render();});
  const compact=el('compact-toggle');if(compact)compact.addEventListener('change',()=>{state.compact=compact.checked;render();});
- const themeToggle=el('theme-toggle');if(themeToggle)themeToggle.addEventListener('click',toggleTheme);
+ const globalSearch=el('global-search');if(globalSearch)globalSearch.addEventListener('click',()=>{state.selected='registry';render();el('search-org')?.focus();});
+  const themeToggle=el('theme-toggle');if(themeToggle)themeToggle.addEventListener('click',toggleTheme);
   const save=el('save-btn');if(save)save.addEventListener('click',saveScenario);
  const inner=el('save-inner');if(inner)inner.addEventListener('click',saveScenario);
  const share=el('share-btn');if(share)share.addEventListener('click',shareScenario);
