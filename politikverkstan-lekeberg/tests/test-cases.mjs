@@ -1,0 +1,50 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {DatabaseSync} from 'node:sqlite';
+import {handleCases,normalizeCase} from '../worker/cases.mjs';
+import {webcrypto} from 'node:crypto';
+if(!globalThis.crypto)globalThis.crypto=webcrypto;
+const db=new DatabaseSync(':memory:');db.exec('PRAGMA foreign_keys=ON');
+for(const migration of ['0002_workroom.sql','0003_collaboration.sql','0004_lifecycle.sql','0006_files.sql','0007_cases.sql']){
+ db.exec(readFileSync(new URL('../migrations/'+migration,import.meta.url),'utf8'));
+}
+const stmt=db.prepare("INSERT INTO work_users(email,display_name,role,active,created_at) VALUES(?,?,?,1,'2026-01-01')");
+stmt.run('a@test.se','Ägare','user');stmt.run('b@test.se','Annan användare','admin');
+const idA='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',idB='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+const date='2026-10-21';
+for(const [id,owner] of [[idA,'a@test.se'],[idB,'b@test.se']]){
+ db.prepare("INSERT INTO work_motions(id,owner_email,title,status,category,content_json,revision,created_at,updated_at) VALUES(?,?,?,'utkast','Annat','{}',1,?,?)").run(id,owner,'Motion',date,date);
+}
+db.prepare("INSERT INTO work_files(id,owner_email,scope,name,mime_type,size_bytes,created_at,updated_at) VALUES(?,?,'mine','Underlag.pdf','application/pdf',42,?,?)").run(idA,'a@test.se',date,date);
+db.prepare("INSERT INTO work_files(id,owner_email,scope,name,mime_type,size_bytes,created_at,updated_at) VALUES(?,?,'mine','Andras.pdf','application/pdf',42,?,?)").run(idB,'b@test.se',date,date);
+const DB={prepare(sql){let args=[];return {bind(...vals){args=vals;return this;},async first(){return db.prepare(sql).get(...args)||null;},async all(){return {results:db.prepare(sql).all(...args)};},async run(){return {meta:{changes:Number(db.prepare(sql).run(...args).changes)}};}}}};
+const users={a:{email:'a@test.se',role:'user'},b:{email:'b@test.se',role:'admin'}};
+const call=(user,path,method='GET',body)=>handleCases(new Request('https://portal.example.test/api/private/'+path,{method,headers:body?{'content-type':'application/json'}:{},body:body?JSON.stringify(body):undefined}),{DB},users[user]);
+const make=(title='Budgetärende')=>({title,committee:'Barn- och utbildningsnämnden',status:'granskning',meeting_date:'2026-11-02',labels:['budget','skola'],summary:'Granskning av underlag',risks:'Risk med kostnadsförskjutning',motion_id:idA,file_id:idA});
+const created=await call('a','cases','POST',make());
+assert.equal(created.status,201);const record=await created.json();assert.ok(record.id);
+let list=await (await call('a','cases')).json();
+assert.equal(list.cases.length,1);
+assert.equal(list.cases[0].title,'Budgetärende');
+assert.equal(list.cases[0].risks,'Risk med kostnadsförskjutning');
+assert.deepEqual(list.cases[0].labels,['budget','skola']);
+assert.equal((await (await call('b','cases')).json()).cases.length,0,'Other account and admin cannot browse cases');
+assert.equal((await call('b','cases/'+record.id)).status,404);
+assert.equal((await call('b','cases/'+record.id,'PUT',{...make(),revision:1})).status,404);
+assert.equal((await call('b','cases/'+record.id,'DELETE')).status,404);
+assert.equal((await call('a','cases','POST',{...make('Otillåten'),motion_id:idB})).status,403);
+assert.equal((await call('a','cases','POST',{...make('Otillåten'),file_id:idB})).status,403);
+assert.equal((await call('a','cases','POST',{...make('Felaktiga etiketter'),labels:Array(9).fill('x')})).status,400);
+assert.equal((await call('a','cases','POST',{...make('Felaktigt datum'),meeting_date:'2026-02-30'})).status,400);
+assert.equal((await call('a','cases','POST',{...make('Felaktigt område'),committee:'Falsk nämnd'})).status,400);
+assert.equal((await call('a','cases','POST',{...make('Lång text'),summary:'X'.repeat(6100)})).status,400);
+assert.equal((await call('a','cases/'+record.id,'PUT',{...make('Uppdaterat ärende'),revision:1,decision:'Beslut senare'})).status,200);
+assert.equal((await call('a','cases/'+record.id,'PUT',{...make('Gammal revision'),revision:1})).status,409);
+const updated=await (await call('a','cases/'+record.id)).json();
+assert.equal(updated.case.revision,2);
+assert.equal(updated.case.title,'Uppdaterat ärende');
+assert.equal(updated.case.decision,'Beslut senare');
+assert.equal((await call('a','cases/'+record.id,'DELETE')).status,200);
+assert.equal((await call('a','cases/'+record.id)).status,404);
+assert.equal(normalizeCase(make()).title,'Budgetärende');
+console.log('PASS private cases: CRUD, per-owner ACL even for admin, linked file/motion ownership, revisions, validation, deletion');
