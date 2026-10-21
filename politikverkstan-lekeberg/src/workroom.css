@@ -300,3 +300,58 @@ html[data-theme="dark"] .aw-bottom h2,html[data-theme="dark"] .aw-section-head h
 html[data-theme="dark"] .aw-viewall{color:#ffae8d}
 html[data-theme="dark"] .aw-bottom-links button:hover{background:#293b45}
 @media print{.aw-hero,.aw-shortcuts,.aw-workbox{display:none!important}}
+
+
+/* Etapp 2: private case dossiers, meeting preparation and printable decision briefs */
+.case-layout{display:grid;grid-template-columns:minmax(250px,.82fr) minmax(0,1.8fr);gap:19px;align-items:start}
+.case-list-pane{position:sticky;top:98px;max-height:calc(100vh - 112px);overflow:auto}
+.case-list-controls{display:grid;gap:3px}
+.case-list-controls input,.case-list-controls select{width:100%}
+.case-results{display:grid;gap:9px}
+.case-result{display:flex;flex-direction:column;gap:8px;text-align:left;border:1px solid var(--border);background:var(--card);color:var(--ink);padding:14px;border-radius:10px;min-width:0;width:100%}
+.case-result:hover,.case-result.selected{border-color:#bb7358;background:#fff8f3}
+.case-result.selected{box-shadow:inset 3px 0 #be5137}
+.case-result strong{font-size:13px;overflow-wrap:anywhere}
+.case-result small{color:var(--muted);font-size:11px;line-height:1.5}
+.case-tags{display:flex;flex-wrap:wrap;gap:6px}
+.case-tags>span{background:#f1e9e2;color:#995441;border-radius:20px;padding:4px 7px;font-size:10px}
+.case-edit-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:19px}
+.case-edit-head h2{margin:7px 0 0}
+.case-editor .formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.case-editor textarea{min-height:85px}
+.case-hint{display:block;color:var(--muted);font-size:11px;line-height:1.4;margin:-4px 0 8px}
+.case-form-actions{display:flex;align-items:center;flex-wrap:wrap;gap:11px;border-top:1px solid var(--border);padding-top:18px}
+.case-form-actions .btn{white-space:normal}
+.case-save-info{color:var(--muted);font-size:11px}
+.case-empty{padding:38px 28px}
+.case-empty p{line-height:1.65}
+.case-print{display:none}
+html[data-theme="dark"] .case-result:hover,html[data-theme="dark"] .case-result.selected{background:#31373c;border-color:#c77e63}
+html[data-theme="dark"] .case-tags>span{background:#45342f;color:#f2baa2}
+@media(max-width:1150px){.case-layout{grid-template-columns:1fr}.case-list-pane{position:static;max-height:none}.case-results{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:690px){.case-results{grid-template-columns:1fr}.case-editor .formgrid{grid-template-columns:1fr}.case-layout{gap:12px}}
+@media print{
+ @page{size:A4;margin:18mm 17mm}
+ body:has(#case-print){background:white!important;color:#111!important;font:11pt/1.5 Georgia,'Times New Roman',serif!important}
+ body:has(#case-print) #workroot .layout{display:block!important}
+ body:has(#case-print) #workroot .sidebar,
+ body:has(#case-print) #workroot .topbar,
+ body:has(#case-print) #workroot .container>*:not(.case-layout),
+ body:has(#case-print) .case-list-pane,
+ body:has(#case-print) .case-editor,
+ body:has(#case-print) .toast,
+ body:has(#case-print) .case-empty{display:none!important}
+ body:has(#case-print) #workroot .container{display:block!important;max-width:none!important;margin:0!important;padding:0!important}
+ body:has(#case-print) .case-layout{display:block!important}
+ body:has(#case-print) .case-editor-pane{display:block!important}
+ body:has(#case-print) .case-print{display:block!important;background:#fff!important;color:#111!important;width:100%!important}
+ body:has(#case-print) .case-print-head{border-bottom:2px solid #b45a40;padding-bottom:17px;margin-bottom:20px}
+ body:has(#case-print) .case-print-head small{font:700 9pt Arial,sans-serif;letter-spacing:1.2px;color:#9e4b34}
+ body:has(#case-print) .case-print h1{font:bold 24pt Georgia,serif;margin:12px 0 7px;color:#111}
+ body:has(#case-print) .case-print-head p{font:10pt Arial,sans-serif;margin:5px 0}
+ body:has(#case-print) .case-private-marker{font-style:italic;color:#555}
+ body:has(#case-print) .case-print section{break-inside:avoid;padding:8px 0;margin:0 0 9px;border-bottom:1px solid #ddd}
+ body:has(#case-print) .case-print h2{font:700 12pt Arial,sans-serif;color:#222;margin:7px 0}
+ body:has(#case-print) .case-print section p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;font-size:11pt}
+ body:has(#case-print) .case-print-foot{font:italic 9pt Arial,sans-serif;color:#666;border-top:1px solid #bbb;margin-top:26px;padding-top:12px}
+}
