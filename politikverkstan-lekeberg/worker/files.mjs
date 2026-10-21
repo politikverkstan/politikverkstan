@@ -3,9 +3,9 @@
  * No public URL is exposed and downloads are always attachments.
  */
 const JSON_HEADERS={'content-type':'application/json; charset=utf-8','cache-control':'private, no-store','x-content-type-options':'nosniff'};
-const MAX_FILE=5*1024*1024;
+const MAX_FILE=10*1024*1024;
 const QUOTA=100*1024*1024;
-const PART=96*1024;
+const PART=192*1024;
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const respond=(obj,status=200)=>new Response(JSON.stringify(obj),{status,headers:JSON_HEADERS});
 const error=(status,message)=>respond({error:message},status);
@@ -85,12 +85,12 @@ export async function handleFiles(req,env,user){
  }
  if(path==='/api/private/files'&&method==='POST'){
   const len=Number(req.headers.get('content-length')||0);
-  if(len>MAX_FILE+50000)return error(413,'Filen är för stor (högst 5 MB)');
+  if(len>MAX_FILE+50000)return error(413,'Filen är för stor (högst 10 MB)');
   if(!(req.headers.get('content-type')||'').toLowerCase().startsWith('multipart/form-data;'))return error(415,'Använd filuppladdning');
   const form=await req.formData(),file=form.get('file'),scope=form.get('scope'),folderInput=form.get('folder_id');
   const folderId=folderInput?String(folderInput):null,name=safeName(file?.name||'');
   if(!file||typeof file.arrayBuffer!=='function'||!scopeValid(scope)||!name||!await validFolder(db,user,folderId,scope))return error(400,'Ogiltig fil eller målmapp');
-  if(file.size>MAX_FILE)return error(413,'Filen är för stor (högst 5 MB)');
+  if(file.size>MAX_FILE)return error(413,'Filen är för stor (högst 10 MB)');
   const size=Number(file.size);
   const usage=await db.prepare('SELECT COALESCE(SUM(size_bytes),0) AS n FROM work_files WHERE owner_email=?').bind(user.email).first();
   if(Number(usage?.n||0)+size>QUOTA)return error(413,'Lagringsutrymmet på 100 MB per användare är fullt');
