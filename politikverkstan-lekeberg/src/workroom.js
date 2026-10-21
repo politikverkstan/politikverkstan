@@ -235,7 +235,7 @@ function filesPage(){
   <div class="file-list">
    ${here&&!query?'<div class="file-row"><div><strong>↰ Överordnad mapp</strong></div><button class="btn btn-sm" data-folder-open="'+h(state.folders.find(f=>f.id===here)?.parent_id||'')+'">Öppna</button></div>':''}
    ${dirs.map(f=>'<div class="file-row"><div><strong>📁 '+h(f.name)+'</strong><small>Mapp</small></div><div class="file-row-actions"><button class="btn btn-sm" data-folder-open="'+h(f.id)+'">Öppna</button>'+(f.owner_email===state.user.email?'<button class="btn btn-sm" data-folder-rename="'+h(f.id)+'">Byt namn</button><button class="btn btn-sm btn-danger" data-folder-delete="'+h(f.id)+'">Ta bort</button>':'')+'</div></div>').join('')}
-   ${docs.map(f=>'<div class="file-row"><div><strong>📄 '+h(f.name)+'</strong><small>'+h(f.owner_email===state.user.email?'Min fil':'Uppladdad av '+f.owner_email)+' · '+(f.size_bytes/1024).toFixed(1)+' KB · '+h((f.created_at||'').slice(0,16).replace('T',' '))+'</small></div><div class="file-row-actions"><a class="btn btn-sm" href="/api/private/files/'+encodeURIComponent(f.id)+'/download">Ladda ned</a>'+(f.owner_email===state.user.email?'<button class="btn btn-sm" data-file-rename="'+h(f.id)+'">Byt namn</button><button class="btn btn-sm" data-file-move="'+h(f.id)+'">Flytta</button><button class="btn btn-sm" data-file-share="'+h(f.id)+'">'+(scope==='mine'?'Dela':'Gör privat')+'</button><button class="btn btn-sm btn-danger" data-file-delete="'+h(f.id)+'">Ta bort</button>':'')+'</div></div>').join('')}
+   ${docs.map(f=>'<div class="file-row"><div><strong>📄 '+h(f.name)+'</strong><small>'+h(f.owner_email===state.user.email?'Min fil':'Uppladdad av '+f.owner_email)+' · '+(f.size_bytes/1024).toFixed(1)+' KB · '+h((f.created_at||'').slice(0,16).replace('T',' '))+(query?' · Mapp: '+h(folderPath(f.folder_id)||'Rotmappen'):'')+'</small></div><div class="file-row-actions"><a class="btn btn-sm" href="/api/private/files/'+encodeURIComponent(f.id)+'/download">Ladda ned</a>'+(f.owner_email===state.user.email?'<button class="btn btn-sm" data-file-rename="'+h(f.id)+'">Byt namn</button><button class="btn btn-sm" data-file-move="'+h(f.id)+'">Flytta</button><button class="btn btn-sm" data-file-share="'+h(f.id)+'">'+(scope==='mine'?'Dela':'Gör privat')+'</button><button class="btn btn-sm btn-danger" data-file-delete="'+h(f.id)+'">Ta bort</button>':'')+'</div></div>').join('')}
    ${!docs.length&&!dirs.length?'<div class="empty">Mappen är tom. Skapa en mapp eller ladda upp en fil.</div>':''}
   </div>
  </section>`;
@@ -302,7 +302,7 @@ function attach(){
   state.fileScope=b.dataset.fileScope;state.fileFolder=null;
   try{await loadFiles();render();}catch(e){toast(e.message,true);}
  }));
- document.querySelectorAll('[data-folder-open]').forEach(b=>b.addEventListener('click',()=>{state.fileFolder=b.dataset.folderOpen||null;render();}));
+ document.querySelectorAll('[data-folder-open]').forEach(b=>b.addEventListener('click',()=>{state.fileFolder=b.dataset.folderOpen||null;state.fileSearch='';render();}));
  $('new-file-folder')?.addEventListener('click',async()=>{const name=prompt('Namn på den nya mappen:');if(name===null)return;try{await fileAction('/api/private/folders','POST',{name,scope:state.fileScope,parent_id:state.fileFolder});toast('Mappen skapades.');}catch(e){toast(e.message,true);}});
  $('upload-files')?.addEventListener('submit',async e=>{e.preventDefault();const button=e.currentTarget.querySelector('button[type=submit]');const chosen=[...($('file-picker')?.files||[])];if(!chosen.length)return;
   button.disabled=true;let completed=0;
