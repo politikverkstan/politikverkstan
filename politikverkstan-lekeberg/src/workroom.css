@@ -355,3 +355,29 @@ html[data-theme="dark"] .case-tags>span{background:#45342f;color:#f2baa2}
  body:has(#case-print) .case-print section p{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;font-size:11pt}
  body:has(#case-print) .case-print-foot{font:italic 9pt Arial,sans-serif;color:#666;border-top:1px solid #bbb;margin-top:26px;padding-top:12px}
 }
+
+
+/* 0.8.0 — explicit sharing and private/group case collaboration. */
+.case-scope-tabs{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 18px}
+.case-scope-tabs .btn{flex:1;min-width:92px;white-space:normal;line-height:1.35}
+.case-scope-label{color:#a4543d;font-size:11px;font-weight:750}
+.case-result.selected .case-scope-label{color:#8d422e}
+.case-main-fields{padding:0;border:0;margin:0;min-width:0}
+.case-main-fields:disabled{opacity:1}
+.case-main-fields[disabled]{opacity:.83}
+.case-main-fields[disabled] input,.case-main-fields[disabled] select,.case-main-fields[disabled] textarea{cursor:default;background:var(--bg);border-color:var(--border)}
+.case-sharing,.case-private-notes,.case-discussion{margin-top:16px}
+.case-sharing>p,.case-private-notes>p,.case-discussion>p{font-size:12px;color:var(--muted);line-height:1.6;margin:5px 0 19px}
+.case-comment{padding:13px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:10px}
+.case-comment>div{display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap;align-items:center}
+.case-comment strong{font-size:12px;color:var(--ink)}
+.case-comment small{font-size:10px;color:var(--muted)}
+.case-comment p{white-space:pre-wrap;overflow-wrap:anywhere;margin:10px 0 0;font-size:13px;color:var(--ink);line-height:1.6}
+.case-private-notes textarea{min-height:100px}
+.case-private-notes #case-note-info{margin-left:10px}
+.case-sharing .formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.case-comment-form{margin-top:16px}
+html[data-theme="dark"] .case-scope-label{color:#eca58b}
+html[data-theme="dark"] .case-result.selected .case-scope-label{color:#f9c3ae}
+@media(max-width:660px){.case-sharing .formgrid{grid-template-columns:1fr}.case-scope-tabs .btn{min-width:0;flex:1}}
+@media print{body:has(#case-print) .case-sharing,body:has(#case-print) .case-private-notes,body:has(#case-print) .case-discussion{display:none!important}}
