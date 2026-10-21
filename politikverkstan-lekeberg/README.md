@@ -1,3 +1,5 @@
+> **Nyhet 0.5.4:** Filarea i det inloggade arbetsrummet med **Mina dokument**, **Våra dokument**, mappar/undermappar, uppladdning och automatisk privat lagring av exporterade PDF:er. Befintlig D1-databas används. Kör `migrations/0006_files.sql` enligt [uppgraderingsguiden](UPPGRADERING_0.5.4_CLOUDFLARE.md) innan funktionen används. Max 5 MiB per fil och 100 MiB per ägare.
+
 > **Nyhet 0.5.3:** Professionell SD-inspirerad motionsmall, frivillig godkänd PNG-logotyp, förbättrad PDF-export och redigerbara visningsnamn. Se [uppgraderingsguiden](UPPGRADERING_0.5.3_CLOUDFLARE.md) och [testrapporten](TESTRAPPORT_0.5.3.md). Kräver D1-migreringen `0005_branding.sql` för logotypstöd.
 
 # Politikverkstan Lekeberg 0.5.2
