@@ -6,7 +6,6 @@ const fail=(code,message)=>json({error:message},code);
 const statuses=new Set(['nytt','granskning','stallningstagande','beslutat','uppfoljning','avslutat']);
 const committees=new Set(['Kommunfullmäktige','Kommunstyrelsen','Barn- och utbildningsnämnden','Socialnämnden','Bygg- och miljönämnden','Annat']);
 const fields={summary:6000,alternatives:4500,finances:4500,risks:4500,questions:4500,recommendation:3500,meeting_notes:4500,decision:3500,follow_up:3500,sources:3500};
-const own=Object.prototype.hasOwnProperty;
 const short=(v,max)=>typeof v==='string'?v.trim().slice(0,max):'';
 const validDate=v=>v===''||typeof v==='string'&&/^\d{4}-\d\d-\d\d$/.test(v)&&!Number.isNaN(Date.parse(v+'T00:00:00Z'))&&new Date(v+'T00:00:00Z').toISOString().slice(0,10)===v;
 const validId=x=>typeof x==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(x);
@@ -93,7 +92,7 @@ export async function handleCases(req,env,user){
   }
   return fail(405,'Metod tillåts inte');
  }catch(e){
-  if(e instanceof SyntaxError||/^(För stort ärende|Ogiltigt|Ange en rubrik|Rubriken får|Högst åtta|För långt)/.test(e.message))return fail(400,e.message);
+  if(e instanceof SyntaxError||/^(För stort ärende|Ogiltig|Ange en rubrik|Rubriken får|Högst åtta|För långt)/.test(e.message))return fail(400,e.message);
   console.error('Casework error',e.message);
   return fail(503,'Ärendehanteringen kan inte nås. Kontrollera att migrering 0007 är genomförd.');
  }
