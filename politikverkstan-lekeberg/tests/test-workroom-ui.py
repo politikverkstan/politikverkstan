@@ -44,7 +44,7 @@ with sync_playwright() as p:
     errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.set_content(html,wait_until='domcontentloaded')
-    assert page.get_by_text('Välkommen till din arbetsyta').is_visible()
+    assert page.locator('.aw-hero h1').get_by_text('Politikverkstan').is_visible()
     page.get_by_role('button',name='Skapa en motion').click()
     page.get_by_text('Redigera motion').wait_for(timeout=8000)
     page.locator('[data-field="title"]').fill('Tryggare skolvägar i Fjugesta')
