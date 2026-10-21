@@ -32,21 +32,27 @@ export function normalizeCase(input){
  }
  const status= input.status??'nytt',committee=input.committee??'Annat';
  if(!statuses.has(status)||!committees.has(committee))throw Error('Ogiltig status eller nämnd');
- const motion_id=input.motion_id||null;
+ const motion_id=input.motion_id||null,file_id=input.file_id||null;
  if(motion_id!==null&&!validId(motion_id))throw Error('Ogiltig motionskoppling');
- return {title,status,committee,meeting_date,labels,content,motion_id};
+ if(file_id!==null&&!validId(file_id))throw Error('Ogiltig dokumentkoppling');
+ return {title,status,committee,meeting_date,labels,content,motion_id,file_id};
 }
 function fromRow(row){
  const content=JSON.parse(row.content_json);
  return {id:row.id,owner_email:row.owner_email,revision:row.revision,
   title:row.title,status:row.status,committee:row.committee,meeting_date:row.meeting_date,
-  labels:JSON.parse(row.labels_json),motion_id:content.motion_id??null,
+  labels:JSON.parse(row.labels_json),motion_id:content.motion_id??null,file_id:content.file_id??null,
   ...Object.fromEntries(Object.keys(fields).map(k=>[k,content[k]||''])),
   created_at:row.created_at,updated_at:row.updated_at};
 }
 async function allowedMotion(db,user,id){
  if(!id)return true;
  const row=await db.prepare('SELECT id FROM work_motions WHERE id=? AND owner_email=? AND trashed_at IS NULL').bind(id,user.email).first();
+ return Boolean(row);
+}
+async function allowedFile(db,user,id){
+ if(!id)return true;
+ const row=await db.prepare("SELECT id FROM work_files WHERE id=? AND owner_email=? AND scope='mine'").bind(id,user.email).first();
  return Boolean(row);
 }
 export async function handleCases(req,env,user){
@@ -62,8 +68,8 @@ export async function handleCases(req,env,user){
   }
   if(path==='/api/private/cases'&&method==='POST'){
    const value=normalizeCase(await body(req));
-   if(!await allowedMotion(env.DB,user,value.motion_id))return fail(403,'Motionen tillhör inte dig');
-   const id=crypto.randomUUID(),now=new Date().toISOString(),payload=JSON.stringify({...value.content,motion_id:value.motion_id});
+   if(!await allowedMotion(env.DB,user,value.motion_id)||!await allowedFile(env.DB,user,value.file_id))return fail(403,'Kopplat dokument tillhör inte din privata arbetsyta');
+   const id=crypto.randomUUID(),now=new Date().toISOString(),payload=JSON.stringify({...value.content,motion_id:value.motion_id,file_id:value.file_id});
    await env.DB.prepare('INSERT INTO work_cases(id,owner_email,title,committee,status,meeting_date,labels_json,content_json,revision,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,1,?,?)').bind(id,user.email,value.title,value.committee,value.status,value.meeting_date,JSON.stringify(value.labels),payload,now,now).run();
    return json({id,revision:1,updated_at:now},201);
   }
@@ -79,8 +85,8 @@ export async function handleCases(req,env,user){
    const raw=await body(req);
    if(!Number.isSafeInteger(raw.revision)||raw.revision!==old.revision)return fail(409,'Ärendet har ändrats. Ladda om innan du sparar.');
    const value=normalizeCase(raw);
-   if(!await allowedMotion(env.DB,user,value.motion_id))return fail(403,'Motionen tillhör inte dig');
-   const now=new Date().toISOString(),payload=JSON.stringify({...value.content,motion_id:value.motion_id});
+   if(!await allowedMotion(env.DB,user,value.motion_id)||!await allowedFile(env.DB,user,value.file_id))return fail(403,'Kopplat dokument tillhör inte din privata arbetsyta');
+   const now=new Date().toISOString(),payload=JSON.stringify({...value.content,motion_id:value.motion_id,file_id:value.file_id});
    const r=await env.DB.prepare('UPDATE work_cases SET title=?,committee=?,status=?,meeting_date=?,labels_json=?,content_json=?,revision=revision+1,updated_at=? WHERE id=? AND owner_email=? AND revision=?').bind(value.title,value.committee,value.status,value.meeting_date,JSON.stringify(value.labels),payload,now,id,user.email,old.revision).run();
    if(r.meta?.changes!==1)return fail(409,'Ärendet har ändrats. Ladda om innan du sparar.');
    return json({id,revision:old.revision+1,updated_at:now});
