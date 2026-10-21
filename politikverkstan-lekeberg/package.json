@@ -1,11 +1,11 @@
 {
   "name": "politikverkstan-lekeberg",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "build": "python build.py",
-    "test": "node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs",
-    "test:browser": "python tests/test-ui.py && python tests/test-candidate-ui.py && python tests/test-v4-ui.py && python tests/test-workroom-ui.py && python tests/test-collaboration-ui.py && python tests/test-layout-052.py && python tests/test-theme-ui.py && python tests/test-landing-056.py && python tests/test-guide-ui.py"
+    "test": "node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs && node tests/test-cases.mjs",
+    "test:browser": "python tests/test-ui.py && python tests/test-candidate-ui.py && python tests/test-v4-ui.py && python tests/test-workroom-ui.py && python tests/test-collaboration-ui.py && python tests/test-layout-052.py && python tests/test-theme-ui.py && python tests/test-landing-056.py && python tests/test-guide-ui.py && python tests/test-stage2-ui.py"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
