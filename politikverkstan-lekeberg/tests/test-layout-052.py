@@ -25,12 +25,12 @@ html=html.replace('<script nonce="test">',mock+'<script nonce="test">')
 with sync_playwright() as p:
  b=p.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox'])
  page=b.new_page(viewport={'width':1370,'height':920});errors=[];page.on('pageerror',lambda ex:errors.append(str(ex)));page.on('dialog',lambda d:d.accept())
- page.set_content(html,wait_until='domcontentloaded');page.locator('.tile').first.wait_for()
- assert page.locator('.tile').count()==4
- cols=page.locator('.tiles').evaluate('(e)=>getComputedStyle(e).gridTemplateColumns.split(" ").length');assert cols==2,cols
- boxes=page.locator('.tile').all();r=[x.bounding_box() for x in boxes]
- assert abs(r[0]['y']-r[1]['y'])<2 and abs(r[2]['y']-r[3]['y'])<2 and r[2]['y']>r[0]['y']
- card=page.locator('.recent-drafts').bounding_box(); assert card['y']>=r[2]['y']+r[2]['height']+20
+ page.set_content(html,wait_until='domcontentloaded');page.locator('.aw-hero').wait_for()
+ assert page.locator('.aw-shortcut').count()==2
+ assert page.locator('.aw-motion-card').count()==1
+ assert page.locator('.aw-workbox').is_visible()
+ assert page.locator('.aw-motion-card').first.get_by_text('Gemensam skolmotion').is_visible()
+ assert page.locator('.aw-workbox').bounding_box()['y']>=page.locator('.aw-shortcuts').bounding_box()['y']
  page.screenshot(path=str(root/'forhandsbild-052-arbetsrum.png'),full_page=True)
  page.get_by_role('button',name='Våra motioner',exact=True).click()
  assert page.get_by_text('Gemensam skolmotion').is_visible(),'Owner team motion must be shown'
