@@ -377,7 +377,7 @@ function attachCaseActions(){
   }catch(error){button.disabled=false;toast(error.message,true);}
  });
  $('case-delete')?.addEventListener('click',async()=>{
-  if(!state.caseCurrent?.id||!state.caseCurrent.is_owner||!confirm('Radera ärendet och dess kommentarer permanent?'))return;
+  if(!state.caseCurrent?.id||state.caseCurrent.is_owner===false||!confirm('Radera ärendet och dess kommentarer permanent?'))return;
   try{
    await api('/api/private/cases/'+state.caseCurrent.id,'DELETE');await loadCases();
    state.caseCurrent=null;state.caseComments=[];state.caseDirty=false;state.caseNoteDirty=false;
