@@ -128,7 +128,10 @@ async function loadCaseFiles(){
 }
 function casePrintPage(c){
  const fields=caseFields.filter(([k])=>c[k]).map(([k,label])=>'<section><h2>'+h(label)+'</h2><p>'+h(c[k])+'</p></section>').join('');
- return '<article class="case-print" id="case-print"><div class="case-print-head"><small>POLITIKVERKSTAN · PRIVAT ARBETSUNDERLAG</small><h1>'+h(c.title)+'</h1><p>'+h(c.committee)+' · '+h(caseStatuses[c.status]||'Utkast')+(c.meeting_date?' · Möte '+h(c.meeting_date):'')+'</p><p class="case-private-marker">Arbetsmaterial. Ej kommunalt beslutsprotokoll eller officiellt partiyttrande.</p></div>'+fields+
+ const motion=state.motions.find(m=>m.id===c.motion_id),file=state.caseFiles.find(f=>f.id===c.file_id);
+ const attachments=[motion?'Egen motion: '+(motion.title||'Namnlös motion'):'',file?'Privat fil: '+file.name:''].filter(Boolean);
+ const linked=attachments.length?'<section><h2>Kopplade handlingar</h2><p>'+attachments.map(h).join(' · ')+'</p><small>Handlingarnas innehåll ingår inte automatiskt i denna utskrift.</small></section>':'';
+ return '<article class="case-print" id="case-print"><div class="case-print-head"><small>POLITIKVERKSTAN · PRIVAT ARBETSUNDERLAG</small><h1>'+h(c.title)+'</h1><p>'+h(c.committee)+' · '+h(caseStatuses[c.status]||'Utkast')+(c.meeting_date?' · Möte '+h(c.meeting_date):'')+'</p><p class="case-private-marker">Arbetsmaterial. Ej kommunalt beslutsprotokoll eller officiellt partiyttrande.</p></div>'+linked+fields+
  '<p class="case-print-foot">Sammanställt i Politikverkstan. Verifiera källor, belopp och beslutsstatus före extern användning.</p></article>';
 }
 function casesPage(){
