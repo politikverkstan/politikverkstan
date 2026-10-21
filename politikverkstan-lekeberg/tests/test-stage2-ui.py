@@ -56,13 +56,12 @@ with sync_playwright() as p:
  assert page.locator('.case-result').count()==0
  page.locator('#case-search').fill('budget')
  assert page.locator('.case-result').count()==1
- page.locator('[name="case-not-there"]').count()==0
  page.locator('#case-form [name="risks"]').fill('Potentiell risk för ökade driftkostnader.')
  page.locator('#case-form button[type="submit"]').click()
- assert page.evaluate("window.testCases[0].revision")==2
- assert 'Potentiell risk' in page.locator('#case-print').inner_text()
+ page.wait_for_function('window.testCases[0].revision===2')
+ assert 'Potentiell risk' in page.locator('#case-print').text_content()
  page.locator('#case-delete').click()
- assert page.locator('.case-result').count()==0
+ page.locator('.case-result').wait_for(state='detached')
  assert not errors,errors
  b.close()
 print('PASS stage 2: case creation, field preservation, labels, search, revision update, decision brief, deletion')
