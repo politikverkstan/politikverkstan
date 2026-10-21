@@ -381,3 +381,61 @@ html[data-theme="dark"] .case-scope-label{color:#eca58b}
 html[data-theme="dark"] .case-result.selected .case-scope-label{color:#f9c3ae}
 @media(max-width:660px){.case-sharing .formgrid{grid-template-columns:1fr}.case-scope-tabs .btn{min-width:0;flex:1}}
 @media print{body:has(#case-print) .case-sharing,body:has(#case-print) .case-private-notes,body:has(#case-print) .case-discussion{display:none!important}}
+
+
+/* 0.9.0 — protected Sammanträdesverkstad, shared graphite/terracotta visual identity. */
+.meeting-layout{display:grid;grid-template-columns:minmax(250px,.78fr) minmax(0,1.78fr);gap:18px;align-items:start}
+.meeting-list-pane{position:sticky;top:98px;max-height:calc(100vh - 110px);overflow:auto}
+.meeting-list{display:grid;gap:9px;margin-top:14px}
+.meeting-list-entry{display:flex;flex-direction:column;gap:7px;padding:15px;border:1px solid var(--border);background:var(--card);border-radius:11px;text-align:left;color:var(--ink);width:100%;min-width:0}
+.meeting-list-entry:hover,.meeting-list-entry.selected{border-color:#bc775d;background:#fff9f5}
+.meeting-list-entry.selected{box-shadow:inset 3px 0 #bd5439}
+.meeting-list-entry strong{font-size:14px;overflow-wrap:anywhere}
+.meeting-list-entry small{font-size:11px;color:var(--muted)}
+.meeting-list-entry>span{font-size:11px;color:#a6533d;line-height:1.5}
+.meeting-detail-pane{display:grid;gap:16px;min-width:0}
+.meeting-metadata fieldset{border:0;padding:0;margin:0;min-width:0}
+.meeting-metadata fieldset[disabled]{opacity:.84}
+.meeting-metadata .formgrid,.meeting-sharing .formgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.meeting-form-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:17px}
+.meeting-form-actions .btn{white-space:normal}
+.meeting-sharing>p,.meeting-agenda-head p,.meeting-personal-notes>p{font-size:12px;color:var(--muted);line-height:1.65;margin:5px 0 15px}
+.meeting-agenda-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.meeting-agenda-head h2{margin:0}
+.meeting-agenda-head .btn{flex:none}
+.meeting-agenda-row{display:grid;grid-template-columns:35px minmax(0,1fr);gap:10px;border-top:1px solid var(--border);padding:18px 0 14px}
+.meeting-agenda-number{display:flex;align-items:center;justify-content:center;background:#f8ebe4;color:#a24b32;font-size:14px;font-weight:800;width:32px;height:32px;border-radius:9px}
+.meeting-agenda-info strong{display:block;font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+.meeting-agenda-info small{display:block;font-size:11px;color:var(--muted);margin-top:6px}
+.meeting-agenda-info p{font-size:12px;line-height:1.6;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0}
+.meeting-agenda-actions{grid-column:2;display:flex;flex-wrap:wrap;gap:6px}
+.meeting-agenda-actions .btn{padding:6px 9px;font-size:11px}
+.meeting-item-form{padding:19px;border:1px solid #e9cbbd;border-radius:11px;background:var(--bg);margin-top:14px}
+.meeting-item-form h3{margin:0 0 16px;font-size:17px}
+.meeting-item-form .field{margin:0 0 14px}
+.meeting-item-form textarea,.meeting-personal-notes textarea{min-height:90px}
+.meeting-print{display:none}
+html[data-theme="dark"] .meeting-list-entry:hover,html[data-theme="dark"] .meeting-list-entry.selected{background:#302e2d;border-color:#b57860}
+html[data-theme="dark"] .meeting-agenda-number{background:#42312b;color:#efa788}
+html[data-theme="dark"] .meeting-list-entry>span{color:#f0b19b}
+html[data-theme="dark"] .meeting-item-form{background:#202c31;border-color:#7b5244}
+:where(.meeting-list-entry,.meeting-agenda-actions .btn):focus-visible{outline:3px solid #d57f60;outline-offset:2px}
+@media(max-width:1100px){.meeting-layout{grid-template-columns:1fr}.meeting-list-pane{position:static;max-height:none}.meeting-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.meeting-list{grid-template-columns:1fr}.meeting-metadata .formgrid{grid-template-columns:1fr}.meeting-agenda-head{align-items:flex-start;flex-direction:column}}
+@media print{
+ @page{size:A4;margin:18mm 16mm}
+ body:has(#meeting-print){background:white!important;color:#111!important}
+ body:has(#meeting-print) #workroot .layout{display:block!important}
+ body:has(#meeting-print) #workroot .sidebar,body:has(#meeting-print) #workroot .topbar,body:has(#meeting-print) #workroot .container>*:not(.meeting-layout),body:has(#meeting-print) .meeting-list-pane,body:has(#meeting-print) .meeting-metadata,body:has(#meeting-print) .meeting-sharing,body:has(#meeting-print) .meeting-agenda,body:has(#meeting-print) .meeting-personal-notes{display:none!important}
+ body:has(#meeting-print) #workroot .container{display:block!important;max-width:none!important;margin:0!important;padding:0!important}
+ body:has(#meeting-print) .meeting-layout,body:has(#meeting-print) .meeting-detail-pane,body:has(#meeting-print) .meeting-print{display:block!important}
+ body:has(#meeting-print) .meeting-print{font:11pt/1.5 Georgia,'Times New Roman',serif;color:#111!important}
+ body:has(#meeting-print) .meeting-print header{border-bottom:2px solid #a6533d;margin-bottom:18px;padding-bottom:12px}
+ body:has(#meeting-print) .meeting-print small{font:700 9pt Arial,sans-serif;letter-spacing:1.2px;color:#a6533d}
+ body:has(#meeting-print) .meeting-print h1{font:bold 23pt Georgia,serif;color:#111;margin:10px 0}
+ body:has(#meeting-print) .meeting-print h2{font:bold 13pt Arial,sans-serif;color:#111;margin:0 0 8px}
+ body:has(#meeting-print) .meeting-print h3{font:bold 10pt Arial,sans-serif;color:#333;margin:10px 0 2px}
+ body:has(#meeting-print) .meeting-print p{white-space:pre-wrap;overflow-wrap:anywhere}
+ body:has(#meeting-print) .meeting-print section{break-inside:avoid;padding:14px 0;border-bottom:1px solid #ccc}
+ body:has(#meeting-print) .meeting-print footer{font:italic 9pt Arial,sans-serif;margin-top:22px;border-top:1px solid #aaa;padding-top:10px;color:#555}
+}
