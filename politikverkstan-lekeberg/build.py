@@ -26,7 +26,13 @@ print('Built:', (out/'index.html').stat().st_size, 'bytes to dist/index.html')
 # Bundle protected workroom into worker module. This is never served as a public asset.
 work=(src/'workroom.template.html').read_text(encoding='utf-8')
 work=work.replace('/*WORKCSS*/',(src/'workroom.css').read_text(encoding='utf-8').replace('</style','<\\/style'))
-work=work.replace('/*WORKJS*/',((src/'workroom-pdf.js').read_text(encoding='utf-8')+'\n'+(src/'workroom.js').read_text(encoding='utf-8')).replace('</script',r'<\/script'))
+# Insert meeting-workshop functions inside the existing protected workroom closure.
+work_js=(src/'workroom.js').read_text(encoding='utf-8')
+addon='\n'.join((src/name).read_text(encoding='utf-8') for name in
+                ('meetings-ui.js','meetings-page.js','meetings-actions.js'))
+assert work_js.count('function casesPage(){')==1
+work_js=work_js.replace('function casesPage(){',addon+'\nfunction casesPage(){',1)
+work=work.replace('/*WORKJS*/',((src/'workroom-pdf.js').read_text(encoding='utf-8')+'\n'+work_js).replace('</script',r'<\/script'))
 module='export const WORKROOM_HTML = '+json.dumps(work,ensure_ascii=False)+';\n'
 (root/'worker'/'workroom-page.mjs').write_text(module,encoding='utf-8')
 print('Built protected workroom module:',len(work),'chars')
