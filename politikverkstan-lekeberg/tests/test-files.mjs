@@ -65,6 +65,6 @@ assert.equal((await call(a,'folders/'+team.id,'DELETE')).status,200);
 const empty=await json(await call(a,'files','POST',filesFor('tom.txt','mine',null,'')));
 assert.ok(empty.id);
 assert.equal((await (await call(a,'files/'+empty.id+'/download')).arrayBuffer()).byteLength,0);
-const tooBig=new File([new Uint8Array(5*1024*1024+1)],'stor.pdf',{type:'application/pdf'});
+const tooBig=new File([new Uint8Array(10*1024*1024+1)],'stor.pdf',{type:'application/pdf'});
 assert.equal((await call(a,'files','POST',filesFor(tooBig.name,'mine',null,tooBig))).status,413);
 console.log('PASS files: nested folders, upload/download, owner ACL, team sharing, revocation, moves, limits, deletes');
