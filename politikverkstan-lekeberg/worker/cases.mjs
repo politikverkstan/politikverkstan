@@ -4,7 +4,7 @@ const HEADERS={'content-type':'application/json; charset=utf-8','cache-control':
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:HEADERS});
 const fail=(code,message)=>json({error:message},code);
 const statuses=new Set(['nytt','granskning','stallningstagande','beslutat','uppfoljning','avslutat']);
-const committees=new Set(['Kommunfullmäktige','Kommunstyrelsen','Barn- och utbildningsnämnden','Socialnämnden','Bygg- och miljönämnden','Annat']);
+const committees=new Set(['Kommunfullmäktige','Kommunstyrelsen','Barn- och utbildningsnämnden','Socialnämnden','Bygg- och miljönämnden','Valnämnden','Sydnärkes IT-nämnd','Sydnärkes miljö- och byggnämnd','Annat']);
 const fields={summary:6000,alternatives:4500,finances:4500,risks:4500,questions:4500,recommendation:3500,meeting_notes:4500,decision:3500,follow_up:3500,sources:3500};
 const short=(v,max)=>typeof v==='string'?v.trim().slice(0,max):'';
 const validDate=v=>v===''||typeof v==='string'&&/^\d{4}-\d\d-\d\d$/.test(v)&&!Number.isNaN(Date.parse(v+'T00:00:00Z'))&&new Date(v+'T00:00:00Z').toISOString().slice(0,10)===v;
