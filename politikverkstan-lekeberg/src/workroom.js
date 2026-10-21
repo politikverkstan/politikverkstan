@@ -170,11 +170,13 @@ function casesPage(){
 
 function usersPage(){if(state.user?.role!=='admin')return '<p>Åtkomst nekad</p>';return `${header('Administration','Användare','Ge behörighet till enskilda personer. De måste även tillåtas i Cloudflare Access för att kunna logga in.')}
 <div class="card"><h2>Lägg till användare</h2><form id="user-form" class="formgrid"><label class="field"><span>Namn</span><input name="name" maxlength="120" required></label><label class="field"><span>E-postadress</span><input name="email" type="email" required></label><label class="field"><span>Behörighet</span><select name="role"><option value="user">Standardanvändare</option><option value="admin">Administratör</option></select></label><div style="align-self:center"><button type="submit" class="btn btn-primary">Godkänn användare</button></div></form></div><div class="card"><h2>Godkända konton</h2><div style="overflow:auto"><table class="admin-table"><thead><tr><th>E-postadress</th><th>Namn</th><th>Roll</th><th>Status</th><th>Åtgärd</th></tr></thead><tbody>${state.users.map(u=>`<tr><td>${h(u.email)}</td><td><input class="account-name" data-name="${h(u.email)}" maxlength="120" value="${h(u.display_name)}" aria-label="Visningsnamn för ${h(u.email)}"></td><td><select data-role="${h(u.email)}"><option value="user" ${u.role==='user'?'selected':''}>Användare</option><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option></select></td><td>${u.active?'Aktiv':'Inaktiv'}</td><td><button class="btn btn-sm" data-update="${h(u.email)}">Spara roll</button> <button class="btn btn-sm" data-save-name="${h(u.email)}">Spara namn</button> <button class="btn btn-sm ${u.active?'btn-danger':''}" data-active="${h(u.email)}">${u.active?'Inaktivera':'Aktivera'}</button></td></tr>`).join('')}</tbody></table></div></div><div class="card"><h2>Dokumentprofil – logotyp</h2><p>Ladda upp en godkänd SD-logotyp som PNG (max 250 KB). Bilden används endast i SD-motionsmallen. Kontrollera att du har rätt att använda filen.</p><label class="field"><span>Logotyp PNG</span><input type="file" id="branding-file" accept="image/png"></label><div class="toolbar"><button class="btn btn-primary" id="branding-save">Spara logotyp</button><button class="btn" id="branding-remove">Ta bort logotyp</button></div>${state.logoDataUri?`<img src="${state.logoDataUri}" alt="Aktuell logotyp" style="max-height:78px;max-width:160px;object-fit:contain">`:'<p class="muted">Ingen logotyp uppladdad. PDF-mallen visar endast text.</p>'}</div><div class="a-note">En användare behöver både ett aktivt konto här och en tillåtande policy i Cloudflare Access. Ändringar i Access kan behöva göras separat.</div>`;}
-async function openTab(tab){if(state.dirty&&state.motion){try{await saveMotion(false);}catch(e){toast('Kunde inte spara dokumentet före navigering: '+e.message,true);return;}}
+async function openTab(tab){if(tab!=='cases'&&state.caseDirty&&!confirm('Det finns osparade ändringar i ärendet. Lämna utan att spara?'))return;
+ if(tab!=='cases'){state.caseDirty=false;state.caseCurrent=null;}
+ if(state.dirty&&state.motion){try{await saveMotion(false);}catch(e){toast('Kunde inte spara dokumentet före navigering: '+e.message,true);return;}}
  state.tab=tab;if(tab==='cases'){await loadCases();await loadCaseFiles();}if(tab==='ideas')await loadIdeas();if(tab==='shared')await loadShared();if(tab==='files')await loadFiles();if(tab==='users'&&state.user?.role==='admin')await loadUsers();render();window.scrollTo(0,0);
 }
 async function createMotion(initial){try{const doc=await api('/api/private/motions','POST',{...newMotion(),...initial});state.motion=doc;state.tab='editor';state.dirty=false;await loadMotions();await openMotion(doc.id);}catch(e){toast(e.message,true);}}
-async function openMotion(id){try{const r=await api('/api/private/motions/'+id);state.motion=r.motion;state.dirty=false;state.shares=null;state.comments=[];if(r.motion.permission==='owner'){try{state.shares=await api('/api/private/motions/'+id+'/shares');state.directory=(await api('/api/private/directory')).users;}catch(e){toast('Delningsinställningar kunde inte laddas: '+e.message,true);}}state.comments=(await api('/api/private/motions/'+id+'/comments')).comments;state.tab='editor';render();window.scrollTo(0,0);}catch(e){toast(e.message,true);}}
+async function openMotion(id){if(state.caseDirty&&!confirm('Lämna ärendet utan att spara ändringarna?'))return;state.caseDirty=false;try{const r=await api('/api/private/motions/'+id);state.motion=r.motion;state.dirty=false;state.shares=null;state.comments=[];if(r.motion.permission==='owner'){try{state.shares=await api('/api/private/motions/'+id+'/shares');state.directory=(await api('/api/private/directory')).users;}catch(e){toast('Delningsinställningar kunde inte laddas: '+e.message,true);}}state.comments=(await api('/api/private/motions/'+id+'/comments')).comments;state.tab='editor';render();window.scrollTo(0,0);}catch(e){toast(e.message,true);}}
 async function loadShared(){try{state.shared=(await api('/api/private/motions?scope=shared')).motions;state.sharedArchived=(await api('/api/private/motions?scope=shared&lifecycle=archived')).motions;}catch(e){toast(e.message,true);}}
 async function loadMotions(){try{state.motions=(await api('/api/private/motions')).motions;state.myArchived=(await api('/api/private/motions?scope=mine&lifecycle=archived')).motions;state.myTrash=(await api('/api/private/motions?scope=mine&lifecycle=trash')).motions;}catch(e){toast(e.message,true);}}
 async function loadIdeas(){try{state.ideas=(await api('/api/private/ideas')).ideas;}catch(e){toast(e.message,true);}}
@@ -217,19 +219,21 @@ function folderPath(id){
 }
 function filesPage(){
  const scope=state.fileScope,here=state.fileFolder;
- const dirs=state.folders.filter(f=>f.parent_id===here);
- const docs=state.files.filter(f=>f.folder_id===here);
+ const query=(state.fileSearch||'').toLocaleLowerCase('sv-SE').trim();
+ const dirs=query?[]:state.folders.filter(f=>f.parent_id===here);
+ const docs=state.files.filter(f=>(query?f.name.toLocaleLowerCase('sv-SE').includes(query):f.folder_id===here));
  const crumbs=[],seen=new Set();let cursor=here;
  while(cursor&&!seen.has(cursor)){seen.add(cursor);const f=state.folders.find(x=>x.id===cursor);if(!f)break;crumbs.unshift(f);cursor=f.parent_id;}
  return `${header('FILHANTERING','Dokumentarkiv','Lagra egna handlingar, PDF-exporter och gemensamma dokument. Mina dokument är privata. Våra dokument är tillgängliga för alla godkända användare.')}
  <section class="card file-area">
+  <label class="field"><span>Sök filer i alla mappar inom valt filområde</span><input id="file-search" value="${h(state.fileSearch||'')}" placeholder="Sök dokumentnamn och filtyper" autocomplete="off"></label>
   <div class="toolbar file-scope-tabs"><button class="btn ${scope==='mine'?'btn-primary':''}" data-file-scope="mine">Mina dokument</button><button class="btn ${scope==='team'?'btn-primary':''}" data-file-scope="team">Våra dokument</button></div>
   ${scope==='team'?'<p class="file-warning">Observera: Alla aktiva och godkända användare i arbetsrummet kan se och ladda ned filer här. Lägg inte privata handlingar i denna filarea.</p>':'<p class="muted">Den här filarean är privat och syns bara för dig, även om du är administratör.</p>'}
   <div class="file-crumbs"><button class="btn btn-sm" data-folder-open="">${scope==='mine'?'Mina dokument':'Våra dokument'}</button>${crumbs.map(f=>' / <button class="btn btn-sm" data-folder-open="'+h(f.id)+'">'+h(f.name)+'</button>').join('')}</div>
   <div class="file-actions"><form id="upload-files"><label class="file-picker"><span>Välj filer (max 10 MB per fil)</span><input type="file" name="files" id="file-picker" multiple required></label><button class="btn btn-primary" type="submit">Ladda upp</button></form><button class="btn" id="new-file-folder">+ Ny mapp</button></div>
   <p class="file-limit">Högst 10 MB per fil och totalt 100 MB per användare. PDF-exporter från motionsverkstaden sparas automatiskt i Mina dokument.</p>
   <div class="file-list">
-   ${here?'<div class="file-row"><div><strong>↰ Överordnad mapp</strong></div><button class="btn btn-sm" data-folder-open="'+h(state.folders.find(f=>f.id===here)?.parent_id||'')+'">Öppna</button></div>':''}
+   ${here&&!query?'<div class="file-row"><div><strong>↰ Överordnad mapp</strong></div><button class="btn btn-sm" data-folder-open="'+h(state.folders.find(f=>f.id===here)?.parent_id||'')+'">Öppna</button></div>':''}
    ${dirs.map(f=>'<div class="file-row"><div><strong>📁 '+h(f.name)+'</strong><small>Mapp</small></div><div class="file-row-actions"><button class="btn btn-sm" data-folder-open="'+h(f.id)+'">Öppna</button>'+(f.owner_email===state.user.email?'<button class="btn btn-sm" data-folder-rename="'+h(f.id)+'">Byt namn</button><button class="btn btn-sm btn-danger" data-folder-delete="'+h(f.id)+'">Ta bort</button>':'')+'</div></div>').join('')}
    ${docs.map(f=>'<div class="file-row"><div><strong>📄 '+h(f.name)+'</strong><small>'+h(f.owner_email===state.user.email?'Min fil':'Uppladdad av '+f.owner_email)+' · '+(f.size_bytes/1024).toFixed(1)+' KB · '+h((f.created_at||'').slice(0,16).replace('T',' '))+'</small></div><div class="file-row-actions"><a class="btn btn-sm" href="/api/private/files/'+encodeURIComponent(f.id)+'/download">Ladda ned</a>'+(f.owner_email===state.user.email?'<button class="btn btn-sm" data-file-rename="'+h(f.id)+'">Byt namn</button><button class="btn btn-sm" data-file-move="'+h(f.id)+'">Flytta</button><button class="btn btn-sm" data-file-share="'+h(f.id)+'">'+(scope==='mine'?'Dela':'Gör privat')+'</button><button class="btn btn-sm btn-danger" data-file-delete="'+h(f.id)+'">Ta bort</button>':'')+'</div></div>').join('')}
    ${!docs.length&&!dirs.length?'<div class="empty">Mappen är tom. Skapa en mapp eller ladda upp en fil.</div>':''}
@@ -252,7 +256,46 @@ async function fileAction(url,method,data){
  const result=await api(url,method,data);await loadFiles();render();return result;
 }
 
+
+function caseSafeToLeave(){return !state.caseDirty||confirm('Du har osparade ärendeändringar. Fortsätt utan att spara?');}
+function attachCaseActions(){
+ $('case-new')?.addEventListener('click',()=>{if(!caseSafeToLeave())return;state.caseCurrent=caseEmpty();state.caseDirty=false;render();});
+ document.querySelectorAll('[data-case-open]').forEach(b=>b.addEventListener('click',()=>{
+  if(!caseSafeToLeave())return;
+  const entry=state.caseItems.find(c=>c.id===b.dataset.caseOpen);
+  if(entry){state.caseCurrent={...entry,labels:[...(entry.labels||[])]};state.caseDirty=false;render();}
+ }));
+ $('case-search')?.addEventListener('input',e=>{const pos=e.target.selectionStart;state.caseSearch=e.target.value;render();$('case-search')?.focus();$('case-search')?.setSelectionRange(pos,pos);});
+ $('case-filter')?.addEventListener('change',e=>{state.caseFilter=e.target.value;render();});
+ $('file-search')?.addEventListener('input',e=>{const pos=e.target.selectionStart;state.fileSearch=e.target.value;render();$('file-search')?.focus();$('file-search')?.setSelectionRange(pos,pos);});
+ const form=$('case-form');
+ form?.addEventListener('input',e=>{const field=e.target.name;if(!field||!state.caseCurrent)return;
+  state.caseCurrent[field]=field==='labels'?e.target.value.split(',').map(x=>x.trim()).filter(Boolean):e.target.value;
+  state.caseDirty=true;const mark=$('case-save-info');if(mark)mark.textContent='Ändringarna är inte sparade';
+ });
+ form?.addEventListener('change',e=>{const field=e.target.name;if(field&&state.caseCurrent){state.caseCurrent[field]=e.target.value;state.caseDirty=true;}});
+ form?.addEventListener('submit',async e=>{e.preventDefault();const current=state.caseCurrent;if(!current)return;
+  const payload={...current,labels:[...new Set((current.labels||[]).map(x=>x.trim()).filter(Boolean))],motion_id:current.motion_id||null,file_id:current.file_id||null};
+  const submit=form.querySelector('[type="submit"]');submit.disabled=true;
+  try{
+   const res=await api(current.id?'/api/private/cases/'+current.id:'/api/private/cases',current.id?'PUT':'POST',payload);
+   await loadCases();const updated=state.caseItems.find(c=>c.id===res.id);
+   state.caseCurrent=updated?{...updated,labels:[...(updated.labels||[])]}:null;state.caseDirty=false;render();toast('Ärendet har sparats privat.');
+  }catch(error){submit.disabled=false;toast(error.message,true);}
+ });
+ $('case-delete')?.addEventListener('click',async()=>{
+  if(!state.caseCurrent?.id||!confirm('Radera detta privata ärende permanent?'))return;
+  try{await api('/api/private/cases/'+state.caseCurrent.id,'DELETE');await loadCases();state.caseCurrent=null;state.caseDirty=false;render();toast('Ärendet raderades.');}
+  catch(error){toast(error.message,true);}
+ });
+ $('case-print-btn')?.addEventListener('click',()=>{
+  if(state.caseDirty){toast('Spara dina ändringar innan du skriver ut beslutsunderlaget.',true);return;}
+  window.print();
+ });
+}
+
 function attach(){
+ attachCaseActions();
   $('theme-toggle')?.addEventListener('click',toggleTheme);
 
  document.querySelectorAll('[data-file-scope]').forEach(b=>b.addEventListener('click',async()=>{
