@@ -9,7 +9,7 @@ async function openMeeting(id){
  state.meetingCurrent={...r.meeting};state.meetingAgenda=r.agenda||[];
  state.meetingNote=r.personal_note||'';state.meetingDirty=false;state.meetingNoteDirty=false;state.meetingItemEdit=null;
 }
-function meetingSafeToLeave(){return !(state.meetingDirty||state.meetingNoteDirty)||confirm('Det finns osparade mötesuppgifter eller privata anteckningar. Lämna utan att spara?');}
+function meetingSafeToLeave(){return !(state.meetingDirty||state.meetingNoteDirty||state.meetingItemDirty)||confirm('Det finns osparade mötesuppgifter eller privata anteckningar. Lämna utan att spara?');}
 function meetingCandidates(){
  const m=state.meetingCurrent;
  return state.caseItems.filter(c=>c.scope==='team'||(m?.scope!=='team'&&c.is_owner));
