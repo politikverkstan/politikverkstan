@@ -148,11 +148,11 @@ function casesPage(){
      <div class="case-edit-head"><div><span class="eyebrow">PRIVAT ARBETSMATERIAL</span><h2>${selected.id?'Redigera ärende':'Nytt ärende'}</h2></div><span class="chip">${selected.id?'Revision '+selected.revision:'Ej sparat'}</span></div>
      <div class="formgrid">
       <label class="field"><span>Ärenderubrik</span><input name="title" required maxlength="160" value="${h(selected.title)}"></label>
-      <label class="field"><span>Nämnd / instans</span><select name="committee">${['Kommunfullmäktige','Kommunstyrelsen','Barn- och utbildningsnämnden','Socialnämnden','Bygg- och miljönämnden','Annat'].map(v=>`<option ${selected.committee===v?'selected':''}>${h(v)}</option>`).join('')}</select></label>
+      <label class="field"><span>Nämnd / instans</span><select name="committee">${['Kommunfullmäktige','Kommunstyrelsen','Barn- och utbildningsnämnden','Socialnämnden','Bygg- och miljönämnden','Valnämnden','Sydnärkes IT-nämnd','Sydnärkes miljö- och byggnämnd','Annat'].map(v=>`<option ${selected.committee===v?'selected':''}>${h(v)}</option>`).join('')}</select></label>
       <label class="field"><span>Status</span><select name="status">${Object.entries(caseStatuses).map(([v,k])=>`<option value="${v}" ${selected.status===v?'selected':''}>${h(k)}</option>`).join('')}</select></label>
       <label class="field"><span>Mötesdatum (om känt)</span><input name="meeting_date" type="date" value="${h(selected.meeting_date||'')}"></label>
      </div>
-     <label class="field"><span>Etiketter (kommaseparerade, högst åtta)</span><input name="labels" value="${h((selected.labels||[]).join(', '))}" placeholder="Budget, BUN, skolskjuts"></label>
+     <label class="field"><span>Etiketter (kommaseparerade, högst åtta och högst 30 tecken vardera)</span><input name="labels" value="${h((selected.labels||[]).join(', '))}" placeholder="Budget, BUN, skolskjuts"></label>
      <div class="formgrid">
       <label class="field"><span>Koppla egen motion</span><select name="motion_id"><option value="">Ingen motion</option>${state.motions.filter(m=>!m.trashed_at).map(m=>`<option value="${h(m.id)}" ${selected.motion_id===m.id?'selected':''}>${h(m.title||'Namnlös motion')}</option>`).join('')}</select></label>
       <label class="field"><span>Koppla privat fil</span><select name="file_id"><option value="">Ingen fil</option>${state.caseFiles.filter(f=>f.scope==='mine').map(f=>`<option value="${h(f.id)}" ${selected.file_id===f.id?'selected':''}>${h(f.name)}</option>`).join('')}</select></label>
