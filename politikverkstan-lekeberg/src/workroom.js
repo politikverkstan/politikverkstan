@@ -14,7 +14,7 @@ function toggleTheme(){
 }
 
 const h=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const state={tab:'overview',sharedTab:'team',motionView:'active',sharedView:'active',ideaView:'active',ideaHistory:[],user:null,motions:[],shared:[],motion:null,ideas:[],users:[],directory:[],shares:null,comments:[],ideaComments:[],ideaLinks:[],selectedIdea:null,dirty:false,saving:false,saveTimer:null,notice:'',history:[],review:[],logoDataUri:null,pdfVariant:'sd',fileScope:'mine',fileFolder:null,folders:[],files:[],caseItems:[],caseCurrent:null,caseSearch:'',caseFilter:'all',caseDirty:false,caseFiles:[],fileSearch:''};
+const state={tab:'overview',sharedTab:'team',motionView:'active',sharedView:'active',ideaView:'active',ideaHistory:[],user:null,motions:[],shared:[],motion:null,ideas:[],users:[],directory:[],shares:null,comments:[],ideaComments:[],ideaLinks:[],selectedIdea:null,dirty:false,saving:false,saveTimer:null,notice:'',history:[],review:[],logoDataUri:null,pdfVariant:'sd',fileScope:'mine',fileFolder:null,folders:[],files:[],caseItems:[],caseCurrent:null,caseSearch:'',caseFilter:'all',caseDirty:false,caseFiles:[],fileSearch:'',caseDirectory:[],caseComments:[],caseVisibility:'all',caseNoteDirty:false};
 const cats=['Skola och utbildning','Omsorg och socialtjänst','Ekonomi och styrning','Trafik och infrastruktur','Trygghet','Miljö och samhällsbyggnad','Kommunal service','Annat'];
 const statuses={ide:'Idé',utkast:'Utkast',granskning:'För granskning',godkand:'Internt godkänd',inlamnad:'Inlämnad',besvarad:'Besvarad'};
 function newMotion(){return {title:'',category:'Annat',problem:'',motivation:'',proposal:'',clauses:[''],signer:'',party:'Sverigedemokraterna',date:new Date().toISOString().slice(0,10),status:'utkast',reference:'',notes:''};}
@@ -23,7 +23,7 @@ function toast(message,error=false){const old=$('toast');old?.remove();let el=do
 const svg=(p)=>`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const icons={write:svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>'),home:svg('<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>'),list:svg('<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'),bulb:svg('<path d="M9 18h6m-5 4h4M9 14a6 6 0 1 1 6 0l-1 3h-4l-1-3z"/>'),users:svg('<circle cx="9" cy="8" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 8m2 3a6 6 0 0 1 3 6"/>'),arrow:svg('<path d="m9 18 6-6-6-6"/>'),download:svg('<path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v4h16v-4"/>'),plus:svg('<path d="M12 5v14M5 12h14"/>')};
 function nav(id,label,icon){return `<button class="sidebutton ${state.tab===id?'active':''}" type="button" data-tab="${id}">${icons[icon]} ${label}</button>`;}
-function shell(){return `<div class="layout"><aside class="sidebar"><div class="brand"><div class="brand-icon" aria-hidden="true">P</div><div><span>Politikverkstan</span><small>LEKEBERG · ARBETSYTA</small></div><button class="mobile-toggle" id="mobile-menu" type="button" aria-label="Visa meny">☰</button></div><div class="navs"><div class="side-section">DIN ARBETSYTA</div>${nav('overview','Översikt','home')}${nav('cases','Mina ärenden','list')}${nav('motions','Mina motioner','list')}${nav('shared','Våra motioner','users')}${nav('files','Filer','list')}${nav('editor','Motionsverkstad','write')}${nav('ideas','Våra idéer','bulb')}${state.user?.role==='admin'?`<div class="side-section" style="margin-top:26px">ADMINISTRATION</div>${nav('users','Användare','users')}`:''}</div><div class="sidebar-tail"><strong>${h(state.user?.name||state.user?.email||'')}</strong><p>${state.user?.role==='admin'?'Administratör':'Standardanvändare'}</p><a href="/">← Till publik Mandat & samverkan</a></div></aside><div class="main"><header class="topbar"><div><div class="eyebrow">Inloggningsskyddad arbetsyta</div><h2>${h({overview:'Översikt',motions:'Mina motioner',shared:'Våra motioner',editor:'Motionsverkstad',ideas:'Våra idéer',files:'Dokumentarkiv',cases:'Mina ärenden',users:'Användarhantering'}[state.tab])}</h2></div><div class="topactions"><span class="chip">Skyddad inloggning</span><button class="btn btn-sm theme-toggle" id="theme-toggle" type="button" aria-label="${currentTheme==='dark'?'Byt till ljust tema':'Byt till mörkt tema'}" title="Växla ljust/mörkt tema"><span class="theme-symbol" aria-hidden="true">${currentTheme==='dark'?'☀':'☾'}</span> ${currentTheme==='dark'?'Ljust':'Mörkt'}</button><a class="btn btn-sm" href="/">Publik portal</a></div></header><main class="container">${main()}</main></div></div>`;}
+function shell(){return `<div class="layout"><aside class="sidebar"><div class="brand"><div class="brand-icon" aria-hidden="true">P</div><div><span>Politikverkstan</span><small>LEKEBERG · ARBETSYTA</small></div><button class="mobile-toggle" id="mobile-menu" type="button" aria-label="Visa meny">☰</button></div><div class="navs"><div class="side-section">DIN ARBETSYTA</div>${nav('overview','Översikt','home')}${nav('cases','Ärenden','list')}${nav('motions','Mina motioner','list')}${nav('shared','Våra motioner','users')}${nav('files','Filer','list')}${nav('editor','Motionsverkstad','write')}${nav('ideas','Våra idéer','bulb')}${state.user?.role==='admin'?`<div class="side-section" style="margin-top:26px">ADMINISTRATION</div>${nav('users','Användare','users')}`:''}</div><div class="sidebar-tail"><strong>${h(state.user?.name||state.user?.email||'')}</strong><p>${state.user?.role==='admin'?'Administratör':'Standardanvändare'}</p><a href="/">← Till publik Mandat & samverkan</a></div></aside><div class="main"><header class="topbar"><div><div class="eyebrow">Inloggningsskyddad arbetsyta</div><h2>${h({overview:'Översikt',motions:'Mina motioner',shared:'Våra motioner',editor:'Motionsverkstad',ideas:'Våra idéer',files:'Dokumentarkiv',cases:'Ärenden',users:'Användarhantering'}[state.tab])}</h2></div><div class="topactions"><span class="chip">Skyddad inloggning</span><button class="btn btn-sm theme-toggle" id="theme-toggle" type="button" aria-label="${currentTheme==='dark'?'Byt till ljust tema':'Byt till mörkt tema'}" title="Växla ljust/mörkt tema"><span class="theme-symbol" aria-hidden="true">${currentTheme==='dark'?'☀':'☾'}</span> ${currentTheme==='dark'?'Ljust':'Mörkt'}</button><a class="btn btn-sm" href="/">Publik portal</a></div></header><main class="container">${main()}</main></div></div>`;}
 function header(kicker,title,desc,right=''){return `<div class="headline"><div><div class="eyebrow">${h(kicker)}</div><h1>${h(title)}</h1><p>${h(desc)}</p></div>${right}</div>`;}
 function main(){switch(state.tab){case 'motions':return motionsPage();case 'shared':return sharedPage();case 'files':return filesPage();case 'cases':return casesPage();case 'editor':return editorPage();case 'ideas':return ideasPage();case 'users':return usersPage();default:return overviewPage();}}
 
@@ -36,7 +36,7 @@ function overviewPage(){
  <section class="aw-hero">
   <div class="aw-hero-copy"><div class="aw-overline">VÄLKOMMEN TILL ARBETSYTAN</div>
    <h1>Politikverkstan</h1><p>Samla idéer, skriv motioner och arbeta tillsammans i Lekeberg. Här visas bara material som ditt konto har åtkomst till.</p>
-   <div class="aw-hero-buttons"><button type="button" class="btn btn-primary" data-new="1">${icons.plus} Skapa en motion</button><button type="button" class="btn aw-secondary" data-tab="cases">Mina ärenden ${icons.arrow}</button></div>
+   <div class="aw-hero-buttons"><button type="button" class="btn btn-primary" data-new="1">${icons.plus} Skapa en motion</button><button type="button" class="btn aw-secondary" data-tab="cases">Ärenden ${icons.arrow}</button></div>
   </div>
  </section>
  <div class="aw-shortcuts">
@@ -115,13 +115,20 @@ const caseFields=[
  ['risks','Risker och konsekvenser','Risk, sannolikhet, konsekvens och möjliga motåtgärder.'],
  ['questions','Frågor till förvaltningen','Vad behöver kompletteras eller kontrolleras före beslut?'],
  ['recommendation','Min preliminära bedömning','Förslag till ställningstagande, inte ett officiellt partiyttrande.'],
- ['meeting_notes','Mötesförberedelser','Frågor att ställa, yrkanden och egna minnesanteckningar.'],
  ['decision','Beslut / faktiskt utfall','Fyll i efter att beslut har fattats. Ange beslutskälla.'],
  ['follow_up','Uppföljning och ansvar','Vad ska följas upp, av vem och när?'],
  ['sources','Källor och dokumentreferenser','Ange dokumenttitel, datum, sidnummer eller URL.']
 ];
-const caseEmpty=()=>({title:'',committee:'Kommunfullmäktige',status:'nytt',meeting_date:'',labels:[],motion_id:null,file_id:null,...Object.fromEntries(caseFields.map(([key])=>[key,'']))});
+const caseEmpty=()=>({title:'',committee:'Kommunfullmäktige',status:'nytt',meeting_date:'',labels:[],scope:'mine',assignee_email:null,meeting_notes:'',is_owner:true,can_edit:true,motion_id:null,file_id:null,...Object.fromEntries(caseFields.map(([key])=>[key,'']))});
 async function loadCases(){const result=await api('/api/private/cases');state.caseItems=result.cases||[];}
+async function loadCaseComments(id){
+ if(!id){state.caseComments=[];return;}
+ const result=await api('/api/private/cases/'+id+'/comments');state.caseComments=result.comments||[];
+}
+async function loadCaseDirectory(){
+ try{state.caseDirectory=(await api('/api/private/directory')).users||[];}
+ catch(e){state.caseDirectory=[];toast('Användarlistan kunde inte laddas: '+e.message,true);}
+}
 async function loadCaseFiles(){
  try{const data=await api('/api/private/files?scope=mine');state.caseFiles=data.files||[];}
  catch(e){state.caseFiles=[];toast('Dokumentarkivet kan inte läsas: '+e.message,true);}
@@ -131,7 +138,7 @@ function casePrintPage(c){
  const motion=state.motions.find(m=>m.id===c.motion_id),file=state.caseFiles.find(f=>f.id===c.file_id);
  const attachments=[motion?'Egen motion: '+(motion.title||'Namnlös motion'):'',file?'Privat fil: '+file.name:''].filter(Boolean);
  const linked=attachments.length?'<section><h2>Kopplade handlingar</h2><p>'+attachments.map(h).join(' · ')+'</p><small>Handlingarnas innehåll ingår inte automatiskt i denna utskrift.</small></section>':'';
- return '<article class="case-print" id="case-print"><div class="case-print-head"><small>POLITIKVERKSTAN · PRIVAT ARBETSUNDERLAG</small><h1>'+h(c.title)+'</h1><p>'+h(c.committee)+' · '+h(caseStatuses[c.status]||'Utkast')+(c.meeting_date?' · Möte '+h(c.meeting_date):'')+'</p><p class="case-private-marker">Arbetsmaterial. Ej kommunalt beslutsprotokoll eller officiellt partiyttrande.</p></div>'+linked+fields+
+ return '<article class="case-print" id="case-print"><div class="case-print-head"><small>POLITIKVERKSTAN · INTERNT ARBETSUNDERLAG</small><h1>'+h(c.title)+'</h1><p>'+h(c.committee)+' · '+h(caseStatuses[c.status]||'Utkast')+(c.meeting_date?' · Möte '+h(c.meeting_date):'')+'</p><p class="case-private-marker">Arbetsmaterial. Personliga mötesanteckningar ingår inte. Ej kommunalt beslutsprotokoll eller officiellt partiyttrande.</p></div>'+linked+fields+
  '<p class="case-print-foot">Sammanställt i Politikverkstan. Verifiera källor, belopp och beslutsstatus före extern användning.</p></article>';
 }
 function casesPage(){
