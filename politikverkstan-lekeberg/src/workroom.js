@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const h=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const state={tab:'overview',sharedTab:'team',motionView:'active',sharedView:'active',ideaView:'active',ideaHistory:[],user:null,motions:[],shared:[],motion:null,ideas:[],users:[],directory:[],shares:null,comments:[],ideaComments:[],ideaLinks:[],selectedIdea:null,dirty:false,saving:false,saveTimer:null,notice:'',history:[],review:[],logoDataUri:null,pdfVariant:'sd'};
+const state={tab:'overview',sharedTab:'team',motionView:'active',sharedView:'active',ideaView:'active',ideaHistory:[],user:null,motions:[],shared:[],motion:null,ideas:[],users:[],directory:[],shares:null,comments:[],ideaComments:[],ideaLinks:[],selectedIdea:null,dirty:false,saving:false,saveTimer:null,notice:'',history:[],review:[],logoDataUri:null,pdfVariant:'sd',fileScope:'mine',fileFolder:null,folders:[],files:[]};
 const cats=['Skola och utbildning','Omsorg och socialtjänst','Ekonomi och styrning','Trafik och infrastruktur','Trygghet','Miljö och samhällsbyggnad','Kommunal service','Annat'];
 const statuses={ide:'Idé',utkast:'Utkast',granskning:'För granskning',godkand:'Internt godkänd',inlamnad:'Inlämnad',besvarad:'Besvarad'};
 function newMotion(){return {title:'',category:'Annat',problem:'',motivation:'',proposal:'',clauses:[''],signer:'',party:'Sverigedemokraterna',date:new Date().toISOString().slice(0,10),status:'utkast',reference:'',notes:''};}
@@ -10,9 +10,9 @@ function toast(message,error=false){const old=$('toast');old?.remove();let el=do
 const svg=(p)=>`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const icons={write:svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>'),home:svg('<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>'),list:svg('<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'),bulb:svg('<path d="M9 18h6m-5 4h4M9 14a6 6 0 1 1 6 0l-1 3h-4l-1-3z"/>'),users:svg('<circle cx="9" cy="8" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 8m2 3a6 6 0 0 1 3 6"/>'),arrow:svg('<path d="m9 18 6-6-6-6"/>'),download:svg('<path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v4h16v-4"/>'),plus:svg('<path d="M12 5v14M5 12h14"/>')};
 function nav(id,label,icon){return `<button class="sidebutton ${state.tab===id?'active':''}" type="button" data-tab="${id}">${icons[icon]} ${label}</button>`;}
-function shell(){return `<div class="layout"><aside class="sidebar"><div class="brand"><div class="brand-icon">P</div><div><span>Politikverkstan</span><small>LEKEBERG · SD ARBETSRUM</small></div><button class="mobile-toggle" id="mobile-menu" type="button" aria-label="Visa meny">☰</button></div><div class="navs"><div class="side-section">ARBETSRUM</div>${nav('overview','Översikt','home')}${nav('motions','Mina motioner','list')}${nav('shared','Våra motioner','users')}${nav('editor','Motionsverkstad','write')}${nav('ideas','Våra idéer','bulb')}${state.user?.role==='admin'?`<div class="side-section" style="margin-top:26px">ADMINISTRATION</div>${nav('users','Användare','users')}`:''}</div><div class="sidebar-tail"><strong>${h(state.user?.name||state.user?.email||'')}</strong><p>${state.user?.role==='admin'?'Administratör':'Standardanvändare'}</p><a href="/">← Till publik Mandat & samverkan</a></div></aside><div class="main"><header class="topbar"><div><div class="eyebrow">Inloggningsskyddad arbetsyta</div><h2>${h({overview:'Översikt',motions:'Mina motioner',shared:'Våra motioner',editor:'Motionsverkstad',ideas:'Våra idéer',users:'Användarhantering'}[state.tab])}</h2></div><div class="topactions"><span class="chip">Endast behöriga</span><a class="btn btn-sm" href="/">Publik portal</a></div></header><main class="container">${main()}</main></div></div>`;}
+function shell(){return `<div class="layout"><aside class="sidebar"><div class="brand"><div class="brand-icon">P</div><div><span>Politikverkstan</span><small>LEKEBERG · SD ARBETSRUM</small></div><button class="mobile-toggle" id="mobile-menu" type="button" aria-label="Visa meny">☰</button></div><div class="navs"><div class="side-section">ARBETSRUM</div>${nav('overview','Översikt','home')}${nav('motions','Mina motioner','list')}${nav('shared','Våra motioner','users')}${nav('files','Filer','list')}${nav('editor','Motionsverkstad','write')}${nav('ideas','Våra idéer','bulb')}${state.user?.role==='admin'?`<div class="side-section" style="margin-top:26px">ADMINISTRATION</div>${nav('users','Användare','users')}`:''}</div><div class="sidebar-tail"><strong>${h(state.user?.name||state.user?.email||'')}</strong><p>${state.user?.role==='admin'?'Administratör':'Standardanvändare'}</p><a href="/">← Till publik Mandat & samverkan</a></div></aside><div class="main"><header class="topbar"><div><div class="eyebrow">Inloggningsskyddad arbetsyta</div><h2>${h({overview:'Översikt',motions:'Mina motioner',shared:'Våra motioner',editor:'Motionsverkstad',ideas:'Våra idéer',users:'Användarhantering'}[state.tab])}</h2></div><div class="topactions"><span class="chip">Endast behöriga</span><a class="btn btn-sm" href="/">Publik portal</a></div></header><main class="container">${main()}</main></div></div>`;}
 function header(kicker,title,desc,right=''){return `<div class="headline"><div><div class="eyebrow">${h(kicker)}</div><h1>${h(title)}</h1><p>${h(desc)}</p></div>${right}</div>`;}
-function main(){switch(state.tab){case 'motions':return motionsPage();case 'shared':return sharedPage();case 'editor':return editorPage();case 'ideas':return ideasPage();case 'users':return usersPage();default:return overviewPage();}}
+function main(){switch(state.tab){case 'motions':return motionsPage();case 'shared':return sharedPage();case 'files':return filesPage();case 'editor':return editorPage();case 'ideas':return ideasPage();case 'users':return usersPage();default:return overviewPage();}}
 function overviewPage(){return `${header('Ett gemensamt arbetsverktyg','Välkommen till arbetsrummet','Samla idéer, arbeta fram motioner och fortsätt på sparade utkast. Dina privata dokument förblir privata tills du själv väljer att dela dem.')}
 <section class="intro"><div><h2>Från lokal fråga till genomarbetad motion</h2><p>Motionsverkstaden hjälper dig att avgränsa problemet, skriva en saklig motivering och formulera få, tydliga att-satser enligt Lekebergs riktlinjer.</p></div><button class="btn btn-yellow" data-new="1">${icons.plus} Skapa en motion</button></section>
 <div class="tiles"><button class="tile" data-tab="motions"><div class="tile-icon">▤</div><strong>Mina motioner</strong><small>${state.motions.length} aktiva dokument. Fortsätt skriva där du slutade.</small></button><button class="tile" data-tab="shared"><div class="tile-icon">♧</div><strong>Våra motioner</strong><small>Alla gemensamma motioner, inklusive dem du själv har delat.</small></button><button class="tile" data-tab="ideas"><div class="tile-icon">✧</div><strong>Våra idéer</strong><small>Samla konkreta politiska uppslag. Endast underbyggda och manuellt registrerade idéer.</small></button><button class="tile" data-tab="editor"><div class="tile-icon">✎</div><strong>Motionsverkstad</strong><small>Stegvis skrivstöd, språkkontroll och PDF-export utan AI-API.</small></button></div><div class="card recent-drafts"><h2>Senaste utkast</h2>${motionList(state.motions.slice(0,4))}</div>
@@ -72,7 +72,7 @@ ${state.selectedIdea===x.id?`<div class="idea-thread"><h4>Motioner med koppling 
 function usersPage(){if(state.user?.role!=='admin')return '<p>Åtkomst nekad</p>';return `${header('Administration','Användare','Ge behörighet till enskilda personer. De måste även tillåtas i Cloudflare Access för att kunna logga in.')}
 <div class="card"><h2>Lägg till användare</h2><form id="user-form" class="formgrid"><label class="field"><span>Namn</span><input name="name" maxlength="120" required></label><label class="field"><span>E-postadress</span><input name="email" type="email" required></label><label class="field"><span>Behörighet</span><select name="role"><option value="user">Standardanvändare</option><option value="admin">Administratör</option></select></label><div style="align-self:center"><button type="submit" class="btn btn-primary">Godkänn användare</button></div></form></div><div class="card"><h2>Godkända konton</h2><div style="overflow:auto"><table class="admin-table"><thead><tr><th>E-postadress</th><th>Namn</th><th>Roll</th><th>Status</th><th>Åtgärd</th></tr></thead><tbody>${state.users.map(u=>`<tr><td>${h(u.email)}</td><td><input class="account-name" data-name="${h(u.email)}" maxlength="120" value="${h(u.display_name)}" aria-label="Visningsnamn för ${h(u.email)}"></td><td><select data-role="${h(u.email)}"><option value="user" ${u.role==='user'?'selected':''}>Användare</option><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option></select></td><td>${u.active?'Aktiv':'Inaktiv'}</td><td><button class="btn btn-sm" data-update="${h(u.email)}">Spara roll</button> <button class="btn btn-sm" data-save-name="${h(u.email)}">Spara namn</button> <button class="btn btn-sm ${u.active?'btn-danger':''}" data-active="${h(u.email)}">${u.active?'Inaktivera':'Aktivera'}</button></td></tr>`).join('')}</tbody></table></div></div><div class="card"><h2>Dokumentprofil – logotyp</h2><p>Ladda upp en godkänd SD-logotyp som PNG (max 250 KB). Bilden används endast i SD-motionsmallen. Kontrollera att du har rätt att använda filen.</p><label class="field"><span>Logotyp PNG</span><input type="file" id="branding-file" accept="image/png"></label><div class="toolbar"><button class="btn btn-primary" id="branding-save">Spara logotyp</button><button class="btn" id="branding-remove">Ta bort logotyp</button></div>${state.logoDataUri?`<img src="${state.logoDataUri}" alt="Aktuell logotyp" style="max-height:78px;max-width:160px;object-fit:contain">`:'<p class="muted">Ingen logotyp uppladdad. PDF-mallen visar endast text.</p>'}</div><div class="a-note">En användare behöver både ett aktivt konto här och en tillåtande policy i Cloudflare Access. Ändringar i Access kan behöva göras separat.</div>`;}
 async function openTab(tab){if(state.dirty&&state.motion){try{await saveMotion(false);}catch(e){toast('Kunde inte spara dokumentet före navigering: '+e.message,true);return;}}
- state.tab=tab;if(tab==='ideas')await loadIdeas();if(tab==='shared')await loadShared();if(tab==='users'&&state.user?.role==='admin')await loadUsers();render();window.scrollTo(0,0);
+ state.tab=tab;if(tab==='ideas')await loadIdeas();if(tab==='shared')await loadShared();if(tab==='files')await loadFiles();if(tab==='users'&&state.user?.role==='admin')await loadUsers();render();window.scrollTo(0,0);
 }
 async function createMotion(initial){try{const doc=await api('/api/private/motions','POST',{...newMotion(),...initial});state.motion=doc;state.tab='editor';state.dirty=false;await loadMotions();await openMotion(doc.id);}catch(e){toast(e.message,true);}}
 async function openMotion(id){try{const r=await api('/api/private/motions/'+id);state.motion=r.motion;state.dirty=false;state.shares=null;state.comments=[];if(r.motion.permission==='owner'){try{state.shares=await api('/api/private/motions/'+id+'/shares');state.directory=(await api('/api/private/directory')).users;}catch(e){toast('Delningsinställningar kunde inte laddas: '+e.message,true);}}state.comments=(await api('/api/private/motions/'+id+'/comments')).comments;state.tab='editor';render();window.scrollTo(0,0);}catch(e){toast(e.message,true);}}
@@ -110,7 +110,77 @@ async function lifecycle(id,action){try{
  else {state.motion=(await api('/api/private/motions/'+id)).motion;}}
  render();toast({archive:'Motionen arkiverades.',unarchive:'Motionen återaktiverades.',trash:'Motionen flyttades till papperskorgen.',restore:'Motionen återställdes.',purge:'Motionen raderades permanent.'}[action]);
  }catch(e){toast(e.message,true);}}
+
+function folderPath(id){
+ const names=[],used=new Set();let cur=id;
+ while(cur&&!used.has(cur)){used.add(cur);const row=state.folders.find(f=>f.id===cur);if(!row)break;names.unshift(row.name);cur=row.parent_id;}
+ return names.join(' / ');
+}
+function filesPage(){
+ const scope=state.fileScope,here=state.fileFolder;
+ const dirs=state.folders.filter(f=>f.parent_id===here);
+ const docs=state.files.filter(f=>f.folder_id===here);
+ const crumbs=[],seen=new Set();let cursor=here;
+ while(cursor&&!seen.has(cursor)){seen.add(cursor);const f=state.folders.find(x=>x.id===cursor);if(!f)break;crumbs.unshift(f);cursor=f.parent_id;}
+ return `${header('FILHANTERING','Dokumentarkiv','Lagra egna handlingar, PDF-exporter och gemensamma dokument. Mina dokument är privata. Våra dokument är tillgängliga för alla godkända användare.')}
+ <section class="card file-area">
+  <div class="toolbar file-scope-tabs"><button class="btn ${scope==='mine'?'btn-primary':''}" data-file-scope="mine">Mina dokument</button><button class="btn ${scope==='team'?'btn-primary':''}" data-file-scope="team">Våra dokument</button></div>
+  ${scope==='team'?'<p class="file-warning">Observera: Alla aktiva och godkända användare i arbetsrummet kan se och ladda ned filer här. Lägg inte privata handlingar i denna filarea.</p>':'<p class="muted">Den här filarean är privat och syns bara för dig, även om du är administratör.</p>'}
+  <div class="file-crumbs"><button class="btn btn-sm" data-folder-open="">${scope==='mine'?'Mina dokument':'Våra dokument'}</button>${crumbs.map(f=>' / <button class="btn btn-sm" data-folder-open="'+h(f.id)+'">'+h(f.name)+'</button>').join('')}</div>
+  <div class="file-actions"><form id="upload-files"><label class="file-picker"><span>Välj filer (max 5 MB per fil)</span><input type="file" name="files" id="file-picker" multiple required></label><button class="btn btn-primary" type="submit">Ladda upp</button></form><button class="btn" id="new-file-folder">+ Ny mapp</button></div>
+  <p class="file-limit">Högst 5 MB per fil och totalt 100 MB per användare. PDF-exporter från motionsverkstaden sparas automatiskt i Mina dokument.</p>
+  <div class="file-list">
+   ${here?'<div class="file-row"><div><strong>↰ Överordnad mapp</strong></div><button class="btn btn-sm" data-folder-open="'+h(state.folders.find(f=>f.id===here)?.parent_id||'')+'">Öppna</button></div>':''}
+   ${dirs.map(f=>'<div class="file-row"><div><strong>📁 '+h(f.name)+'</strong><small>Mapp</small></div><div class="file-row-actions"><button class="btn btn-sm" data-folder-open="'+h(f.id)+'">Öppna</button>'+(f.owner_email===state.user.email?'<button class="btn btn-sm" data-folder-rename="'+h(f.id)+'">Byt namn</button><button class="btn btn-sm btn-danger" data-folder-delete="'+h(f.id)+'">Ta bort</button>':'')+'</div></div>').join('')}
+   ${docs.map(f=>'<div class="file-row"><div><strong>📄 '+h(f.name)+'</strong><small>'+h(f.owner_email===state.user.email?'Min fil':'Uppladdad av '+f.owner_email)+' · '+(f.size_bytes/1024).toFixed(1)+' KB · '+h((f.created_at||'').slice(0,16).replace('T',' '))+'</small></div><div class="file-row-actions"><a class="btn btn-sm" href="/api/private/files/'+encodeURIComponent(f.id)+'/download">Ladda ned</a>'+(f.owner_email===state.user.email?'<button class="btn btn-sm" data-file-rename="'+h(f.id)+'">Byt namn</button><button class="btn btn-sm" data-file-move="'+h(f.id)+'">Flytta</button><button class="btn btn-sm" data-file-share="'+h(f.id)+'">'+(scope==='mine'?'Dela':'Gör privat')+'</button><button class="btn btn-sm btn-danger" data-file-delete="'+h(f.id)+'">Ta bort</button>':'')+'</div></div>').join('')}
+   ${!docs.length&&!dirs.length?'<div class="empty">Mappen är tom. Skapa en mapp eller ladda upp en fil.</div>':''}
+  </div>
+ </section>`;
+}
+async function loadFiles(){
+ const result=await api('/api/private/files?scope='+encodeURIComponent(state.fileScope));
+ state.files=result.files||[];state.folders=result.folders||[];
+ if(state.fileFolder&&!state.folders.some(f=>f.id===state.fileFolder))state.fileFolder=null;
+}
+async function sendFile(file,scope='mine',folder=null){
+ const form=new FormData();form.append('file',file);form.append('scope',scope);if(folder)form.append('folder_id',folder);
+ const r=await fetch('/api/private/files',{method:'POST',credentials:'same-origin',cache:'no-store',headers:{accept:'application/json'},body:form});
+ let result={};try{result=await r.json();}catch{}
+ if(!r.ok)throw Error(result.error||'Filen kunde inte sparas (HTTP '+r.status+').');
+ return result;
+}
+async function fileAction(url,method,data){
+ const result=await api(url,method,data);await loadFiles();render();return result;
+}
+
 function attach(){
+
+ document.querySelectorAll('[data-file-scope]').forEach(b=>b.addEventListener('click',async()=>{
+  state.fileScope=b.dataset.fileScope;state.fileFolder=null;
+  try{await loadFiles();render();}catch(e){toast(e.message,true);}
+ }));
+ document.querySelectorAll('[data-folder-open]').forEach(b=>b.addEventListener('click',()=>{state.fileFolder=b.dataset.folderOpen||null;render();}));
+ $('new-file-folder')?.addEventListener('click',async()=>{const name=prompt('Namn på den nya mappen:');if(name===null)return;try{await fileAction('/api/private/folders','POST',{name,scope:state.fileScope,parent_id:state.fileFolder});toast('Mappen skapades.');}catch(e){toast(e.message,true);}});
+ $('upload-files')?.addEventListener('submit',async e=>{e.preventDefault();const button=e.currentTarget.querySelector('button[type=submit]');const chosen=[...($('file-picker')?.files||[])];if(!chosen.length)return;
+  button.disabled=true;let completed=0;
+  try{for(const file of chosen){await sendFile(file,state.fileScope,state.fileFolder);completed++;}await loadFiles();render();toast(completed+' fil(er) uppladdade.');}
+  catch(ex){await loadFiles();render();toast(completed+' fil(er) uppladdade. '+ex.message,true);}
+ });
+ document.querySelectorAll('[data-folder-rename]').forEach(b=>b.addEventListener('click',async()=>{const f=state.folders.find(x=>x.id===b.dataset.folderRename);const name=prompt('Nytt mappnamn:',f?.name||'');if(name===null)return;try{await fileAction('/api/private/folders/'+f.id,'PATCH',{name});}catch(e){toast(e.message,true);}}));
+ document.querySelectorAll('[data-folder-delete]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Ta bort denna tomma mapp?'))return;try{await fileAction('/api/private/folders/'+b.dataset.folderDelete,'DELETE');}catch(e){toast(e.message,true);}}));
+ document.querySelectorAll('[data-file-rename]').forEach(b=>b.addEventListener('click',async()=>{const f=state.files.find(x=>x.id===b.dataset.fileRename);const name=prompt('Nytt filnamn:',f?.name||'');if(name===null)return;try{await fileAction('/api/private/files/'+f.id,'PATCH',{name});}catch(e){toast(e.message,true);}}));
+ document.querySelectorAll('[data-file-delete]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Radera filen permanent? Detta går inte att ångra.'))return;try{await fileAction('/api/private/files/'+b.dataset.fileDelete,'DELETE');toast('Filen raderades.');}catch(e){toast(e.message,true);}}));
+ document.querySelectorAll('[data-file-share]').forEach(b=>b.addEventListener('click',async()=>{const f=state.files.find(x=>x.id===b.dataset.fileShare);if(!f)return;const scope=f.scope==='mine'?'team':'mine';if(!confirm(scope==='team'?'Dela filen med alla aktiva användare i Våra dokument?':'Göra filen privat igen?'))return;
+  try{await fileAction('/api/private/files/'+f.id,'PATCH',{scope,folder_id:null});toast(scope==='team'?'Filen är nu delad med gruppen.':'Filen är nu privat.');}catch(e){toast(e.message,true);}
+ }));
+ document.querySelectorAll('[data-file-move]').forEach(b=>b.addEventListener('click',async()=>{const f=state.files.find(x=>x.id===b.dataset.fileMove);if(!f)return;
+  const options=[{id:null,name:'Rotmappen'},...state.folders.map(x=>({id:x.id,name:folderPath(x.id)}))];
+  const msg='Flytta filen till vilken mapp?\n'+options.map((x,i)=>i+': '+x.name).join('\n')+'\n\nAnge nummer:';
+  const answer=prompt(msg,'0');if(answer===null)return;const n=Number(answer);
+  if(!Number.isInteger(n)||n<0||n>=options.length){toast('Ogiltigt mappnummer.',true);return;}
+  try{await fileAction('/api/private/files/'+f.id,'PATCH',{folder_id:options[n].id});toast('Filen flyttades.');}catch(e){toast(e.message,true);}
+ }));
+
  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>openTab(b.dataset.tab)));
  document.querySelectorAll('[data-new]').forEach(b=>b.addEventListener('click',()=>createMotion()));
  document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openMotion(b.dataset.open)));
@@ -128,7 +198,19 @@ function attach(){
  document.querySelectorAll('[data-clause-del]').forEach(b=>b.addEventListener('click',()=>{if(state.motion.clauses.length===1)state.motion.clauses=[''];else state.motion.clauses.splice(Number(b.dataset.clauseDel),1);markDirty();render();}));
  $('add-clause')?.addEventListener('click',()=>{if(state.motion.clauses.length>=12){toast('Högst 12 att-satser kan registreras; överväg att dela motionen.',true);return;}state.motion.clauses.push('');markDirty();render();});
  $('save-motion')?.addEventListener('click',()=>saveMotion().catch(e=>toast(e.message,true)));
- $('export-motion')?.addEventListener('click',async()=>{try{if(state.dirty)await saveMotion(false);await api('/api/private/motions/'+state.motion.id);const blob=await window.MotionPDF.createPdf(state.motion,$('pdf-template')?.value||'sd',state.logoDataUri);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='motion-'+(state.motion.title||'utkast').toLowerCase().replace(/[^a-zåäö0-9]+/g,'-').slice(0,48)+'.pdf';document.body.append(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},300);toast('PDF skapad. Dokumentet är inte automatiskt inlämnat.');}catch(e){toast(e.message,true);}});
+  $('export-motion')?.addEventListener('click',async()=>{
+  try{
+   if(state.dirty)await saveMotion(false);
+   await api('/api/private/motions/'+state.motion.id);
+   const blob=await window.MotionPDF.createPdf(state.motion,$('pdf-template')?.value||'sd',state.logoDataUri);
+   const name='motion-'+(state.motion.title||'utkast').toLowerCase().replace(/[^a-zåäö0-9]+/g,'-').slice(0,48)+'.pdf';
+   let storageError=null;
+   try{await sendFile(new File([blob],name,{type:'application/pdf'}),'mine',null);}catch(e){storageError=e.message;}
+   const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=name;document.body.append(link);link.click();
+   setTimeout(()=>{URL.revokeObjectURL(link.href);link.remove();},300);
+   toast(storageError?'PDF hämtad, men kunde inte arkiveras i Mina dokument: '+storageError:'PDF skapad och sparad i Mina dokument. Dokumentet är inte automatiskt inlämnat.',!!storageError);
+  }catch(e){toast(e.message,true);}
+ });
  $('duplicate-motion')?.addEventListener('click',()=>createMotion({...state.motion,id:undefined,title:state.motion.title+' – kopia',status:'utkast'}));
  $('versions-motion')?.addEventListener('click',async()=>{try{const d=await api('/api/private/motions/'+state.motion.id+'/versions');if(!d.versions.length){toast('Inga tidigare versioner ännu.');return;}const text=d.versions.map(v=>`Version ${v.revision} (${v.created_at.slice(0,16).replace('T',' ')})${v.editor_email?' – redigerad av '+v.editor_email:''}`).join('\n');let choice=prompt('Tillgängliga tidigare versioner:\n'+text+'\n\nAnge versionsnummer för att återställa.');if(choice===null)return;const version=Number(choice);if(!d.versions.some(x=>x.revision===version)){toast('Versionen finns inte.',true);return;}if(!confirm('Återställa version '+version+'? En ny version skapas.'))return;const r=await api('/api/private/motions/'+state.motion.id+'/restore','POST',{revision:version,current_revision:state.motion.revision});state.motion=r;state.dirty=false;render();toast('Version återställd.');}catch(e){toast(e.message,true);}});
  $('share-form')?.addEventListener('submit',async e=>{e.preventDefault();try{if(state.dirty)await saveMotion(false);const team=e.currentTarget.querySelector('[name="team_permission"]').value;const shares=[...e.currentTarget.querySelectorAll('[data-share-email]')].filter(el=>el.value!=='none').map(el=>({email:el.dataset.shareEmail,permission:el.value}));if(team!=='none'&&!confirm('Göra motionen tillgänglig för hela arbetsgruppen med vald behörighet?'))return;await api('/api/private/motions/'+state.motion.id+'/shares','PUT',{team_permission:team,shares});state.shares=await api('/api/private/motions/'+state.motion.id+'/shares');state.motion.team_permission=team;await loadMotions();render();toast('Delningen uppdaterades.');}catch(ex){toast(ex.message,true);}});
