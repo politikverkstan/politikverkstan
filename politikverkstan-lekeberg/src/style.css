@@ -346,3 +346,46 @@ html[data-theme="dark"] .header-button.global-search{background:#263740;color:#d
 html[data-theme="dark"] .global-search kbd{background:#354751;color:#e4e9eb}
 html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;color:#f6bea8;border-color:#584139}
 @media print{.pv-hero,.pv-home-links,.pv-protected{display:none!important}}
+
+
+/* Etapp 1: guided mandate analysis, accessible in both light and dark modes. */
+.guide-panel{background:var(--pv-panel,#fff);border:1px solid var(--pv-border,#e5e6e5);border-radius:14px;margin:0 0 28px;padding:23px 25px;box-shadow:0 8px 30px #1c27310e;scroll-margin-top:25px}
+.guide-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.guide-head h2{margin:9px 0 14px;letter-spacing:-.6px;font-size:24px;color:var(--pv-ink,#1c2731)}
+.guide-exit{border:1px solid var(--pv-border,#e5e6e5);border-radius:8px;background:var(--pv-panel,#fff);color:var(--pv-ink,#1c2731);padding:8px}
+.guide-exit:hover{background:var(--pv-raised,#f3f1ee)}
+.guide-steps{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
+.guide-steps span{border:1px solid var(--pv-border,#e5e6e5);background:var(--pv-raised,#f3f1ee);color:var(--pv-muted,#657383);border-radius:20px;padding:7px 13px;font-size:11px;font-weight:750}
+.guide-steps span.current{background:var(--pv-accent,#be5137);border-color:var(--pv-accent,#be5137);color:#fff}
+.guide-steps span.done{color:var(--pv-ink,#1c2731);background:var(--pv-panel,#fff)}
+.guide-body{margin:0 0 18px}
+.guide-body>p{font-size:13px;line-height:1.65;color:var(--pv-muted,#657383);margin:0 0 18px;max-width:750px}
+.guide-body>p strong{color:var(--pv-ink,#1c2731)}
+.guide-field{display:flex;flex-direction:column;gap:8px;font-size:12px;font-weight:800;color:var(--pv-ink,#1c2731);max-width:520px}
+.guide-field select{display:block;background:var(--pv-panel,#fff);color:var(--pv-ink,#1c2731);border:1px solid var(--pv-border,#e5e6e5);padding:12px;border-radius:9px;font-size:13px}
+.guide-caution{margin-top:17px;padding:13px;display:flex;align-items:flex-start;gap:11px;border:1px solid #e8d4c7;background:#fef6ef;border-radius:9px;color:#84513b;font-size:12px;line-height:1.6}
+.guide-caution svg{flex:none;margin-top:1px}
+.guide-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.guide-choice{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--pv-border,#e5e6e5);background:var(--pv-panel,#fff);padding:16px;border-radius:9px;cursor:pointer}
+.guide-choice:has(input:checked){border-color:var(--pv-accent,#be5137);box-shadow:inset 0 0 0 1px var(--pv-accent,#be5137)}
+.guide-choice input{accent-color:var(--pv-accent,#be5137);margin-top:4px}
+.guide-choice strong,.guide-choice small{display:block}
+.guide-choice strong{font-size:12px;color:var(--pv-ink,#1c2731);margin-bottom:5px}
+.guide-choice small{font-size:11px;color:var(--pv-muted,#657383);line-height:1.5}
+.guide-footer{display:flex;justify-content:flex-end;gap:11px;border-top:1px solid var(--pv-border,#e5e6e5);padding-top:15px}
+.guide-footer button:disabled{opacity:.45;cursor:not-allowed}
+.guide-footer button:focus-visible,.guide-field select:focus-visible,.guide-exit:focus-visible{outline:3px solid #cf7858;outline-offset:2px}
+.guide-scroll{max-width:100%;overflow-x:auto;border:1px solid var(--pv-border,#e5e6e5);border-radius:9px}
+.guide-result{border-collapse:collapse;width:100%;font-size:12px;min-width:580px}
+.guide-result th,.guide-result td{padding:11px 13px;border-bottom:1px solid var(--pv-border,#e5e6e5);text-align:right;color:var(--pv-ink,#1c2731)}
+.guide-result th:first-child{text-align:left}
+.guide-result thead th{background:var(--pv-raised,#f3f1ee);font-weight:800}
+.guide-result tbody tr:last-child th,.guide-result tbody tr:last-child td{border-bottom:0}
+.registry-source-summary{background:var(--pv-raised,#f3f1ee);border:1px solid var(--pv-border,#e5e6e5);padding:11px 13px;margin-bottom:12px;border-radius:8px;font-size:12px;color:var(--pv-muted,#657383);line-height:1.6}
+.registry-source-summary strong{color:var(--pv-ink,#1c2731)}
+.registry-validation{color:var(--pv-muted,#657383);font-size:11px;line-height:1.45}
+html[data-theme="dark"] .guide-caution{background:#362d29;border-color:#665143;color:#f2c5a9}
+html[data-theme="dark"] .guide-steps span.current{color:#171f22;background:#eda582}
+html[data-theme="dark"] .guide-steps span.done{color:#e7f1f2}
+@media(max-width:780px){.guide-panel{padding:18px 16px}.guide-choices{grid-template-columns:1fr}.guide-steps span{font-size:10px;padding:6px 9px}.guide-footer{flex-wrap:wrap}.guide-footer button{flex:1}}
+@media print{.guide-panel{display:none!important}}
