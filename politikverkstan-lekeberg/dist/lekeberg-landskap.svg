@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="560" viewBox="0 0 1600 560" role="img" aria-label="Illustration av höstlandskap med åkrar, skog och småort i Lekeberg">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f4d6b8"/><stop offset=".53" stop-color="#f9ecda"/><stop offset="1" stop-color="#d6c5a7"/></linearGradient>
+ <linearGradient id="field" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#caac70"/><stop offset="1" stop-color="#7f8b55"/></linearGradient>
+ <linearGradient id="road" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#b7a18b"/><stop offset="1" stop-color="#695f58"/></linearGradient>
+ <linearGradient id="soft" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#f8f4ee" stop-opacity=".98"/><stop offset=".56" stop-color="#f8f4ee" stop-opacity=".74"/><stop offset=".74" stop-color="#f8f4ee" stop-opacity="0"/></linearGradient>
+ <linearGradient id="house" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#fbefda"/><stop offset="1" stop-color="#b4a08c"/></linearGradient>
+ <radialGradient id="sun"><stop stop-color="#fff4c8" stop-opacity=".85"/><stop offset="1" stop-color="#fff4c8" stop-opacity="0"/></radialGradient>
+</defs>
+<rect width="1600" height="560" fill="url(#sky)"/>
+<circle cx="1230" cy="160" r="300" fill="url(#sun)"/>
+<path d="M0 323Q130 287 270 318Q450 269 620 323Q850 245 1020 310Q1270 249 1600 297V560H0Z" fill="#92927a" opacity=".55"/>
+<path d="M0 373Q260 323 465 352Q640 322 790 359Q1070 280 1260 334Q1425 286 1600 325V560H0Z" fill="#556c59"/>
+<g fill="#4b6657" opacity=".82">
+ <path d="M700 361l17-83 17 83zm33 2 14-95 20 95zm52 1 15-78 20 78zm36 0 11-66 16 66zm50-9 21-90 22 90zm53-12 15-78 20 78z"/>
+ <path d="M1170 329l17-80 19 80zm43-3 15-99 24 99zm55 8 20-111 25 111zm58-7 18-85 16 85zm50-14 24-114 22 114zm60 6 22-121 22 121zm59-5 16-83 21 83z"/>
+</g>
+<path d="M0 408Q290 359 510 403Q725 372 890 408Q1260 341 1600 402V560H0Z" fill="url(#field)"/>
+<path d="M0 471Q310 422 600 456Q840 432 1100 450Q1410 424 1600 439V560H0Z" fill="#aca16e"/>
+<path d="M1165 560Q1160 501 1032 462Q932 430 951 407L1048 387Q1031 424 1110 446Q1297 493 1350 560Z" fill="url(#road)"/>
+<path d="M1177 560Q1170 503 1036 458" stroke="#d8c8b3" stroke-width="5" fill="none" opacity=".7"/>
+<g transform="translate(925 278)">
+ <rect x="0" y="61" width="122" height="128" rx="2" fill="url(#house)"/>
+ <path d="M-18 65 56 13 137 65Z" fill="#55493f"/>
+ <path d="M-14 64 55 18 131 64" fill="none" stroke="#785b4d" stroke-width="7"/>
+ <rect x="45" y="115" width="31" height="74" fill="#706254"/>
+ <rect x="12" y="79" width="22" height="30" fill="#64828a"/><rect x="89" y="79" width="22" height="30" fill="#64828a"/>
+ <path d="M23 79v30M100 79v30" stroke="#f4eedf" stroke-width="3"/>
+ <path d="M0 147h122" stroke="#fff3dd" stroke-width="3" opacity=".6"/>
+</g>
+<g transform="translate(1092 326)"><rect width="83" height="104" fill="#a34e41"/><path d="M-8 3 44-37 91 3Z" fill="#493f37"/><rect x="12" y="18" width="17" height="22" fill="#dfbd8b"/><rect x="52" y="18" width="17" height="22" fill="#dfbd8b"/><rect x="32" y="65" width="22" height="39" fill="#6d3f34"/></g>
+<g transform="translate(792 320)"><rect width="62" height="89" fill="#d6ad77"/><path d="M-8 4 31-31 72 4Z" fill="#614b43"/><rect x="16" y="32" width="18" height="23" fill="#e9e0c2"/></g>
+<g transform="translate(1212 342)"><rect width="120" height="77" fill="#b75f4d"/><path d="M-13 3 58-41 132 3Z" fill="#55453b"/><rect x="18" y="30" width="23" height="23" fill="#e6d1a7"/><rect x="70" y="30" width="23" height="23" fill="#e6d1a7"/></g>
+<g transform="translate(1382 315)"><rect width="75" height="100" fill="#e2ceae"/><path d="M-9 4 33-43 83 4Z" fill="#53473f"/><rect x="18" y="41" width="21" height="28" fill="#697e7c"/></g>
+<g fill="#284437">
+ <path d="M1555 425q-45-60-18-135q-60-50-17-108q30-70 78-17v258z"/>
+ <path d="M747 429q-48-71-8-107q-24-45 19-90q49 39 20 94q32 54-31 103z"/>
+</g>
+<g stroke="#5a493b" stroke-width="9" fill="none" stroke-linecap="round"><path d="M1533 560q25-177 21-370"/><path d="M1554 308q-28-42-67-54"/><path d="M1552 275q25-39 48-47"/></g>
+<g fill="#bb713e"><circle cx="1460" cy="197" r="74" opacity=".68"/><circle cx="1530" cy="133" r="63"/><circle cx="1584" cy="225" r="71" opacity=".81"/><circle cx="1420" cy="265" r="46"/></g>
+<g fill="#d59a46"><circle cx="1450" cy="125" r="53" opacity=".78"/><circle cx="1565" cy="80" r="58" opacity=".7"/><circle cx="1516" cy="257" r="46"/></g>
+<g stroke="#8b7c52" stroke-width="3" opacity=".65"><path d="M900 474l-17 86m43-84-10 84m43-79-12 79m57-82-4 82m54-76 12 76m41-58 23 58"/></g>
+<rect width="1600" height="560" fill="url(#soft)"/>
+</svg>
