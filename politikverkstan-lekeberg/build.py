@@ -14,6 +14,8 @@ for a,b in values.items(): tpl=tpl.replace(a,b)
 assert '/*' not in tpl or True
 out=root/'dist'
 out.mkdir(exist_ok=True)
+# Keep static assets in the published bundle on every build.
+(out/'lekeberg-landskap.svg').write_bytes((root/'lekeberg-landskap.svg').read_bytes())
 # Keep the favicon in the published static assets on every build.
 (out/'favicon.ico').write_bytes((root/'favicon.ico').read_bytes())
 (out/'index.html').write_text(tpl,encoding='utf-8')
