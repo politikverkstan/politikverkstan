@@ -233,3 +233,116 @@ html[data-theme="dark"] .card-footer{border-top-color:#314554}
  html[data-theme="dark"] body{background:#fff;color:#172a38}
  html[data-theme="dark"] .main-card{background:#fff;color:#172a38;box-shadow:none}
 }
+
+
+/* 0.5.6 — Lekeberg-inspired Graphite & Clay.
+ * Public pages contain only local calculations and public methodology.
+ * Same colour tokens and component styling as the protected Arbetsyta. */
+:root{
+ --pv-bg:#f7f6f4;--pv-panel:#fff;--pv-ink:#1c2731;--pv-muted:#657383;
+ --pv-border:#e5e6e5;--pv-accent:#be5137;--pv-accent-hover:#a43f29;
+ --pv-side:#1c2328;--pv-raised:#f3f1ee;
+ --ink:var(--pv-ink);--muted:var(--pv-muted);--border:var(--pv-border);
+ --card:var(--pv-panel);--sidebar:var(--pv-side);--blue:var(--pv-accent);--accent:var(--pv-accent);
+ background:var(--pv-bg);color:var(--pv-ink);
+}
+body{background:var(--pv-bg);color:var(--pv-ink)}
+.sidebar{background:var(--pv-side);color:#e9eaeb;box-shadow:none}
+.brand-mark{background:linear-gradient(155deg,#ffd7bf,#d77e5d);border:0;color:#1b252b;border-radius:10px;box-shadow:none}
+.brand-title{color:#fff}.brand-caption{color:#afbbc1}
+.side-section-label{color:#a1afb7}
+.nav-link{color:#c8d1d5}
+.nav-link.active{background:#423430;box-shadow:inset 3px 0 #dc785d;color:#fff}
+.nav-link:not(.active):hover{background:#30383e;color:#fff}
+.sidebar-bottom{border-color:#485057}.side-dot{background:#d97558;box-shadow:0 0 0 4px #4d3330}
+.portal-workroom{background:#252c30;border:1px solid #455059}
+.portal-workroom>span{color:#dda38d}.portal-workroom a{color:#ffe2d1}
+.portal-workroom a span{color:#e98c6b}.portal-workroom small{color:#bac5c9}
+.topbar{background:#fff;border-bottom-color:var(--pv-border);box-shadow:none}
+.breadcrumb{color:#86919b}.breadcrumb b{color:#3a444d}
+.header-button,.small-button,.text-button{background:#fff;color:#263744;border-color:var(--pv-border)}
+.header-button:hover,.small-button:hover{background:#f8f1ec;border-color:#dfc4b7}
+.header-button.workroom-shortcut{background:#fff;color:#9f452f;border-color:#ead6cb}
+.header-button.workroom-shortcut:hover{background:#fff0e8}
+.header-button.theme-toggle{background:#fff;color:#394956;border-color:var(--pv-border)}
+.header-button.theme-toggle:hover{background:#f5eee9}
+.header-button.global-search{flex:1;max-width:365px;justify-content:flex-start;color:#76828d;font-weight:500}
+.global-search kbd{margin-left:auto;border-radius:5px;background:#f1f2f3;color:#687485;padding:4px 7px;font:700 10px system-ui}
+.top-actions{flex:1;justify-content:flex-end}
+.primary-button{background:var(--pv-accent);color:#fff;border-color:var(--pv-accent);box-shadow:none}
+.primary-button:hover{background:var(--pv-accent-hover)}
+.page-head h1,.stat-value,.coalition-title,.coalition-strength,.card-top h2,.legal-grid h2{color:#202e3a}
+.main-card,.stat{background:#fff;border-color:var(--pv-border);box-shadow:0 5px 18px #25313d08}
+.coalition-card,.new-coalition{background:#fcfbfa;border-color:#e8e5e1}
+.coalition-card:hover{border-color:#ce9985}
+.info-strip{background:#fff6f0;border-color:#f0e0d6;color:#795240}
+/* Open-public homepage: no private cards or example motions */
+.pv-hero{position:relative;isolation:isolate;overflow:hidden;min-height:340px;border-radius:15px;background:#f5eee6;display:flex;align-items:center;margin-bottom:20px;border:1px solid #eee8e2}
+.pv-hero-scenery{position:absolute;z-index:-1;inset:0;background-image:url('/lekeberg-landskap.svg');background-repeat:no-repeat;background-size:cover;background-position:center center}
+.pv-hero-copy{position:relative;padding:35px 38px 42px;max-width:650px}
+.pv-overline{font-size:10px;font-weight:850;letter-spacing:2px;color:#b34c35}
+.pv-hero h1{font:850 clamp(32px,4vw,56px)/1.12 'Manrope','Segoe UI',sans-serif;letter-spacing:-2.7px;color:#182530;margin:16px 0}
+.pv-hero p{max-width:485px;color:#4c5968;font-size:15px;line-height:1.65;margin:0 0 22px}
+.pv-hero-actions{display:flex;flex-wrap:wrap;gap:10px}
+.pv-cta,.pv-ghost{display:inline-flex;align-items:center;justify-content:center;gap:11px;padding:13px 19px;border-radius:9px;font-size:12px;font-weight:800;border:1px solid var(--pv-accent)}
+.pv-cta{background:var(--pv-accent);color:white}.pv-cta:hover{background:#a63f28}
+.pv-ghost{background:#fffbf8;color:#a8442e}.pv-ghost:hover{background:#fbe9dd}
+.pv-home-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-bottom:24px}
+.pv-feature{display:flex;align-items:center;text-align:left;gap:16px;padding:20px 24px;border:1px solid var(--pv-border);border-radius:11px;background:#fff;color:#1b2933;min-width:0}
+.pv-feature:hover{border-color:#e7bda7;background:#fffbf8}
+.pv-feature>span:nth-child(2){flex:1;min-width:0}
+.pv-feature-icon,.pv-lock-icon{width:49px;height:49px;flex:none;border-radius:11px;display:grid;place-items:center;background:#faeae2;color:#b94830}
+.pv-feature strong,.pv-feature small{display:block}.pv-feature strong{font-size:14px;margin-bottom:7px}
+.pv-feature small{font-size:12px;color:#657383;line-height:1.5;font-weight:400}
+.pv-feature>svg:last-child{color:var(--pv-accent)}
+.pv-home-section{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;align-items:center;margin:0 0 30px}
+.pv-home-section h2{font-size:23px;letter-spacing:-.6px;margin:10px 0 6px;color:#1b2a34}
+.pv-home-section p{color:#657383;max-width:650px;line-height:1.6;margin:0}
+.pv-protected{padding:21px 20px 19px;background:#1e282d;border-radius:13px;color:white!important;display:flex;flex-direction:column;align-items:flex-start;gap:9px;position:relative;overflow:hidden;text-decoration:none!important;border:1px solid #39464a}
+.pv-protected::after{content:'';position:absolute;right:-66px;top:-75px;width:190px;height:190px;border-radius:50%;background:radial-gradient(circle,#ad563b45,transparent 68%);pointer-events:none}
+.pv-protected .pv-lock-icon{width:39px;height:39px;background:#443631;color:#e3a189}
+.pv-protected .pv-overline{font-size:9px;color:#ed9b7b;letter-spacing:1.6px}
+.pv-protected strong{font-size:22px}.pv-protected small{font-size:11px;font-weight:400;line-height:1.6;color:#d2d9d9}
+.pv-protected-link{align-self:stretch;text-align:center;display:flex;justify-content:center;align-items:center;gap:8px;border-radius:8px;background:#bd5439;color:#fff;font-size:12px;font-weight:800;padding:10px 14px;margin-top:8px}
+.pv-protected:hover .pv-protected-link{background:#a8422b}
+:where(.pv-cta,.pv-ghost,.pv-feature,.global-search,.pv-protected):focus-visible{outline:3px solid #cc7658;outline-offset:3px}
+@media(max-width:1100px){.global-search{display:none!important}.pv-home-section{grid-template-columns:minmax(0,1fr) 260px}}
+@media(max-width:780px){.pv-hero-copy{padding:26px 25px 32px}.pv-hero{min-height:325px}.pv-home-section{grid-template-columns:1fr}.pv-protected{max-width:none}.pv-home-links{grid-template-columns:1fr}}
+@media(max-width:530px){.pv-hero{min-height:365px}.pv-hero-scenery{opacity:.45;background-position:55% center}.pv-hero-copy{padding:25px 20px}.pv-hero h1{font-size:35px;letter-spacing:-1.4px}.pv-hero p{font-size:13px}.pv-feature{padding:16px}.pv-feature-icon{width:42px;height:42px}.pv-home-section h2{font-size:21px}}
+
+/* Same charcoal and clay direction at night. */
+html[data-theme="dark"]{
+ --pv-bg:#111b21;--pv-panel:#1c2a31;--pv-ink:#e8edf0;--pv-muted:#b2c1c9;
+ --pv-border:#364852;--pv-accent:#e08a6d;--pv-accent-hover:#f19a79;
+ --pv-side:#151e23;--pv-raised:#263740;
+ --ink:var(--pv-ink);--muted:var(--pv-muted);--border:var(--pv-border);
+ --card:var(--pv-panel);--sidebar:var(--pv-side);--blue:var(--pv-accent);--accent:var(--pv-accent);
+ background:var(--pv-bg);color:var(--pv-ink);
+}
+html[data-theme="dark"] body{background:var(--pv-bg);color:var(--pv-ink)}
+html[data-theme="dark"] .sidebar{background:#141d23}
+html[data-theme="dark"] .nav-link.active{background:#44322d;box-shadow:inset 3px 0 #e58e6f}
+html[data-theme="dark"] .topbar,html[data-theme="dark"] .main-card,
+html[data-theme="dark"] .stat{background:var(--pv-panel);border-color:var(--pv-border)}
+html[data-theme="dark"] :is(.page-head h1,.stat-value,.coalition-title,.coalition-strength,
+.card-top h2,.legal-grid h2,.breadcrumb b){color:#ecf2f3}
+html[data-theme="dark"] .primary-button{background:#bc5b41;color:white;border-color:#bc5b41}
+html[data-theme="dark"] .primary-button:hover{background:#d27758}
+html[data-theme="dark"] .pv-hero{background:#29353b;border-color:#45535b}
+html[data-theme="dark"] .pv-hero-scenery{opacity:.5}
+html[data-theme="dark"] .pv-hero::before{content:'';z-index:-1;position:absolute;inset:0;background:linear-gradient(90deg,#17242cee,#17242cbd 54%,transparent 90%)}
+html[data-theme="dark"] .pv-hero h1,html[data-theme="dark"] .pv-home-section h2{color:#f2f4f3}
+html[data-theme="dark"] .pv-hero p,html[data-theme="dark"] .pv-home-section p{color:#c6d2d8}
+html[data-theme="dark"] .pv-overline{color:#ffac88}
+html[data-theme="dark"] .pv-ghost{background:#283842;color:#ffd0bb;border-color:#bd6b4c}
+html[data-theme="dark"] .pv-cta{background:#c86648;border-color:#c86648}
+html[data-theme="dark"] .pv-feature{background:#1c2a31;border-color:#364852;color:#ebf1f4}
+html[data-theme="dark"] .pv-feature:hover{background:#26363e}
+html[data-theme="dark"] .pv-feature strong{color:#edf3f5}
+html[data-theme="dark"] .pv-feature small{color:#b8c6ce}
+html[data-theme="dark"] .pv-feature-icon{background:#3d322f;color:#f0a081}
+html[data-theme="dark"] .pv-protected{background:#182229;border-color:#44535b}
+html[data-theme="dark"] .header-button.global-search{background:#263740;color:#d1dee1;border-color:#44535b}
+html[data-theme="dark"] .global-search kbd{background:#354751;color:#e4e9eb}
+html[data-theme="dark"] .header-button.workroom-shortcut{background:#302f2e;color:#f6bea8;border-color:#584139}
+@media print{.pv-hero,.pv-home-links,.pv-protected{display:none!important}}
