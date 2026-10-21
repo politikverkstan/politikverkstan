@@ -141,7 +141,7 @@ export async function handleMeetings(req,env,user){
    }
    const old=await env.DB.prepare('SELECT * FROM work_meeting_items WHERE id=? AND meeting_id=?').bind(itemId,id).first();
    if(!old)return error(404,'Dagordningspunkten finns inte');
-   if(method==='GET')return json({item:old});
+   if(method==='GET')return canEdit?json({item:old}):error(403,'Bara ägaren får läsa råa dagordningsuppgifter');
    if(!canEdit)return error(403,'Bara ägaren får ändra dagordningen');
    if(operation==='move'){
     if(method!=='POST')return error(405,'Metod tillåts inte');
