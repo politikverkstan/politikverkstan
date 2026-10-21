@@ -217,13 +217,13 @@ function casesPage(){
 
 function usersPage(){if(state.user?.role!=='admin')return '<p>Åtkomst nekad</p>';return `${header('Administration','Användare','Ge behörighet till enskilda personer. De måste även tillåtas i Cloudflare Access för att kunna logga in.')}
 <div class="card"><h2>Lägg till användare</h2><form id="user-form" class="formgrid"><label class="field"><span>Namn</span><input name="name" maxlength="120" required></label><label class="field"><span>E-postadress</span><input name="email" type="email" required></label><label class="field"><span>Behörighet</span><select name="role"><option value="user">Standardanvändare</option><option value="admin">Administratör</option></select></label><div style="align-self:center"><button type="submit" class="btn btn-primary">Godkänn användare</button></div></form></div><div class="card"><h2>Godkända konton</h2><div style="overflow:auto"><table class="admin-table"><thead><tr><th>E-postadress</th><th>Namn</th><th>Roll</th><th>Status</th><th>Åtgärd</th></tr></thead><tbody>${state.users.map(u=>`<tr><td>${h(u.email)}</td><td><input class="account-name" data-name="${h(u.email)}" maxlength="120" value="${h(u.display_name)}" aria-label="Visningsnamn för ${h(u.email)}"></td><td><select data-role="${h(u.email)}"><option value="user" ${u.role==='user'?'selected':''}>Användare</option><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option></select></td><td>${u.active?'Aktiv':'Inaktiv'}</td><td><button class="btn btn-sm" data-update="${h(u.email)}">Spara roll</button> <button class="btn btn-sm" data-save-name="${h(u.email)}">Spara namn</button> <button class="btn btn-sm ${u.active?'btn-danger':''}" data-active="${h(u.email)}">${u.active?'Inaktivera':'Aktivera'}</button></td></tr>`).join('')}</tbody></table></div></div><div class="card"><h2>Dokumentprofil – logotyp</h2><p>Ladda upp en godkänd SD-logotyp som PNG (max 250 KB). Bilden används endast i SD-motionsmallen. Kontrollera att du har rätt att använda filen.</p><label class="field"><span>Logotyp PNG</span><input type="file" id="branding-file" accept="image/png"></label><div class="toolbar"><button class="btn btn-primary" id="branding-save">Spara logotyp</button><button class="btn" id="branding-remove">Ta bort logotyp</button></div>${state.logoDataUri?`<img src="${state.logoDataUri}" alt="Aktuell logotyp" style="max-height:78px;max-width:160px;object-fit:contain">`:'<p class="muted">Ingen logotyp uppladdad. PDF-mallen visar endast text.</p>'}</div><div class="a-note">En användare behöver både ett aktivt konto här och en tillåtande policy i Cloudflare Access. Ändringar i Access kan behöva göras separat.</div>`;}
-async function openTab(tab){if(tab!=='cases'&&state.caseDirty&&!confirm('Det finns osparade ändringar i ärendet. Lämna utan att spara?'))return;
- if(tab!=='cases'){state.caseDirty=false;state.caseCurrent=null;}
+async function openTab(tab){if(tab!=='cases'&&!caseSafeToLeave())return;
+ if(tab!=='cases'){state.caseDirty=false;state.caseNoteDirty=false;state.caseCurrent=null;state.caseComments=[];}
  if(state.dirty&&state.motion){try{await saveMotion(false);}catch(e){toast('Kunde inte spara dokumentet före navigering: '+e.message,true);return;}}
- state.tab=tab;if(tab==='cases'){try{await loadCases();await loadCaseFiles();}catch(e){state.tab='overview';render();toast('Ärendehanteringen kunde inte öppnas. Kontrollera migrering 0007. '+e.message,true);return;}}if(tab==='ideas')await loadIdeas();if(tab==='shared')await loadShared();if(tab==='files')await loadFiles();if(tab==='users'&&state.user?.role==='admin')await loadUsers();render();window.scrollTo(0,0);
+ state.tab=tab;if(tab==='cases'){try{await loadCases();await loadCaseFiles();await loadCaseDirectory();}catch(e){state.tab='overview';render();toast('Ärendehanteringen kunde inte öppnas. Kontrollera migrering 0008. '+e.message,true);return;}}if(tab==='ideas')await loadIdeas();if(tab==='shared')await loadShared();if(tab==='files')await loadFiles();if(tab==='users'&&state.user?.role==='admin')await loadUsers();render();window.scrollTo(0,0);
 }
 async function createMotion(initial){try{const doc=await api('/api/private/motions','POST',{...newMotion(),...initial});state.motion=doc;state.tab='editor';state.dirty=false;await loadMotions();await openMotion(doc.id);}catch(e){toast(e.message,true);}}
-async function openMotion(id){if(state.caseDirty&&!confirm('Lämna ärendet utan att spara ändringarna?'))return;state.caseDirty=false;try{const r=await api('/api/private/motions/'+id);state.motion=r.motion;state.dirty=false;state.shares=null;state.comments=[];if(r.motion.permission==='owner'){try{state.shares=await api('/api/private/motions/'+id+'/shares');state.directory=(await api('/api/private/directory')).users;}catch(e){toast('Delningsinställningar kunde inte laddas: '+e.message,true);}}state.comments=(await api('/api/private/motions/'+id+'/comments')).comments;state.tab='editor';render();window.scrollTo(0,0);}catch(e){toast(e.message,true);}}
+async function openMotion(id){if(!caseSafeToLeave())return;state.caseDirty=false;state.caseNoteDirty=false;try{const r=await api('/api/private/motions/'+id);state.motion=r.motion;state.dirty=false;state.shares=null;state.comments=[];if(r.motion.permission==='owner'){try{state.shares=await api('/api/private/motions/'+id+'/shares');state.directory=(await api('/api/private/directory')).users;}catch(e){toast('Delningsinställningar kunde inte laddas: '+e.message,true);}}state.comments=(await api('/api/private/motions/'+id+'/comments')).comments;state.tab='editor';render();window.scrollTo(0,0);}catch(e){toast(e.message,true);}}
 async function loadShared(){try{state.shared=(await api('/api/private/motions?scope=shared')).motions;state.sharedArchived=(await api('/api/private/motions?scope=shared&lifecycle=archived')).motions;}catch(e){toast(e.message,true);}}
 async function loadMotions(){try{state.motions=(await api('/api/private/motions')).motions;state.myArchived=(await api('/api/private/motions?scope=mine&lifecycle=archived')).motions;state.myTrash=(await api('/api/private/motions?scope=mine&lifecycle=trash')).motions;}catch(e){toast(e.message,true);}}
 async function loadIdeas(){try{state.ideas=(await api('/api/private/ideas')).ideas;}catch(e){toast(e.message,true);}}
@@ -304,39 +304,88 @@ async function fileAction(url,method,data){
 }
 
 
-function caseSafeToLeave(){return !state.caseDirty||confirm('Du har osparade ärendeändringar. Fortsätt utan att spara?');}
+
+function caseSafeToLeave(){return !(state.caseDirty||state.caseNoteDirty)||confirm('Du har osparade ändringar eller privata anteckningar. Fortsätta utan att spara?');}
 function attachCaseActions(){
- $('case-new')?.addEventListener('click',()=>{if(!caseSafeToLeave())return;state.caseCurrent=caseEmpty();state.caseDirty=false;render();});
- document.querySelectorAll('[data-case-open]').forEach(b=>b.addEventListener('click',()=>{
+ $('case-new')?.addEventListener('click',()=>{if(!caseSafeToLeave())return;state.caseCurrent=caseEmpty();state.caseComments=[];state.caseDirty=false;state.caseNoteDirty=false;render();});
+ document.querySelectorAll('[data-case-open]').forEach(b=>b.addEventListener('click',async()=>{
   if(!caseSafeToLeave())return;
-  const entry=state.caseItems.find(c=>c.id===b.dataset.caseOpen);
-  if(entry){state.caseCurrent={...entry,labels:[...(entry.labels||[])]};state.caseDirty=false;render();}
+  const record=state.caseItems.find(c=>c.id===b.dataset.caseOpen);if(!record)return;
+  state.caseCurrent={...record,labels:[...(record.labels||[])]};state.caseDirty=false;state.caseNoteDirty=false;
+  try{await loadCaseComments(record.id);}catch(e){state.caseComments=[];toast('Kommentarerna kunde inte hämtas: '+e.message,true);}
+  render();
  }));
+ document.querySelectorAll('[data-case-visibility]').forEach(b=>b.addEventListener('click',()=>{state.caseVisibility=b.dataset.caseVisibility;render();}));
  $('case-search')?.addEventListener('input',e=>{const pos=e.target.selectionStart;state.caseSearch=e.target.value;render();$('case-search')?.focus();$('case-search')?.setSelectionRange(pos,pos);});
  $('case-filter')?.addEventListener('change',e=>{state.caseFilter=e.target.value;render();});
  $('file-search')?.addEventListener('input',e=>{const pos=e.target.selectionStart;state.fileSearch=e.target.value;render();$('file-search')?.focus();$('file-search')?.setSelectionRange(pos,pos);});
  const form=$('case-form');
  form?.addEventListener('input',e=>{const field=e.target.name;if(!field||!state.caseCurrent)return;
   state.caseCurrent[field]=field==='labels'?e.target.value.split(',').map(x=>x.trim()).filter(Boolean):e.target.value;
-  state.caseDirty=true;const mark=$('case-save-info');if(mark)mark.textContent='Ändringarna är inte sparade';
+  state.caseDirty=true;const label=$('case-save-info');if(label)label.textContent='Osparade ändringar';
  });
- form?.addEventListener('change',e=>{const field=e.target.name;if(field&&state.caseCurrent){state.caseCurrent[field]=field==='labels'?e.target.value.split(',').map(x=>x.trim()).filter(Boolean):e.target.value;state.caseDirty=true;}});
- form?.addEventListener('submit',async e=>{e.preventDefault();const current=state.caseCurrent;if(!current)return;
-  const payload={...current,labels:[...new Set((current.labels||[]).map(x=>x.trim()).filter(Boolean))],motion_id:current.motion_id||null,file_id:current.file_id||null};
+ form?.addEventListener('change',e=>{const field=e.target.name;if(field&&state.caseCurrent){
+  state.caseCurrent[field]=field==='labels'?e.target.value.split(',').map(x=>x.trim()).filter(Boolean):e.target.value;state.caseDirty=true;
+ }});
+ form?.addEventListener('submit',async e=>{
+  e.preventDefault();const current=state.caseCurrent;if(!current||current.can_edit===false)return;
+  const payload={...current,meeting_notes:undefined,labels:[...new Set((current.labels||[]).map(x=>x.trim()).filter(Boolean))],motion_id:current.is_owner===false?null:(current.motion_id||null),file_id:current.is_owner===false?null:(current.file_id||null)};
   const submit=form.querySelector('[type="submit"]');submit.disabled=true;
   try{
-   const res=await api(current.id?'/api/private/cases/'+current.id:'/api/private/cases',current.id?'PUT':'POST',payload);
-   await loadCases();const updated=state.caseItems.find(c=>c.id===res.id);
-   state.caseCurrent=updated?{...updated,labels:[...(updated.labels||[])]}:null;state.caseDirty=false;render();toast('Ärendet har sparats privat.');
+   const result=await api(current.id?'/api/private/cases/'+current.id:'/api/private/cases',current.id?'PUT':'POST',payload);
+   await loadCases();const updated=state.caseItems.find(c=>c.id===result.id);
+   state.caseCurrent=updated?{...updated,labels:[...(updated.labels||[])]}:null;
+   state.caseDirty=false;state.caseNoteDirty=false;state.caseComments=[];
+   if(result.id)try{await loadCaseComments(result.id);}catch{}
+   render();toast('Ärendet sparades.');
   }catch(error){submit.disabled=false;toast(error.message,true);}
  });
+ $('case-sharing-form')?.addEventListener('submit',async e=>{
+  e.preventDefault();const current=state.caseCurrent;if(!current?.id||!current.is_owner)return;
+  if(state.caseDirty||state.caseNoteDirty){toast('Spara ändringar och privata anteckningar innan du ändrar delning.',true);return;}
+  const data=new FormData(e.currentTarget),scope=data.get('scope'),assignee_email=scope==='team'?(data.get('assignee_email')||null):null;
+  if(scope==='team'&&current.scope!=='team'&&!confirm('Dela ärendets gemensamma text med ALLA aktiva och godkända användare i Arbetsytan? Personliga anteckningar och privata filer delas inte.'))return;
+  if(scope==='mine'&&current.scope==='team'&&!confirm('Göra ärendet privat igen? Övriga får då inte längre läsa eller kommentera ärendet.'))return;
+  try{
+   await api('/api/private/cases/'+current.id+'/sharing','PUT',{scope,assignee_email,revision:current.revision});
+   await loadCases();const updated=state.caseItems.find(c=>c.id===current.id);
+   state.caseCurrent=updated?{...updated}:null;render();toast(scope==='team'?'Ärendet delas nu med den godkända arbetsgruppen.':'Ärendet är nu privat.');
+  }catch(error){toast(error.message,true);}
+ });
+ const notes=$('case-note-form');
+ notes?.addEventListener('input',e=>{if(state.caseCurrent&&e.target.name==='meeting_notes'){
+  state.caseCurrent.meeting_notes=e.target.value;state.caseNoteDirty=true;
+  const label=$('case-note-info');if(label)label.textContent='Osparade privata anteckningar';
+ }});
+ notes?.addEventListener('submit',async e=>{
+  e.preventDefault();if(!state.caseCurrent?.id)return;
+  const current=state.caseCurrent,button=notes.querySelector('[type="submit"]');button.disabled=true;
+  try{
+   await api('/api/private/cases/'+current.id+'/notes','PUT',{meeting_notes:current.meeting_notes||''});
+   state.caseNoteDirty=false;button.disabled=false;const label=$('case-note-info');if(label)label.textContent='Privata anteckningar sparade';
+   toast('Dina privata anteckningar sparades.');
+  }catch(error){button.disabled=false;toast(error.message,true);}
+ });
+ $('case-comment-form')?.addEventListener('submit',async e=>{
+  e.preventDefault();if(!state.caseCurrent?.id)return;
+  const current=state.caseCurrent,form=e.currentTarget,comment=form.elements.body.value.trim();
+  if(!comment)return;
+  const button=form.querySelector('[type="submit"]');button.disabled=true;
+  try{
+   await api('/api/private/cases/'+current.id+'/comments','POST',{body:comment});
+   await loadCaseComments(current.id);render();toast('Kommentaren publicerades.');
+  }catch(error){button.disabled=false;toast(error.message,true);}
+ });
  $('case-delete')?.addEventListener('click',async()=>{
-  if(!state.caseCurrent?.id||!confirm('Radera detta privata ärende permanent?'))return;
-  try{await api('/api/private/cases/'+state.caseCurrent.id,'DELETE');await loadCases();state.caseCurrent=null;state.caseDirty=false;render();toast('Ärendet raderades.');}
-  catch(error){toast(error.message,true);}
+  if(!state.caseCurrent?.id||!state.caseCurrent.is_owner||!confirm('Radera ärendet och dess kommentarer permanent?'))return;
+  try{
+   await api('/api/private/cases/'+state.caseCurrent.id,'DELETE');await loadCases();
+   state.caseCurrent=null;state.caseComments=[];state.caseDirty=false;state.caseNoteDirty=false;
+   render();toast('Ärendet raderades.');
+  }catch(error){toast(error.message,true);}
  });
  $('case-print-btn')?.addEventListener('click',()=>{
-  if(state.caseDirty){toast('Spara dina ändringar innan du skriver ut beslutsunderlaget.',true);return;}
+  if(state.caseDirty||state.caseNoteDirty){toast('Spara ändringarna innan du skriver ut beslutsunderlaget.',true);return;}
   window.print();
  });
 }
