@@ -1,7 +1,7 @@
 /* 0.9.0 — meeting workshop helpers; injected inside workroom.js IIFE by build.py */
 const meetingStatuses={planned:'Planerat',held:'Genomfört',closed:'Avslutat'};
 const meetingCommittees=['Kommunfullmäktige','Kommunstyrelsen','Barn- och utbildningsnämnden','Socialnämnden','Bygg- och miljönämnden','Valnämnden','Sydnärkes IT-nämnd','Sydnärkes miljö- och byggnämnd','Annat'];
-const meetingEmpty=()=>({title:'',committee:'Kommunfullmäktige',meeting_date:'',start_time:'',location:'',status:'planned',scope:'mine',is_owner:true,revision:1});
+const meetingEmpty=()=>({title:'',committee:'Kommunfullmäktige',meeting_date:'',start_time:'',location:'',official_source_url:'',status:'planned',scope:'mine',is_owner:true,revision:1});
 const meetingItemEmpty=()=>({title:'',case_id:null,preparation:'',outcome:'',follow_up:''});
 async function loadMeetings(){const r=await api('/api/private/meetings');state.meetingList=r.meetings||[];}
 async function openMeeting(id){
@@ -75,7 +75,7 @@ function officialCalendarView(){
   const date=month+'-'+String(day).padStart(2,'0');
   const events=meetings.filter(m=>m.meeting_date===date);
   return `<div class="official-day"><span class="official-day-number">${day}</span>
-    ${events.map(m=>`<a class="official-event" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer" title="${h(m.committee+' '+(m.start_time||'')+' '+(m.location||''))}"><b>${h({kf:'KF',bun:'BUN',sn:'SN',ks:'KS'}[m.committee_key]||m.committee)}</b> ${h(m.start_time||'')}${m.end_time?'–'+h(m.end_time):''}</a>`).join('')}</div>`;
+    ${events.map(m=>`<div class="official-event-wrap"><a class="official-event" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer" title="${h(m.committee+' '+(m.start_time||'')+' '+(m.location||''))}"><b>${h({kf:'KF',bun:'BUN',sn:'SN',ks:'KS'}[m.committee_key]||m.committee)}</b> ${h(m.start_time||'')}${m.end_time?'–'+h(m.end_time):''}</a><button type="button" class="official-prepare" data-official-prepare="${h(m.source_url)}" aria-label="Förbered ${h(m.committee)} ${h(m.meeting_date)}">Förbered</button></div>`).join('')}</div>`;
  });
  const synced=sources.filter(s=>s.last_success_at).sort((a,b)=>b.last_success_at.localeCompare(a.last_success_at));
  const last=synced[0]?.last_success_at||'';
@@ -113,6 +113,23 @@ function officialCalendarView(){
  </section>`;
 }
 function attachOfficialCalendarActions(){
+ document.querySelectorAll('[data-official-prepare]').forEach(button=>button.addEventListener('click',()=>{
+  if(!meetingSafeToLeave())return;
+  const meeting=state.officialCalendarMeetings.find(m=>m.source_url===button.dataset.officialPrepare);
+  if(!meeting)return;
+  state.meetingCurrent={
+   ...meetingEmpty(),title:meeting.committee+' – mötesförberedelser',
+   committee:meeting.committee,meeting_date:meeting.meeting_date,
+   start_time:meeting.start_time||'',location:meeting.location||'',
+   official_source_url:meeting.source_url
+  };
+  state.meetingAgenda=[];state.meetingNote='';state.meetingItemEdit=null;
+  state.meetingDirty=false;state.meetingNoteDirty=false;state.meetingItemDirty=false;
+  render();
+  document.getElementById('meeting-form')?.scrollIntoView({behavior:'smooth',block:'start'});
+  toast('Privat mötesutkast förifyllt. Klicka på Spara sammanträdet för att skapa det.');
+ }));
+
  document.querySelectorAll('[data-official-month]').forEach(b=>b.addEventListener('click',()=>changeOfficialMonth(Number(b.dataset.officialMonth))));
  $('official-calendar-refresh')?.addEventListener('click',async()=>{
   await loadOfficialCalendar();render();
