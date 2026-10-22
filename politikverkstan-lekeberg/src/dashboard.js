@@ -47,7 +47,7 @@ function dashboardPage(){
  <section class="db-root" aria-label="Min arbetsöversikt">
   <div class="db-head"><div><span class="eyebrow">MITT POLITISKA ARBETE</span><h2>Min arbetsöversikt</h2><p>Kommande sammanträden, tilldelade ärenden och mina egna uppgifter. Innehållet är bara synligt för behöriga användare.</p></div>
    <button type="button" class="btn btn-sm" id="db-refresh" aria-label="Uppdatera arbetsöversikten">Uppdatera</button></div>
-  ${errors.length?`<div class="db-alert" role="status">Vissa uppgifter kunde inte hämtas: ${errors.map(x=>x.name==='tasks'?'Mina uppgifter':x.name==='cases'?'Ärenden':'Sammanträden').join(', ')}. ${errors.some(x=>x.name==='tasks')?'Kontrollera om D1-migrering 0010 har körts.':''} Värdena nedan är ofullständiga.</div>`:''}
+  ${errors.length?`<div class="db-alert" role="status">Vissa uppgifter kunde inte hämtas: ${errors.map(x=>x.name==='tasks'?'Mina uppgifter':x.name==='cases'?'Ärenden':'Sammanträden').join(', ')}. Värdena nedan kan vara ofullständiga.</div>`:''}
   <div class="db-kpis">${stats.map(x=>`<button type="button" class="db-kpi" data-tab="${x.tab}"><strong>${h(x.count)}</strong><span>${h(x.label)}</span><small>${h(x.note)}</small></button>`).join('')}</div>
   <div class="db-columns">
    <section class="card db-panel" aria-labelledby="db-meetings-heading">
@@ -63,7 +63,7 @@ function dashboardPage(){
   </div>
   <section class="card db-panel db-tasks" aria-labelledby="db-tasks-heading">
     <div class="db-panel-head"><div><h3 id="db-tasks-heading">Mina uppgifter</h3><p>Personlig att-göra-lista. Uppgifterna delas inte med andra användare.</p></div><span class="chip">${overdue.length?overdue.length+' försenade':open.length+' öppna'}</span></div>
-    ${state.dashboardErrors?.some(e=>e.name==='tasks')?'<p class="db-empty">Uppgiftslistan är inte tillgänglig förrän API och migrering 0010 är på plats.</p>':`
+    ${state.dashboardErrors?.some(e=>e.name==='tasks')?'<p class="db-empty">Uppgifterna kunde inte hämtas just nu.</p>':`
      <div class="db-task-list">
        ${pending.slice(0,8).map(t=>dashboardTaskRow(t,now)).join('')||'<p class="db-empty">Inga öppna uppgifter. Lägg till en nedan.</p>'}
      </div>
