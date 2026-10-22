@@ -10,7 +10,8 @@ with sync_playwright() as p:
     page.on('pageerror',lambda e: errors.append(str(e)))
     page.set_content(html,wait_until='domcontentloaded')
     assert page.locator('.guide-panel').count()==0
-    assert page.locator('.coalition-card').count()==9
+    assert page.locator('.coalition-card').count()==0
+    assert page.locator('.pv-workshop-entry').count()==1
     page.locator('#pv-guide-open').click()
     assert page.locator('.guide-panel').is_visible()
     assert page.locator('.guide-steps .current').count()==1
