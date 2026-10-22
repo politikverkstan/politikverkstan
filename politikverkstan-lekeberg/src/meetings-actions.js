@@ -124,6 +124,7 @@ function attachMeetingActions(){
   if(!c){toast('Ärendet är inte tillgängligt för dig.',true);return;}
   state.caseCurrent={...c,labels:[...(c.labels||[])]};state.caseDirty=false;state.caseNoteDirty=false;
   try{await loadCaseComments(caseId);}catch{state.caseComments=[];}
+  await loadCaseWorkflow(caseId);recordWorkView();
   render();
  }));
  $('meeting-print-button')?.addEventListener('click',()=>{
