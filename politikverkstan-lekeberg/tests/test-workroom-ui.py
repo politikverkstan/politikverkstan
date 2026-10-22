@@ -77,7 +77,7 @@ with sync_playwright() as p:
     neutral_doc.close()
     assert page.evaluate('window.testFiles.length')==2, 'Both PDF templates must archive privately'
     page.locator('[data-tab="files"]').first.click()
-    page.get_by_role('heading',name='Dokumentarkiv').wait_for(timeout=8000)
+    page.get_by_role('heading',name='Dokumentarkiv').first.wait_for(timeout=8000)
     assert page.locator('.file-row').count()==2
     assert not errors, errors
     mobile=browser.new_page(viewport={'width':390,'height':820},is_mobile=True)
