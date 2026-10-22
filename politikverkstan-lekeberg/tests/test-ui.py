@@ -8,7 +8,8 @@ with sync_playwright() as p:
  page=c.new_page();errs=[];page.on('pageerror',lambda e:errs.append(str(e)))
  page.set_content(h,wait_until='domcontentloaded')
  page.screenshot(path=str(PROJECT/'preview-desktop.png'),full_page=False)
- assert page.locator('.coalition-card').count()==9
+ assert page.locator('.coalition-card').count()==0
+ assert page.locator('.sidebar [data-page=builder]').count()==1
  # Open all orgs registry, disabled for unknown legal rules
  page.locator('.sidebar [data-page=registry]').click()
  assert page.locator('.registry-row').count()==57
@@ -29,7 +30,7 @@ with sync_playwright() as p:
  page.locator('#search-org').fill('IT-nämnd')
  assert page.locator('.registry-row:visible').count()==1
  # Switch back and use preset
- page.locator('.sidebar [data-page=workspace]').click()
+ page.locator('.sidebar [data-page=builder]').click()
  page.locator('[data-preset=example]').click()
  assert page.locator('.coalition-card').count()==3
  # Check exactly expected for KS cell group 20 block
