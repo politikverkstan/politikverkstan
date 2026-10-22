@@ -6,16 +6,18 @@ const dashboardToday=()=>{
 const dashboardLabels={high:'Hög',normal:'Normal',low:'Låg'};
 const taskBlank=()=>({title:'',due_date:'',priority:'normal',case_id:'',meeting_id:'',done:false});
 async function loadDashboard(){
- const names=['cases','meetings','tasks'];
- const results=await Promise.allSettled(names.map(x=>api('/api/private/'+x)));
- const dest={cases:'dashboardCases',meetings:'dashboardMeetings',tasks:'dashboardTasks'};
+ const names=['cases','meetings','tasks','followups'];
+ const results=await Promise.allSettled(names.map(x=>api(x==='followups'?'/api/private/workflow/dashboard':'/api/private/'+x)));
+ const dest={cases:'dashboardCases',meetings:'dashboardMeetings',tasks:'dashboardTasks',followups:'dashboardFollowups'};
  const errors=[];
  for(let i=0;i<names.length;i++){
   const name=names[i],result=results[i];
   if(result.status==='fulfilled'){
    state[dest[name]]=result.value[name]||[];
+   if(name==='followups')state.dashboardFollowupsTotal=Number(result.value.total_open||0);
   }else{
    state[dest[name]]=[];
+   if(name==='followups')state.dashboardFollowupsTotal=null;
    errors.push({name,message:result.reason?.message||'Okänt fel'});
   }
  }
@@ -33,13 +35,17 @@ function dashboardPage(){
  const pending=[...open].sort((a,b)=>(dashboardPriorityValue(a.priority)-dashboardPriorityValue(b.priority))||
   (a.due_date||'9999').localeCompare(b.due_date||'9999'));
  const overdue=open.filter(t=>t.due_date&&t.due_date<now);
- const waiting=activeCases.filter(c=>c.status==='uppfoljning');
+ const followups=state.dashboardFollowups||[];
+ const followupsError=state.dashboardErrors?.some(e=>e.name==='followups');
+ const followupsTotal=state.dashboardFollowupsTotal??0;
  const drafts=(state.motions||[]).filter(m=>['ide','utkast','granskning'].includes(m.status));
  const errors=state.dashboardErrors||[];
  const stats=[
   {count:meetings.length,label:'Kommande sammanträden',note:'Möten du har åtkomst till',tab:'meetings'},
   {count:activeCases.length,label:'Ärenden att hantera',note:'Dina och dina tilldelade',tab:'cases'},
-  {count:open.length+waiting.length,label:'Att följa upp',note:open.length+' uppgifter · '+waiting.length+' ärenden',tab:'cases'},
+  {count:followupsError?'–':open.length+followupsTotal,label:'Att följa upp',
+   note:followupsError?'Uppföljningar ej tillgängliga':open.length+' egna uppgifter · '+followupsTotal+' ärendeuppföljningar',
+   jump:'followups'},
   {count:drafts.length,label:'Motionsutkast',note:'Mina pågående motioner',tab:'motions'}
  ];
  const edit=state.dashboardTaskEdit||taskBlank();
@@ -47,8 +53,8 @@ function dashboardPage(){
  <section class="db-root" aria-label="Min arbetsöversikt">
   <div class="db-head"><div><span class="eyebrow">MITT POLITISKA ARBETE</span><h2>Min arbetsöversikt</h2><p>Kommande sammanträden, tilldelade ärenden och mina egna uppgifter. Innehållet är bara synligt för behöriga användare.</p></div>
    <button type="button" class="btn btn-sm" id="db-refresh" aria-label="Uppdatera arbetsöversikten">Uppdatera</button></div>
-  ${errors.length?`<div class="db-alert" role="status">Vissa uppgifter kunde inte hämtas: ${errors.map(x=>x.name==='tasks'?'Mina uppgifter':x.name==='cases'?'Ärenden':'Sammanträden').join(', ')}. Värdena nedan kan vara ofullständiga.</div>`:''}
-  <div class="db-kpis">${stats.map(x=>`<button type="button" class="db-kpi" data-tab="${x.tab}"><strong>${h(x.count)}</strong><span>${h(x.label)}</span><small>${h(x.note)}</small></button>`).join('')}</div>
+  ${errors.length?`<div class="db-alert" role="status">Vissa uppgifter kunde inte hämtas: ${errors.map(x=>x.name==='tasks'?'Mina uppgifter':x.name==='cases'?'Ärenden':x.name==='followups'?'Ärendeuppföljningar':'Sammanträden').join(', ')}. Värdena nedan kan vara ofullständiga.</div>`:''}
+  <div class="db-kpis">${stats.map(x=>`<button type="button" class="db-kpi" ${x.jump?'data-db-followups-jump="1"':'data-tab="'+x.tab+'"'}><strong>${h(x.count)}</strong><span>${h(x.label)}</span><small>${h(x.note)}</small></button>`).join('')}</div>
   <div class="db-columns">
    <section class="card db-panel" aria-labelledby="db-meetings-heading">
     <div class="db-panel-head"><h3 id="db-meetings-heading">Kommande sammanträden</h3><button type="button" class="aw-viewall" data-tab="meetings">Alla möten →</button></div>
@@ -61,6 +67,18 @@ function dashboardPage(){
      <small>${h(caseStatuses[c.status]||c.status)} · ${c.assignee_email===state.user?.email&&!c.is_owner?'Tilldelat mig':'Mitt ärende'} · ${c.scope==='team'?'Gemensamt':'Privat'}</small></button>`).join(''):'<p class="db-empty">Inga aktiva ärenden är tilldelade dig eller ägs av dig.</p>'}
    </section>
   </div>
+  <section class="card db-panel db-followups" id="db-followups" aria-labelledby="db-followups-heading">
+   <div class="db-panel-head"><div><h3 id="db-followups-heading">Öppna ärendeuppföljningar</h3>
+    <p>Uppföljningar i dina ärenden eller som tilldelats dig i ett gemensamt ärende. Personliga uppgifter visas separat nedan.</p></div>
+    <span class="chip">${followupsError?'Ej tillgängligt':followupsTotal+' öppna'}</span></div>
+   ${followupsError?'<p class="db-empty">Ärendeuppföljningarna kunde inte hämtas. Försök med Uppdatera.</p>':
+     followups.length?followups.slice(0,6).map(f=>`<button type="button" class="db-link-row" data-dashboard-case="${h(f.case_id)}">
+      <span class="db-date">${f.due_date?(f.due_date<now?'Försenad · ':'Senast ')+h(f.due_date):'Ingen tidsfrist'}</span>
+      <strong>${h(f.title)}</strong>
+      <small>Ärende: ${h(f.case_title)}${f.assignee_email?' · Ansvarig: '+h(f.assignee_email):''}</small></button>`).join(''):
+     '<p class="db-empty">Inga öppna ärendeuppföljningar som du ansvarar för eller äger.</p>'}
+   ${!followupsError&&followupsTotal>6?`<p class="db-muted">Ytterligare ${followupsTotal-6} öppna uppföljningar visas i respektive ärende.</p>`:''}
+  </section>
   <section class="card db-panel db-tasks" aria-labelledby="db-tasks-heading">
     <div class="db-panel-head"><div><h3 id="db-tasks-heading">Mina uppgifter</h3><p>Personlig att-göra-lista. Uppgifterna delas inte med andra användare.</p></div><span class="chip">${overdue.length?overdue.length+' försenade':open.length+' öppna'}</span></div>
     ${state.dashboardErrors?.some(e=>e.name==='tasks')?'<p class="db-empty">Uppgifterna kunde inte hämtas just nu.</p>':`
@@ -117,6 +135,7 @@ async function dashboardOpenMeeting(id){
  try{await openMeeting(id);recordWorkView();render();}catch(e){toast('Sammanträdet är inte tillgängligt: '+e.message,true);}
 }
 function attachDashboard(){
+ document.querySelectorAll('[data-db-followups-jump]').forEach(b=>b.addEventListener('click',()=>$('db-followups')?.scrollIntoView({block:'start',behavior:'smooth'})));
  $('db-refresh')?.addEventListener('click',async()=>{
   const button=$('db-refresh');button.disabled=true;
   try{await loadDashboard();render();toast('Arbetsöversikten uppdaterades.');}
