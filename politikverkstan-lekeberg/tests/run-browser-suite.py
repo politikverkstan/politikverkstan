@@ -21,6 +21,7 @@ tests = [
     "test-stage2-ui.py",
     "test-shared-cases-ui.py",
     "test-meetings-ui.py",
+    "test-dashboard-ui.py",
 ]
 requested = sys.argv[1:]
 if requested:
