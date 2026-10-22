@@ -41,6 +41,18 @@ async function fullFollowups(db,user,c){
   can_edit:canEdit(c,user)
  }));
 }
+// Dashboard exposes only open actions on owned cases or actions assigned to the
+// current user on a shared case. It never returns meeting or private-document IDs.
+async function dashboardFollowups(db,user){
+ const scope="FROM work_followups f JOIN work_cases c ON c.id=f.case_id WHERE f.status='open' AND (c.owner_email=? OR (c.scope='team' AND f.assignee_email=?))";
+ const args=[user.email,user.email];
+ const [total,rows]=await Promise.all([
+  db.prepare("SELECT COUNT(*) AS n "+scope).bind(...args).first(),
+  db.prepare("SELECT f.id,f.case_id,f.title,f.due_date,f.assignee_email,c.title AS case_title,c.owner_email AS case_owner "+scope+
+   " ORDER BY CASE WHEN f.due_date='' THEN 1 ELSE 0 END,f.due_date,f.created_at LIMIT 100").bind(...args).all()
+ ]);
+ return send({followups:rows.results||[],total_open:Number(total?.n||0)});
+}
 async function caseHistory(db,user,c,url){
  const offset=Math.min(100000,Math.max(0,Number(url.searchParams.get('offset'))||0));
  const own=c.owner_email===user.email;
@@ -127,6 +139,10 @@ export async function handleWorkflow(req,env,user){
   if(path==='/api/private/workflow/search'){
    section='sökningen';
    return method==='GET'?await search(db,user,url):fail(405,'Metod tillåts inte');
+  }
+  if(path==='/api/private/workflow/dashboard'){
+   section='uppföljningsöversikten';
+   return method==='GET'?await dashboardFollowups(db,user):fail(405,'Metod tillåts inte');
   }
   const parts=path.split('/');
   // /api/private/workflow/cases/{case}/history|meetings|followups|position
