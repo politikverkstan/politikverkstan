@@ -597,3 +597,10 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
 .case-stage-list small{display:block;font-size:11px;line-height:1.4;color:var(--muted);overflow-wrap:anywhere}
 #case-form,#wf-case-meetings,#wf-case-followups,#wf-case-position,#wf-case-history{scroll-margin-top:18px}
 @media(max-width:600px){.case-stage-overview{padding:12px}.case-stage-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* v1.3: explicit opt-in from an official public meeting to private preparation. */
+.official-event-wrap{min-width:0;margin:3px 0 6px}
+.official-event-wrap .official-event{margin-bottom:2px}
+.official-prepare{display:block;width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;background:var(--card);color:var(--ink);font:inherit;font-size:10px;line-height:1.3;font-weight:700;padding:4px 2px;cursor:pointer;overflow-wrap:anywhere}
+.official-prepare:hover,.official-prepare:focus-visible{outline:2px solid #ba6f58;outline-offset:1px}
+@media(max-width:700px){.official-prepare{font-size:9px;padding:4px 1px}}
