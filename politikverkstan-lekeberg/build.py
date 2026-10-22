@@ -62,7 +62,7 @@ def build_workroom() -> str:
                            read("src/workroom-history.js") + "\n" + read("src/dashboard.js") + "\nfunction overviewPage(){",
                            "Dashboard injection")
     addons = "\n".join(read("src/" + name) for name in
-                       ("meetings-ui.js", "meetings-page.js", "meetings-actions.js"))
+                       ("meetings-ui.js", "meetings-page.js", "meetings-actions.js", "workflow-ui.js"))
     work_js = replace_once(work_js, "function casesPage(){",
                            addons + "\nfunction casesPage(){", "Workroom functions")
     scripts = (read("src/workroom-pdf.js") + "\n" + work_js).replace("</script", r"<\/script")
