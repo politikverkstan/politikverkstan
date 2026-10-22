@@ -2,7 +2,7 @@
  * Only a view identifier is kept in history state. NEVER store actual document
  * content, personal notes or sensitive case text in browser history. */
 const WORK_HISTORY_KEY='politikverkstanWorkroom';
-const workTabs=new Set(['overview','meetings','cases','motions','shared','files','editor','ideas','users']);
+const workTabs=new Set(['overview','search','meetings','cases','motions','shared','files','editor','ideas','users']);
 function workSnapshot(){
  return {
   tab:state.tab,
@@ -51,6 +51,7 @@ async function restoreWorkHistory(event){
    if(record){
     state.caseCurrent={...record,labels:[...(record.labels||[])]};
     try{await loadCaseComments(record.id);}catch{state.caseComments=[];}
+    await loadCaseWorkflow(record.id);
     render();
    }
   }else if(target.tab==='meetings'&&target.meetingId){
