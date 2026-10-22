@@ -38,7 +38,7 @@ with sync_playwright() as p:
     browser=p.chromium.launch(headless=True,executable_path='/usr/bin/chromium',args=['--no-sandbox'])
     for width in [320,375,390,530,768,1024,1440]:
         mobile=width<=530
-        page=browser.new_page(viewport={'width':width,'height':900},is_mobile=mobile,has_touch=mobile)
+        page=browser.new_page(viewport={'width':width,'height':568 if width<=390 else 900},is_mobile=mobile,has_touch=mobile)
         errors=[]
         page.on('pageerror',lambda error: errors.append(str(error)))
         page.set_content(public,wait_until='domcontentloaded')
@@ -58,6 +58,17 @@ with sync_playwright() as p:
             ui=geometry(page,selector,0)
             assert ui['padLeft']>=14,(width,selector,ui)
             assert ui['padRight']>=14,(width,selector,ui)
+        if width<=390:
+            page.locator('#mobile-toggle').click()
+            sidebar=page.locator('.sidebar')
+            assert 'visible' in sidebar.get_attribute('class')
+            assert sidebar.evaluate('(el)=>el.scrollHeight>el.clientHeight'),(width,'mobile menu must scroll')
+            sidebar.evaluate('(el)=>el.scrollTop=el.scrollHeight')
+            link=page.locator('.sidebar .portal-login')
+            assert link.count()==1
+            assert link.get_attribute('href')=='/arbetsrum'
+            bounds=link.bounding_box()
+            assert bounds and bounds['y']>=0 and bounds['y']+bounds['height']<=568,(width,'login link clipped',bounds)
         assert page.evaluate('document.documentElement.scrollWidth')<=width+2,(width,'public horizontal overflow')
         assert not errors,(width,errors)
         page.close()
