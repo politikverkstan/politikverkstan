@@ -22,6 +22,7 @@ tests = [
     "test-shared-cases-ui.py",
     "test-meetings-ui.py",
     "test-dashboard-ui.py",
+    "test-navigation-ui.py",
 ]
 requested = sys.argv[1:]
 if requested:
