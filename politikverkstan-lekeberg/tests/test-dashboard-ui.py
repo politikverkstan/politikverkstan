@@ -64,7 +64,7 @@ with sync_playwright() as playwright:
  assert page.locator('.db-kpi').count()==4
  assert 'Motionsutkast' in page.locator('.db-kpis').inner_text()
  assert 'Kontrollera beslutad besparing' in page.locator('#db-followups').inner_text()
- assert '1 ärendeuppföljningar' in page.locator('.db-kpis').inner_text()
+ assert '1 ärendeuppföljning' in page.locator('.db-kpis').inner_text()
  assert page.locator('.db-kpi').nth(2).locator('strong').inner_text()=='1'
  page.locator('[data-db-followups-jump]').click()
  assert page.locator('#db-followups').is_visible()
