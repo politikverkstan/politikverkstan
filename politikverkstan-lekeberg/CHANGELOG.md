@@ -1,5 +1,13 @@
 # Ändringslogg – Politikverkstan Lekeberg
 
+## Navigering – förbättring efter 1.0.0
+
+- En diskret **Tillbaka**-knapp har lagts i sidhuvudet på både den öppna portalen och den skyddade Arbetsytan.
+- Webbläsarens/musens egna **Tillbaka** och **Framåt** fungerar mellan besökta vyer, utan att direkt lämna hela portalen.
+- Arbetsytans historik följer även öppnade ärenden, möten och motioner utan att lägga dokumenttext i webbläsarens URL eller historikpost.
+- Osparade ändringar hanteras av den befintliga navigeringskontrollen.
+- Regressionstest för webbläsarhistorik har lagts till i Chromium-sviten. Ingen databasmigrering krävs.
+
 ## 1.0.0 – Spårbarhet och sammanhängande arbetsflöde
 
 - Ärenden får databasstyrd historik över skapande, innehållsändringar, delning och ansvar. Händelser och ändringar skrivs i samma SQLite-transaktion via triggers. Historik för före-migreringsändringar kan inte återskapas.
