@@ -3,8 +3,8 @@
 ## 1.0.2 – Automatisk offentlig sammanträdeskalender
 
 - Ny månadskalender på den skyddade sidan Sammanträden med offentlig information från Kommunfullmäktige, barn- och utbildningsnämnden, socialnämnden och kommunstyrelsen.
-- Fyra fasta källadresser på meetings.lekeberg.se kontrolleras dagligen av Cloudflare Workers cron; administratören kan också initiera hämtning.
-- D1-migrering 0012 lagrar offentligt källmaterial separat från privata sammanträden och mötesanteckningar; samma originalmöte uppdateras i stället för att dupliceras.
+- Efter nätverksfel från Cloudflare Workers har MeetingPlus-importen flyttats till schemalagda GitHub Actions, som redan verifierats kunna läsa de fyra offentliga källorna. GitHub publicerar en validerad datakopia i Worker-bundlen två gånger dagligen, utan nya Cloudflare-hemligheter.
+- Cloudflare Workern läser kalenderkopian utan utgående nätverksanrop. D1-migrering 0012 ligger kvar för kompatibilitet men används inte för den nya synkroniseringen.
 - Källstatus och tidigare inlästa uppgifter bevaras vid tillfälliga hämtningsfel. Webbläsare och behörighetstester omfattar den nya kalendern.
 - Ännu ingen automatisk nedladdning av handlingar eller dagordningar. [Driftguide 1.0.2](UPPGRADERING_1.0.2_CLOUDFLARE.md).
 
