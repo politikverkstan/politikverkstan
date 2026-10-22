@@ -143,7 +143,7 @@ export async function handleCases(req,env,user){
    if(assignee!==null&&(typeof assignee!=='string'||assignee.length>254||!await assigneeAllowed(env,user,assignee)))return err(400,'Ansvarig måste ha ett aktivt konto');
    if(!Number.isSafeInteger(data.revision)||data.revision!==row.revision)return err(409,'Ärendet har ändrats. Ladda om före delning.');
    const now=new Date().toISOString();
-   const r=await env.DB.prepare('UPDATE work_cases SET scope=?,assignee_email=?,revision=revision+1,updated_at=? WHERE id=? AND owner_email=? AND revision=?').bind(data.scope,assignee,now,id,user.email,row.revision).run();
+   const r=await env.DB.prepare('UPDATE work_cases SET scope=?,assignee_email=?,last_editor_email=?,revision=revision+1,updated_at=? WHERE id=? AND owner_email=? AND revision=?').bind(data.scope,assignee,user.email,now,id,user.email,row.revision).run();
    return r.meta?.changes===1?out({ok:true,revision:row.revision+1,updated_at:now}):err(409,'Ärendet har ändrats.');
   }
   if(method==='GET')return out({case:publicCase(row,user,await note(env,user,id))});
@@ -165,7 +165,7 @@ export async function handleCases(req,env,user){
     v.motion_id=old.motion_id||null;v.file_id=old.file_id||null;
    }
    const now=new Date().toISOString();
-   const r=await env.DB.prepare('UPDATE work_cases SET title=?,committee=?,status=?,meeting_date=?,labels_json=?,content_json=?,revision=revision+1,updated_at=? WHERE id=? AND revision=? AND (owner_email=? OR (scope=? AND assignee_email=?))').bind(v.title,v.committee,v.status,v.meeting_date,JSON.stringify(v.labels),payload(v),now,id,row.revision,user.email,'team',user.email).run();
+   const r=await env.DB.prepare('UPDATE work_cases SET title=?,committee=?,status=?,meeting_date=?,labels_json=?,content_json=?,last_editor_email=?,revision=revision+1,updated_at=? WHERE id=? AND revision=? AND (owner_email=? OR (scope=? AND assignee_email=?))').bind(v.title,v.committee,v.status,v.meeting_date,JSON.stringify(v.labels),payload(v),user.email,now,id,row.revision,user.email,'team',user.email).run();
    if(r.meta?.changes!==1)return err(409,'Ärendet har ändrats. Ladda om innan du sparar.');
    // Legacy 0.7.0 compatibility. Kept strictly separate and per user.
    if(v.meeting_notes!==undefined)await writeNote(env,user,id,v.meeting_notes);
