@@ -72,6 +72,34 @@ assert.equal((await data(await call('owner','cases/'+b+'/meetings'))).meetings.l
 assert.equal((await call('member','cases/'+b+'/followups')).status,200);
 assert.equal((await call('member','cases/'+b+'/position')).status,200);
 
+// 1.0.1: the dashboard may list owned followups and assigned followups in
+// shared cases, but must not expose a private case merely via assignee_email.
+const followupData={...create,status:'open'};
+assert.equal((await data(await call('member','dashboard'))).total_open,0,'Completed followups are excluded');
+let response=await call('owner','cases/'+a+'/followups','POST',{...followupData,title:'Privat uppföljning'});
+assert.equal(response.status,201);
+response=await call('owner','cases/'+b+'/followups','POST',{...followupData,title:'Delat ansvar'});
+assert.equal(response.status,201);
+response=await call('owner','cases/'+b+'/followups','POST',{...followupData,title:'Ägarens ansvar',assignee_email:null});
+assert.equal(response.status,201);
+response=await call('owner','cases/'+b+'/followups','POST',{...followupData,title:'Annan ledamots ansvar',assignee_email:users.admin.email});
+assert.equal(response.status,201);
+const ownerOverview=await data(await call('owner','dashboard'));
+assert.equal(ownerOverview.total_open,4);
+assert.equal(ownerOverview.followups.length,4);
+const memberOverview=await data(await call('member','dashboard'));
+assert.equal(memberOverview.total_open,1);
+assert.deepEqual(memberOverview.followups.map(f=>f.title),['Delat ansvar']);
+assert.ok(!JSON.stringify(memberOverview).includes('Privat uppföljning'));
+assert.ok(!JSON.stringify(memberOverview).includes(privateFile));
+assert.ok(!JSON.stringify(memberOverview).includes(privateMeeting));
+assert.equal((await data(await call('admin','dashboard'))).total_open,1);
+assert.equal((await call('member','dashboard','POST',{})).status,405);
+db.prepare("UPDATE work_cases SET scope='mine',last_editor_email='owner@test.se',updated_at='2026-10-23' WHERE id=?").run(b);
+assert.equal((await data(await call('member','dashboard'))).total_open,0,
+ 'Revoked shared access must hide formerly assigned followups');
+assert.equal((await data(await call('admin','dashboard'))).total_open,0);
+
 const count=db.prepare('SELECT count(*) as n FROM work_case_events WHERE case_id=?').get(b).n;
 assert.ok(count>=5,'edits, followups and positions are audited');
 // A failed asynchronous D1 operation must be caught by its own workflow endpoint,
