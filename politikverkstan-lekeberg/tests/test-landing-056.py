@@ -41,7 +41,7 @@ with sync_playwright() as p:
  assert page.locator('.coalition-card').count()==0
  page.locator('.pv-feature[data-page="builder"]').click()
  assert page.locator('.coalition-card').count()==9
- page.locator('.pv-feature[data-page="matrix"]').click()
+ page.locator('.sidebar [data-page="matrix"]').click()
  assert page.get_by_text('Fullständig fördelningsmatris').is_visible()
  page.locator('[data-page="workspace"]').first.click()
  assert page.locator('.pv-hero').is_visible()
