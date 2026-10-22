@@ -347,9 +347,50 @@ function bindPageActions(){
    document.querySelectorAll('[data-org-toggle]').forEach(input=>{input.checked=state.enabled.includes(input.dataset.orgToggle);input.closest('.registry-row')?.classList.toggle('registry-selected',input.checked);});
    const count=el('registry-enabled-count');if(count)count.textContent=String(state.enabled.length);
    const status=el('registry-selection-status');if(status)status.textContent=state.enabled.length+' organ ingår nu i simuleringen. Ändringen sparades lokalt.';
+   applyRegistryFilters();
   }else render();
  }));
- const e=el('search-org');if(e)e.addEventListener('input',()=>{const q=e.value.toLowerCase();let count=0;document.querySelectorAll('.registry-row').forEach(row=>{const show=row.dataset.name.includes(q);row.style.display=show?'':'none';if(show)count++;});el('org-count').textContent=count;});
+ function applyRegistryFilters(){
+  const query=(el('search-org')?.value||'').toLocaleLowerCase('sv-SE');
+  const filter=el('registry-status-filter')?.value||'all';
+  let count=0;
+  document.querySelectorAll('.registry-row').forEach(row=>{
+   const status=row.dataset.ruleStatus,id=row.dataset.orgId;
+   const eligible=filter==='all'||(filter==='verified'&&status==='verifierad')||
+    (filter==='historical'&&status==='historisk')||
+    (filter==='unverified'&&status!=='verifierad')||
+    (filter==='selected'&&status!=='verifierad'&&state.enabled.includes(id));
+   const visible=row.dataset.name.includes(query)&&eligible;
+   row.hidden=!visible;row.style.display=visible?'':'none';if(visible)count++;
+  });
+  if(el('org-count'))el('org-count').textContent=String(count);
+ }
+ el('search-org')?.addEventListener('input',applyRegistryFilters);
+ el('registry-status-filter')?.addEventListener('change',event=>{
+  state.registryStatus=event.currentTarget.value;applyRegistryFilters();
+ });
+ el('registry-audit-export')?.addEventListener('click',()=>{
+  const rows=allOrgs.map(o=>({
+   id:o.id,organisation:o.name,registrerade_ordinarie:o.seats??null,
+   registrerade_ersattare:o.subs??null,
+   dokumenterade_ordinarie:o.lekebergSeats??null,
+   dokumenterade_ersattare:o.lekebergSubs??null,
+   status:o.ruleStatus||'okänd',granskad:o.reviewedOn||null,
+   kalla:o.ruleSource||'',kalladress:o.ruleUrl||'',
+   valmetod:o.selectionMethod||'',anmarkning:o.validationNote||'',
+   aktuell_verifiering:o.ruleStatus==='verifierad'
+  }));
+  downloadFile('lekeberg-organisationer-kallgranskning.json',JSON.stringify({
+   exporterat:new Date().toISOString(),
+   observera:'Arbetsregister, ej kommunalt beslut; historiska uppgifter ar inte giltighetsbekraftade for 2026-2030.',
+   poster:rows
+  },null,2),'application/json');
+ });
+ if(state.selected==='registry'){
+  const select=el('registry-status-filter');
+  if(select)select.value=state.registryStatus||'all';
+  applyRegistryFilters();
+ }
  const name=el('scenario-name');if(name)name.addEventListener('input',()=>{state.title=name.value;persistDraft();});
  const present=el('present-input');if(present)present.addEventListener('change',()=>{let v=Number(present.value);if(!Number.isInteger(v)||v<1||v>70){state.error='Ange 1–70 närvarande väljande.';render();return;}state.present=v;persistDraft();render();});
  const compact=el('compact-toggle');if(compact)compact.addEventListener('change',()=>{state.compact=compact.checked;render();});
