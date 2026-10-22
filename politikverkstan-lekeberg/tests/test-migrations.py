@@ -1,12 +1,12 @@
-"""Schema migration regression through 1.0, including legacy-note privacy."""
+"""Schema migrations through 0012, including legacy-note privacy."""
 from pathlib import Path
 import sqlite3
 
 root = Path(__file__).resolve().parents[1]
 sql_dir = root / "migrations"
 files = sorted(sql_dir.glob("*.sql"))
-assert len(files) == 11, f"Expected exactly eleven versioned SQL files; found {files}"
-assert [p.name[:4] for p in files] == [f"{i:04d}" for i in range(1, 12)]
+assert len(files) == 12, f"Expected exactly twelve versioned SQL files; found {files}"
+assert [p.name[:4] for p in files] == [f"{i:04d}" for i in range(1, 13)]
 
 connection = sqlite3.connect(":memory:")
 connection.execute("PRAGMA foreign_keys=ON")
@@ -34,7 +34,7 @@ for i, path in enumerate(files):
 tables = {r[0] for r in connection.execute(
     "SELECT name FROM sqlite_master WHERE type='table'"
 )}
-assert {"work_cases", "work_case_notes", "work_case_comments",
+assert {"official_meetings", "official_meeting_sources", "work_cases", "work_case_notes", "work_case_comments",
         "work_meetings", "work_meeting_items", "work_meeting_notes"} <= tables
 columns = {r[1] for r in connection.execute("PRAGMA table_info(work_cases)")}
 assert {"scope", "assignee_email", "content_json", "revision"} <= columns
