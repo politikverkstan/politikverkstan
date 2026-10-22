@@ -121,9 +121,12 @@ async function position(db,user,c,req){
 export async function handleWorkflow(req,env,user){
  const url=new URL(req.url),path=url.pathname,method=req.method,db=env.DB;
  if(!path.startsWith('/api/private/workflow/'))return null;
+ // Classify failures without leaking SQL or private case data to the caller.
+ let section='arbetsflödet';
  try{
   if(path==='/api/private/workflow/search'){
-   return method==='GET'?search(db,user,url):fail(405,'Metod tillåts inte');
+   section='sökningen';
+   return method==='GET'?await search(db,user,url):fail(405,'Metod tillåts inte');
   }
   const parts=path.split('/');
   // /api/private/workflow/cases/{case}/history|meetings|followups|position
@@ -131,32 +134,37 @@ export async function handleWorkflow(req,env,user){
    const c=await accessibleCase(db,user,parts[5]);if(!c)return fail(404,'Ärendet finns inte eller saknar åtkomst');
    switch(parts[6]){
     case 'history':
-     return method==='GET'?caseHistory(db,user,c,url):fail(405,'Metod tillåts inte');
+     section='ändringshistoriken';
+     return method==='GET'?await caseHistory(db,user,c,url):fail(405,'Metod tillåts inte');
     case 'meetings':{
+     section='sammanträdeskopplingarna';
      if(method!=='GET')return fail(405,'Metod tillåts inte');
      const r=await db.prepare("SELECT i.id AS item_id,i.title AS agenda_title,i.outcome,i.follow_up,m.id,m.title,m.meeting_date,m.committee,m.status FROM work_meeting_items i JOIN work_meetings m ON m.id=i.meeting_id WHERE i.case_id=? AND (m.owner_email=? OR m.scope='team') ORDER BY m.meeting_date DESC,i.position LIMIT 150").bind(c.id,user.email).all();
      return send({meetings:r.results||[]});
     }
     case 'followups':
+     section='uppföljningarna';
      if(method==='GET')return send({followups:await fullFollowups(db,user,c)});
-     if(method==='POST')return followupWrite(req,db,user,c,null);
+     if(method==='POST')return await followupWrite(req,db,user,c,null);
      return fail(405,'Metod tillåts inte');
     case 'position':
-     return position(db,user,c,req);
+     section='ställningstagandet';
+     return await position(db,user,c,req);
    }
   }
   // /api/private/workflow/followups/{id}
   if(parts[4]==='followups'&&parts.length===6&&uuid.test(parts[5]||'')){
+   section='uppföljningen';
    const row=await db.prepare('SELECT case_id FROM work_followups WHERE id=?').bind(parts[5]).first();
    if(!row)return fail(404,'Uppföljningen finns inte');
    const c=await accessibleCase(db,user,row.case_id);if(!c)return fail(404,'Uppföljningen finns inte');
-   if(method==='PUT')return followupWrite(req,db,user,c,parts[5]);
+   if(method==='PUT')return await followupWrite(req,db,user,c,parts[5]);
    return fail(405,'Metod tillåts inte');
   }
   return fail(404,'Okänd funktion');
  }catch(e){
   if(e instanceof SyntaxError||/^(För stor|Ogiltig|Fält saknas)/.test(e.message))return fail(400,e.message);
-  console.error('Workflow error',e.message);
-  return fail(503,'Spårbarhetsfunktionen är inte tillgänglig. Kontrollera migrering 0011.');
+  console.error('Workflow error in '+section,e.message);
+  return send({error:'Kunde inte läsa eller uppdatera '+section+'. Kontrollera Cloudflare Worker-loggen och att relevanta D1-tabeller finns.',section,code:'WORKFLOW_UNAVAILABLE'},503);
  }
 }
