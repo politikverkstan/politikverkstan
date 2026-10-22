@@ -1,5 +1,6 @@
 /* 0.9.0 event handlers; injected into the workroom IIFE before attach(). */
 function attachMeetingActions(){
+ attachOfficialCalendarActions();
  const reload=async id=>{await loadMeetings();if(id)await openMeeting(id);render();};
  $('meeting-new')?.addEventListener('click',()=>{
   if(!meetingSafeToLeave())return;
