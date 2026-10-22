@@ -14,7 +14,7 @@ function toggleTheme(){
 }
 
 const h=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const state={tab:'overview',sharedTab:'team',motionView:'active',sharedView:'active',ideaView:'active',ideaHistory:[],user:null,motions:[],shared:[],motion:null,ideas:[],users:[],directory:[],shares:null,comments:[],ideaComments:[],ideaLinks:[],selectedIdea:null,dirty:false,saving:false,saveTimer:null,notice:'',history:[],review:[],logoDataUri:null,pdfVariant:'sd',fileScope:'mine',fileFolder:null,folders:[],files:[],caseItems:[],caseCurrent:null,caseSearch:'',caseFilter:'all',caseDirty:false,caseFiles:[],fileSearch:'',caseDirectory:[],caseComments:[],caseVisibility:'all',caseNoteDirty:false,meetingList:[],meetingCurrent:null,meetingAgenda:[],meetingNote:'',meetingSearch:'',meetingVisibility:'all',meetingDirty:false,meetingNoteDirty:false,meetingItemEdit:null};
+const state={tab:'overview',sharedTab:'team',motionView:'active',sharedView:'active',ideaView:'active',ideaHistory:[],user:null,motions:[],shared:[],motion:null,ideas:[],users:[],directory:[],shares:null,comments:[],ideaComments:[],ideaLinks:[],selectedIdea:null,dirty:false,saving:false,saveTimer:null,notice:'',history:[],review:[],logoDataUri:null,pdfVariant:'sd',fileScope:'mine',fileFolder:null,folders:[],files:[],caseItems:[],caseCurrent:null,caseSearch:'',caseFilter:'all',caseDirty:false,caseFiles:[],fileSearch:'',caseDirectory:[],caseComments:[],caseVisibility:'all',caseNoteDirty:false,meetingList:[],meetingCurrent:null,meetingAgenda:[],meetingNote:'',meetingSearch:'',meetingVisibility:'all',meetingDirty:false,meetingNoteDirty:false,meetingItemEdit:null,dashboardCases:[],dashboardMeetings:[],dashboardTasks:[],dashboardErrors:[],dashboardLoaded:false,dashboardTaskEdit:null};
 const cats=['Skola och utbildning','Omsorg och socialtjänst','Ekonomi och styrning','Trafik och infrastruktur','Trygghet','Miljö och samhällsbyggnad','Kommunal service','Annat'];
 const statuses={ide:'Idé',utkast:'Utkast',granskning:'För granskning',godkand:'Internt godkänd',inlamnad:'Inlämnad',besvarad:'Besvarad'};
 function newMotion(){return {title:'',category:'Annat',problem:'',motivation:'',proposal:'',clauses:[''],signer:'',party:'Sverigedemokraterna',date:new Date().toISOString().slice(0,10),status:'utkast',reference:'',notes:''};}
@@ -39,6 +39,7 @@ function overviewPage(){
    <div class="aw-hero-buttons"><button type="button" class="btn btn-primary" data-new="1">${icons.plus} Skapa en motion</button><button type="button" class="btn aw-secondary" data-tab="cases">Ärenden ${icons.arrow}</button></div>
   </div>
  </section>
+ ${dashboardPage()}
  <div class="aw-shortcuts">
   <button class="aw-shortcut" type="button" data-tab="motions"><span class="aw-shortcut-icon">${icons.list}</span><span><strong>Mina motioner</strong><small>${state.motions.length} aktiva motioner och utkast i din privata arbetsyta</small></span>${icons.arrow}</button>
   <button class="aw-shortcut" type="button" data-tab="shared"><span class="aw-shortcut-icon">${icons.users}</span><span><strong>Våra motioner</strong><small>Gemensamma motioner som du har behörighet att läsa</small></span>${icons.arrow}</button>
@@ -222,7 +223,7 @@ async function openTab(tab){if(tab!=='cases'&&!caseSafeToLeave())return;
  if(tab!=='cases'){state.caseDirty=false;state.caseNoteDirty=false;state.caseCurrent=null;state.caseComments=[];}
  if(tab!=='meetings'){state.meetingDirty=false;state.meetingNoteDirty=false;state.meetingCurrent=null;state.meetingAgenda=[];state.meetingItemEdit=null;}
  if(state.dirty&&state.motion){try{await saveMotion(false);}catch(e){toast('Kunde inte spara dokumentet före navigering: '+e.message,true);return;}}
- state.tab=tab;if(tab==='meetings'){try{await loadMeetings();await loadCases();}catch(e){state.tab='overview';render();toast('Sammanträdesverkstaden kunde inte öppnas. Kontrollera migrering 0009. '+e.message,true);return;}}if(tab==='cases'){try{await loadCases();await loadCaseFiles();await loadCaseDirectory();}catch(e){state.tab='overview';render();toast('Ärendehanteringen kunde inte öppnas. Kontrollera migrering 0008. '+e.message,true);return;}}if(tab==='ideas')await loadIdeas();if(tab==='shared')await loadShared();if(tab==='files')await loadFiles();if(tab==='users'&&state.user?.role==='admin')await loadUsers();render();window.scrollTo(0,0);
+ state.tab=tab;if(tab==='overview'){await loadDashboard();}if(tab==='meetings'){try{await loadMeetings();await loadCases();}catch(e){state.tab='overview';render();toast('Sammanträdesverkstaden kunde inte öppnas. Kontrollera migrering 0009. '+e.message,true);return;}}if(tab==='cases'){try{await loadCases();await loadCaseFiles();await loadCaseDirectory();}catch(e){state.tab='overview';render();toast('Ärendehanteringen kunde inte öppnas. Kontrollera migrering 0008. '+e.message,true);return;}}if(tab==='ideas')await loadIdeas();if(tab==='shared')await loadShared();if(tab==='files')await loadFiles();if(tab==='users'&&state.user?.role==='admin')await loadUsers();render();window.scrollTo(0,0);
 }
 async function createMotion(initial){try{const doc=await api('/api/private/motions','POST',{...newMotion(),...initial});state.motion=doc;state.tab='editor';state.dirty=false;await loadMotions();await openMotion(doc.id);}catch(e){toast(e.message,true);}}
 async function openMotion(id){if(!caseSafeToLeave())return;state.caseDirty=false;state.caseNoteDirty=false;try{const r=await api('/api/private/motions/'+id);state.motion=r.motion;state.dirty=false;state.shares=null;state.comments=[];if(r.motion.permission==='owner'){try{state.shares=await api('/api/private/motions/'+id+'/shares');state.directory=(await api('/api/private/directory')).users;}catch(e){toast('Delningsinställningar kunde inte laddas: '+e.message,true);}}state.comments=(await api('/api/private/motions/'+id+'/comments')).comments;state.tab='editor';render();window.scrollTo(0,0);}catch(e){toast(e.message,true);}}
@@ -395,6 +396,7 @@ function attachCaseActions(){
 function attach(){
  attachCaseActions();
  attachMeetingActions();
+ attachDashboard();
   $('theme-toggle')?.addEventListener('click',toggleTheme);
 
  document.querySelectorAll('[data-file-scope]').forEach(b=>b.addEventListener('click',async()=>{
@@ -473,6 +475,6 @@ function attach(){
  document.querySelectorAll('[data-active]').forEach(b=>b.addEventListener('click',async()=>{try{const email=b.dataset.active,row=state.users.find(x=>x.email===email);if(!confirm((row.active?'Inaktivera ':'Aktivera ')+email+'?'))return;await api('/api/private/users/'+encodeURIComponent(email),'PATCH',{role:row.role,active:!row.active});await loadUsers();render();toast('Kontostatus uppdaterad.');}catch(e){toast(e.message,true);}}));
 }
 function render(){const root=$('workroot');root.innerHTML=shell();attach();}
-async function init(){try{const data=await api('/api/private/me');state.user=data.user;await loadMotions();await loadShared();try{state.logoDataUri=(await api('/api/private/branding')).logo;}catch{}render();}catch(e){$('workroot').innerHTML=`<div class="container" style="max-width:720px;margin:90px auto"><div class="card"><h1>Åtkomst nekad</h1><p>${h(e.message)}</p><p>Arbetsytan kräver giltig Cloudflare Access-inloggning och ett aktivt användarkonto. Be administratören om behörighet.</p><a class="btn" href="/">Till den publika portalen</a></div></div>`;}}
+async function init(){try{const data=await api('/api/private/me');state.user=data.user;await loadMotions();await loadShared();await loadDashboard();try{state.logoDataUri=(await api('/api/private/branding')).logo;}catch{}render();}catch(e){$('workroot').innerHTML=`<div class="container" style="max-width:720px;margin:90px auto"><div class="card"><h1>Åtkomst nekad</h1><p>${h(e.message)}</p><p>Arbetsytan kräver giltig Cloudflare Access-inloggning och ett aktivt användarkonto. Be administratören om behörighet.</p><a class="btn" href="/">Till den publika portalen</a></div></div>`;}}
 init();
 })();
