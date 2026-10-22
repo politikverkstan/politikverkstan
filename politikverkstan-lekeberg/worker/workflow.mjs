@@ -165,6 +165,6 @@ export async function handleWorkflow(req,env,user){
  }catch(e){
   if(e instanceof SyntaxError||/^(För stor|Ogiltig|Fält saknas)/.test(e.message))return fail(400,e.message);
   console.error('Workflow error in '+section,e.message);
-  return send({error:'Kunde inte läsa eller uppdatera '+section+'. Kontrollera Cloudflare Worker-loggen och att relevanta D1-tabeller finns.',section,code:'WORKFLOW_UNAVAILABLE'},503);
+  return send({error:'Kunde inte läsa eller uppdatera '+section+'. Försök igen eller kontakta administratören.',section,code:'WORKFLOW_UNAVAILABLE'},503);
  }
 }
