@@ -38,7 +38,7 @@ async function linksAllowed(env,user,data){
 }
 function badRequest(e){
  if(e instanceof SyntaxError||/^(För stor|Ogiltig|Rubrik krävs)/.test(e.message))return fail(400,e.message);
- console.error('Private task error',e.message);return fail(503,'Uppgiftslistan är inte tillgänglig. Kontrollera migrering 0010.');
+ console.error('Private task error',e.message);return fail(503,'Uppgifterna kunde inte hämtas just nu. Försök igen eller kontakta administratören.');
 }
 export async function handleTasks(req,env,user){
  const path=new URL(req.url).pathname,method=req.method;
