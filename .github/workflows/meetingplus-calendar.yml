@@ -8,6 +8,7 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/meetingplus-calendar.yml'
+      - 'politikverkstan-lekeberg/ops/refresh-official-calendar.mjs'
 
 permissions:
   contents: write
@@ -35,7 +36,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Fetch and validate four public MeetingPlus calendars
-        run: node ops/refresh-official-calendar.mjs
+        run: MEETINGPLUS_DEBUG=1 node ops/refresh-official-calendar.mjs
       - name: Run core regressions before publishing snapshot
         run: npm test
       - name: Commit public calendar snapshot only
