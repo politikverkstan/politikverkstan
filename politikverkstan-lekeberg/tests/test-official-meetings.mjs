@@ -5,6 +5,21 @@ const future=new Date(Date.now()+44*86400000).toISOString().slice(0,10);
 function meetingHtml(s,at='18:00',place='Träffen'){
  return '<html><body><table><tr><td><a href="/committees/'+s.slug+'/mote-'+future+'">'+future+' '+at+' - 21:00</a></td><td>'+place+'</td></tr></table></body></html>';
 }
+// The live MeetingPlus listing uses a nested accessible div row,
+// aria-label for time, and a location-text cell after the closing anchor.
+const pageFixture='<div class="accessible-table-row meeting-list-item" role="row">'+
+ '<div class="cell date list-item-date" role="cell"><span>'+
+ '<a class="accessible-table-cell" href="/committees/kommunfullmaktige/mote-'+future+'" '+
+ 'aria-label="Möte '+future+' 18:00 - 21:00"><span class="no-wrap">'+future+
+ '</span><span class="no-wrap">18:00 - 21:00</span></a></span></div>'+
+ '<div class="accessible-table-cell cell location list-item-location" role="cell">'+
+ '<span class="location-text">Tr&#228;ffen</span></div></div>';
+const liveParsed=parseOfficialMeetings(pageFixture,OFFICIAL_SOURCES[0]);
+assert.equal(liveParsed.length,1);
+assert.equal(liveParsed[0].start_time,'18:00');
+assert.equal(liveParsed[0].end_time,'21:00');
+assert.equal(liveParsed[0].location,'Träffen');
+
 const entries=[];
 for(const s of OFFICIAL_SOURCES){
  const data=parseOfficialMeetings(meetingHtml(s),s);
