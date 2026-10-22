@@ -5,7 +5,7 @@ import {handleCases,normalizeCase} from '../worker/cases.mjs';
 import {webcrypto} from 'node:crypto';
 if(!globalThis.crypto)globalThis.crypto=webcrypto;
 const db=new DatabaseSync(':memory:');db.exec('PRAGMA foreign_keys=ON');
-for(const migration of ['0002_workroom.sql','0003_collaboration.sql','0004_lifecycle.sql','0006_files.sql','0007_cases.sql','0008_shared_cases.sql']){
+for(const migration of ['0002_workroom.sql','0003_collaboration.sql','0004_lifecycle.sql','0006_files.sql','0007_cases.sql','0008_shared_cases.sql','0009_meetings.sql','0010_dashboard_tasks.sql','0011_traceability.sql']){
  db.exec(readFileSync(new URL('../migrations/'+migration,import.meta.url),'utf8'));
 }
 const stmt=db.prepare("INSERT INTO work_users(email,display_name,role,active,created_at) VALUES(?,?,?,1,'2026-01-01')");
