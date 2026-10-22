@@ -63,14 +63,18 @@ export async function syncOfficialMeetings(env,{fetcher=fetch,now=new Date().toI
  const status=[];
  for(const source of OFFICIAL_SOURCES){
   const url=sourceUrl(source);
+  let phase='fetch';
   try{
-   const result=await fetcher(url,{headers:{accept:'text/html'},redirect:'error',signal:AbortSignal.timeout(12000)});
-   if(!result.ok||!((result.headers.get('content-type')||'').includes('text/html')))throw Error('Källan svarade inte med HTML');
+   const result=await fetcher(url,{headers:{accept:'text/html','accept-language':'sv-SE,sv;q=0.9','user-agent':'Politikverkstan-Calendar/1.0 (+public meeting metadata)'},redirect:'error',signal:AbortSignal.timeout(12000)});
+   if(!result.ok)throw Error('HTTP '+result.status);
+   if(!((result.headers.get('content-type')||'').toLowerCase().includes('text/html')))throw Error('Felaktigt innehållsformat');
    const html=await result.text();
+   phase='parse';
    const records=parseOfficialMeetings(html,source,now.slice(0,10));
    // Empty result may mean changed markup, outage or legitimately no future meetings.
    // Preserve previous data, report the problem instead of erasing valid entries.
    if(!records.length)throw Error('Inga igenkända möten – kontrollera källformatet');
+   phase='storage';
    for(const m of records){
     await env.DB.prepare(`INSERT INTO official_meetings
     (source_url,committee_key,committee,meeting_date,start_time,end_time,location,first_seen_at,last_seen_at,updated_at)
@@ -91,14 +95,21 @@ export async function syncOfficialMeetings(env,{fetcher=fetch,now=new Date().toI
     .bind(source.key,url,now,now,records.length).run();
    status.push({committee:source.name,count:records.length,ok:true});
   }catch(e){
-   // Do not expose upstream response contents or credentials in logs.
-   console.error('Official meeting sync failed:',source.key,String(e.message).slice(0,120));
+   // Persist only bounded, predefined categories; no upstream body or headers.
+   const message=String(e?.message||'');
+   const detail=phase==='storage'?'Databasfel vid lagring':
+    /^HTTP [1-5][0-9]{2}$/.test(message)?message:
+    phase==='parse'?'Källan innehåller inga igenkända möteslänkar':
+    e?.name==='TimeoutError'||e?.name==='AbortError'?'Tidsgräns vid hämtning':
+    message==='Felaktigt innehållsformat'?'Källan svarade inte med HTML':
+    'Nätverksfel vid hämtning';
+   console.error('Official meeting sync failed:',source.key,phase,detail);
    await env.DB.prepare(`INSERT INTO official_meeting_sources
     (committee_key,source_url,last_attempt_at,last_error)
-    VALUES(?,?,?,'Källan kunde inte läsas')
+    VALUES(?,?,?,?)
     ON CONFLICT(committee_key) DO UPDATE SET last_attempt_at=excluded.last_attempt_at,
-    last_error=excluded.last_error`).bind(source.key,url,now).run();
-   status.push({committee:source.name,ok:false});
+    last_error=excluded.last_error`).bind(source.key,url,now,detail).run();
+   status.push({committee:source.name,ok:false,error:detail});
   }
  }
  return {status,updated:status.some(s=>s.ok)};
