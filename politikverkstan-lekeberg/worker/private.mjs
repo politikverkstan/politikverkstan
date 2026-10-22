@@ -4,6 +4,7 @@ import {handleCases} from './cases.mjs';
 import {handleMeetings} from './meetings.mjs';
 import {handleTasks} from './tasks.mjs';
 import {handleWorkflow} from './workflow.mjs';
+import {handleOfficialMeetings} from './official-meetings.mjs';
 /* Private political workroom. All authorization is server-side, fail closed.
  * Cloudflare Access JWT signature + issuer + audience; D1 user allow-list & role.
  * No visitor IP / coalition telemetry is ever combined with document content. */
