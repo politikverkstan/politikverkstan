@@ -108,6 +108,7 @@ async function dashboardOpenCase(id){
  if(!found){toast('Ärendet är inte längre tillgängligt för dig.',true);return;}
  state.caseCurrent={...found,labels:[...(found.labels||[])]};
  try{await loadCaseComments(id);}catch{state.caseComments=[];}
+ await loadCaseWorkflow(id);
  recordWorkView();render();
 }
 async function dashboardOpenMeeting(id){
