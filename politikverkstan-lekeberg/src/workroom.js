@@ -23,9 +23,9 @@ function toast(message,error=false){const old=$('toast');old?.remove();let el=do
 const svg=(p)=>`<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const icons={calendar:svg('<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/>'),folder:svg('<path d="M3 7V5h7l2 3h9v12H3V7Z"/>'),clipboard:svg('<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4V2h6v2M8 12h8M8 16h5"/>'),file:svg('<path d="M6 2h8l4 4v16H6zM14 2v5h4M9 12h6M9 16h6"/>'),pen:svg('<path d="m4 16-1 5 5-1L20 8l-4-4L4 16ZM14 6l4 4"/>'),search:svg('<circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/>'),shield:svg('<path d="M12 2 21 6v6c0 5-3 8-9 10-6-2-9-5-9-10V6z"/><path d="m9 12 2 2 4-4"/>'),write:svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/>'),home:svg('<path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/>'),list:svg('<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'),bulb:svg('<path d="M9 18h6m-5 4h4M9 14a6 6 0 1 1 6 0l-1 3h-4l-1-3z"/>'),users:svg('<circle cx="9" cy="8" r="4"/><path d="M2 21v-2a7 7 0 0 1 14 0v2M17 4a4 4 0 0 1 0 8m2 3a6 6 0 0 1 3 6"/>'),arrow:svg('<path d="m9 18 6-6-6-6"/>'),download:svg('<path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v4h16v-4"/>'),plus:svg('<path d="M12 5v14M5 12h14"/>')};
 function nav(id,label,icon){return `<button class="sidebutton ${state.tab===id?'active':''}" type="button" data-tab="${id}">${icons[icon]} ${label}</button>`;}
-function shell(){return `<div class="layout"><aside class="sidebar"><div class="brand"><div class="brand-icon" aria-hidden="true">P</div><div><span>Politikverkstan</span><small>LEKEBERG · ARBETSYTA</small></div><button class="mobile-toggle" id="mobile-menu" type="button" aria-label="Visa meny">☰</button></div><div class="navs"><div class="side-section">DIN ARBETSYTA</div>${nav('overview','Översikt','home')}${nav('meetings','Sammanträden','calendar')}${nav('cases','Ärenden','clipboard')}${nav('motions','Mina motioner','file')}${nav('shared','Våra motioner','users')}${nav('files','Filer','folder')}${nav('editor','Motionsverkstad','pen')}${nav('ideas','Våra idéer','bulb')}${state.user?.role==='admin'?`<div class="side-section" style="margin-top:26px">ADMINISTRATION</div>${nav('users','Användare','shield')}`:''}</div><div class="sidebar-tail"><strong>${h(state.user?.name||state.user?.email||'')}</strong><p>${state.user?.role==='admin'?'Administratör':'Standardanvändare'}</p><a href="/">← Till publik Mandat & samverkan</a></div></aside><div class="main"><header class="topbar"><div class="work-topbar-left"><button type="button" class="work-nav-back" id="work-nav-back" title="Tillbaka" aria-label="Tillbaka till föregående vy" ${state.tab==='overview'&&(workHistoryEntry()?.depth||0)===0?'disabled':''}><span class="work-back-symbol" aria-hidden="true">←</span><span>Tillbaka</span></button><div><div class="eyebrow">Inloggningsskyddad arbetsyta</div><h2>${h({overview:'Översikt',motions:'Mina motioner',shared:'Våra motioner',editor:'Motionsverkstad',ideas:'Våra idéer',files:'Dokumentarkiv',cases:'Ärenden',meetings:'Sammanträden',users:'Användarhantering'}[state.tab])}</h2></div></div><div class="topactions"><span class="chip">Skyddad inloggning</span><button class="btn btn-sm theme-toggle" id="theme-toggle" type="button" aria-label="${currentTheme==='dark'?'Byt till ljust tema':'Byt till mörkt tema'}" title="Växla ljust/mörkt tema"><span class="theme-symbol" aria-hidden="true">${currentTheme==='dark'?'☀':'☾'}</span> ${currentTheme==='dark'?'Ljust':'Mörkt'}</button><a class="btn btn-sm" href="/">Publik portal</a></div></header><main class="container">${main()}</main></div></div>`;}
+function shell(){return `<div class="layout"><aside class="sidebar"><div class="brand"><div class="brand-icon" aria-hidden="true">P</div><div><span>Politikverkstan</span><small>LEKEBERG · ARBETSYTA</small></div><button class="mobile-toggle" id="mobile-menu" type="button" aria-label="Visa meny">☰</button></div><div class="navs"><div class="side-section">DIN ARBETSYTA</div>${nav('overview','Översikt','home')}${nav('search','Sök i arbetsytan','search')}${nav('meetings','Sammanträden','calendar')}${nav('cases','Ärenden','clipboard')}${nav('motions','Mina motioner','file')}${nav('shared','Våra motioner','users')}${nav('files','Filer','folder')}${nav('editor','Motionsverkstad','pen')}${nav('ideas','Våra idéer','bulb')}${state.user?.role==='admin'?`<div class="side-section" style="margin-top:26px">ADMINISTRATION</div>${nav('users','Användare','shield')}`:''}</div><div class="sidebar-tail"><strong>${h(state.user?.name||state.user?.email||'')}</strong><p>${state.user?.role==='admin'?'Administratör':'Standardanvändare'}</p><a href="/">← Till publik Mandat & samverkan</a></div></aside><div class="main"><header class="topbar"><div class="work-topbar-left"><button type="button" class="work-nav-back" id="work-nav-back" title="Tillbaka" aria-label="Tillbaka till föregående vy" ${state.tab==='overview'&&(workHistoryEntry()?.depth||0)===0?'disabled':''}><span class="work-back-symbol" aria-hidden="true">←</span><span>Tillbaka</span></button><div><div class="eyebrow">Inloggningsskyddad arbetsyta</div><h2>${h({overview:'Översikt',search:'Sök i arbetsytan',motions:'Mina motioner',shared:'Våra motioner',editor:'Motionsverkstad',ideas:'Våra idéer',files:'Dokumentarkiv',cases:'Ärenden',meetings:'Sammanträden',users:'Användarhantering'}[state.tab])}</h2></div></div><div class="topactions"><span class="chip">Skyddad inloggning</span><button class="btn btn-sm theme-toggle" id="theme-toggle" type="button" aria-label="${currentTheme==='dark'?'Byt till ljust tema':'Byt till mörkt tema'}" title="Växla ljust/mörkt tema"><span class="theme-symbol" aria-hidden="true">${currentTheme==='dark'?'☀':'☾'}</span> ${currentTheme==='dark'?'Ljust':'Mörkt'}</button><a class="btn btn-sm" href="/">Publik portal</a></div></header><main class="container">${main()}</main></div></div>`;}
 function header(kicker,title,desc,right=''){return `<div class="headline"><div><div class="eyebrow">${h(kicker)}</div><h1>${h(title)}</h1><p>${h(desc)}</p></div>${right}</div>`;}
-function main(){switch(state.tab){case 'motions':return motionsPage();case 'shared':return sharedPage();case 'files':return filesPage();case 'cases':return casesPage();case 'meetings':return meetingsPage();case 'editor':return editorPage();case 'ideas':return ideasPage();case 'users':return usersPage();default:return overviewPage();}}
+function main(){switch(state.tab){case 'search':return workflowSearchPage();case 'motions':return motionsPage();case 'shared':return sharedPage();case 'files':return filesPage();case 'cases':return casesPage();case 'meetings':return meetingsPage();case 'editor':return editorPage();case 'ideas':return ideasPage();case 'users':return usersPage();default:return overviewPage();}}
 
 function overviewPage(){
  const seen=new Set();
@@ -210,6 +210,7 @@ function casesPage(){
      <div class="case-comments">${state.caseComments.map(c=>`<div class="case-comment"><div><strong>${h(c.author_name||c.author_email)}</strong><small>${h((c.created_at||'').slice(0,16).replace('T',' '))}</small></div><p>${h(c.body)}</p></div>`).join('')||'<p class="case-hint">Inga kommentarer ännu.</p>'}</div>
      <form id="case-comment-form"><label class="field"><span>Ny kommentar</span><textarea name="body" required maxlength="3000" rows="3"></textarea></label><button class="btn btn-primary" type="submit">Publicera kommentar</button></form>
     </section>
+    ${workflowCaseSections(selected)}
     ${casePrintPage(selected)}`:''}
    `:'<div class="card case-empty"><h2>Välj ett ärende</h2><p>Öppna ett ärende till vänster eller skapa ett nytt. Privata ärenden och anteckningar visas aldrig på den publika sidan.</p></div>'}</div>
   </section>
@@ -310,12 +311,13 @@ async function fileAction(url,method,data){
 
 function caseSafeToLeave(){return !(state.caseDirty||state.caseNoteDirty)||confirm('Du har osparade ändringar eller privata anteckningar. Fortsätta utan att spara?');}
 function attachCaseActions(){
- $('case-new')?.addEventListener('click',()=>{if(!caseSafeToLeave())return;state.caseCurrent=caseEmpty();state.caseComments=[];state.caseDirty=false;state.caseNoteDirty=false;render();});
+ $('case-new')?.addEventListener('click',()=>{if(!caseSafeToLeave())return;workflowState.caseId=null;workflowState.followupEdit=null;state.caseCurrent=caseEmpty();state.caseComments=[];state.caseDirty=false;state.caseNoteDirty=false;render();});
  document.querySelectorAll('[data-case-open]').forEach(b=>b.addEventListener('click',async()=>{
   if(!caseSafeToLeave())return;
   const record=state.caseItems.find(c=>c.id===b.dataset.caseOpen);if(!record)return;
   state.caseCurrent={...record,labels:[...(record.labels||[])]};state.caseDirty=false;state.caseNoteDirty=false;
   try{await loadCaseComments(record.id);}catch(e){state.caseComments=[];toast('Kommentarerna kunde inte hämtas: '+e.message,true);}
+  await loadCaseWorkflow(record.id);
   recordWorkView();render();
  }));
  document.querySelectorAll('[data-case-visibility]').forEach(b=>b.addEventListener('click',()=>{state.caseVisibility=b.dataset.caseVisibility;render();}));
@@ -340,6 +342,7 @@ function attachCaseActions(){
    state.caseCurrent=updated?{...updated,labels:[...(updated.labels||[])]}:null;
    state.caseDirty=false;state.caseNoteDirty=false;state.caseComments=[];
    if(result.id)try{await loadCaseComments(result.id);}catch{}
+   if(result.id)await loadCaseWorkflow(result.id);
    render();toast('Ärendet sparades.');
   }catch(error){submit.disabled=false;toast(error.message,true);}
  });
@@ -352,7 +355,7 @@ function attachCaseActions(){
   try{
    await api('/api/private/cases/'+current.id+'/sharing','PUT',{scope,assignee_email,revision:current.revision});
    await loadCases();const updated=state.caseItems.find(c=>c.id===current.id);
-   state.caseCurrent=updated?{...updated}:null;render();toast(scope==='team'?'Ärendet delas nu med den godkända arbetsgruppen.':'Ärendet är nu privat.');
+   state.caseCurrent=updated?{...updated}:null;await loadCaseWorkflow(current.id);render();toast(scope==='team'?'Ärendet delas nu med den godkända arbetsgruppen.':'Ärendet är nu privat.');
   }catch(error){toast(error.message,true);}
  });
  const notes=$('case-note-form');
@@ -383,7 +386,7 @@ function attachCaseActions(){
   if(!state.caseCurrent?.id||state.caseCurrent.is_owner===false||!confirm('Radera ärendet och dess kommentarer permanent?'))return;
   try{
    await api('/api/private/cases/'+state.caseCurrent.id,'DELETE');await loadCases();
-   state.caseCurrent=null;state.caseComments=[];state.caseDirty=false;state.caseNoteDirty=false;
+   state.caseCurrent=null;workflowState.caseId=null;state.caseComments=[];state.caseDirty=false;state.caseNoteDirty=false;
    render();toast('Ärendet raderades.');
   }catch(error){toast(error.message,true);}
  });
@@ -394,6 +397,7 @@ function attachCaseActions(){
 }
 
 function attach(){
+ attachWorkflowActions();
  attachCaseActions();
  attachMeetingActions();
  attachDashboard();
