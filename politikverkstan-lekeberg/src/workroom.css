@@ -586,3 +586,14 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
 .official-source-diagnostics li{display:flex;flex-direction:column;gap:3px;font-size:11px}
 .official-source-diagnostics li span{color:var(--muted)}
 .official-source-diagnostics li span.official-warning{color:#bd6d38}
+
+.case-stage-overview{padding:16px 18px;margin-bottom:14px}
+.case-stage-overview h3{font-size:16px;margin:0 0 4px}
+.case-stage-overview .case-hint{margin:0 0 12px}
+.case-stage-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(126px,1fr));gap:7px}
+.case-stage-list button{border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--ink);text-align:left;padding:10px;cursor:pointer;min-width:0}
+.case-stage-list button:hover,.case-stage-list button:focus-visible{outline:2px solid #c47c5c;outline-offset:0;background:var(--card)}
+.case-stage-list strong{display:block;font-size:11px;margin-bottom:4px}
+.case-stage-list small{display:block;font-size:11px;line-height:1.4;color:var(--muted);overflow-wrap:anywhere}
+#case-form,#wf-case-meetings,#wf-case-followups,#wf-case-position,#wf-case-history{scroll-margin-top:18px}
+@media(max-width:600px){.case-stage-overview{padding:12px}.case-stage-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
