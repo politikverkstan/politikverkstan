@@ -33,7 +33,7 @@ function attachMeetingActions(){
   const button=form.querySelector('[type="submit"]');button.disabled=true;
   try{
    const url=m.id?'/api/private/meetings/'+m.id:'/api/private/meetings';
-   const answer=await api(url,m.id?'PUT':'POST',{title:m.title,committee:m.committee,meeting_date:m.meeting_date,start_time:m.start_time||'',location:m.location||'',status:m.status,revision:m.revision});
+   const answer=await api(url,m.id?'PUT':'POST',{title:m.title,committee:m.committee,meeting_date:m.meeting_date,start_time:m.start_time||'',location:m.location||'',status:m.status,official_source_url:m.official_source_url||'',revision:m.revision});
    state.meetingDirty=false;await reload(m.id||answer.id);toast('Sammanträdet sparades.');
   }catch(error){button.disabled=false;toast(error.message,true);}
  });
