@@ -50,7 +50,7 @@ with sync_playwright() as p:
         assert outer['padLeft']>=expected-1,(width,'workshop left',outer)
         assert outer['padRight']>=expected-1,(width,'workshop right',outer)
         card=box.bounding_box()
-        for selector in ['.pv-workshop-entry>div','.pv-workshop-entry>.primary-button']:
+        for selector in ['.pv-workshop-entry>div','.pv-workshop-entry>.pv-scenario-edit']:
             element=page.locator(selector).bounding_box()
             assert element['x']>=card['x']+outer['padLeft']-2,(width,selector,'left')
             assert element['x']+element['width']<=card['x']+card['width']-outer['padRight']+2,(width,selector,'right')
