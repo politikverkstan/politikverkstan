@@ -36,6 +36,55 @@ Förväntat är tre nya tabeller, de nya revisions- och händelsetriggrarna, kol
 6. Testa med två aktiva Access-konton där åtminstone ett konto har administratörsroll: privata ärenden, historik och kopplade privata möten får inte synas för obehöriga. Prova även delat ärende, tilldelad redigerare, avslutad uppföljning, sökträffar och återtagen delning.
 7. Kontrollera att `Scenarioverkstad` är en egen ingång på publika sidan och att en användare fortfarande kan öppna, spara, importera och jämföra scenarier i sin webbläsare.
 
+## Återställning vid delvis genomförd migrering 0011
+
+Om `work_case_events` finns, men `work_followups` och `work_case_positions` saknas, har D1 ännu inte hela 1.0-schemat. **Kör inte om `migrations/0011_traceability.sql`**, eftersom den bland annat innehåller `ALTER TABLE work_cases ADD COLUMN last_editor_email` utan någon `IF NOT EXISTS`.
+
+1. Kontrollera att du använder **produktionsdatabasen** i rätt `wrangler.jsonc` och ta en export/säkerhetskopia före ändringar.
+2. Kontrollera att kolumnen `last_editor_email` finns i `work_cases` och att `work_case_events` innehåller `id`, `case_id`, `actor_email`, `kind`, `case_revision`, `scope_at_event`, `changes_json` och `created_at`:
+
+```sql
+PRAGMA table_info('work_cases');
+PRAGMA table_info('work_case_events');
+SELECT name, type FROM sqlite_master
+WHERE name IN ('work_case_events','work_followups','work_case_positions',
+ 'work_case_audit_create','work_case_audit_update',
+ 'work_followups_audit_create','work_followups_audit_update',
+ 'work_positions_audit_create','work_positions_audit_update');
+```
+
+3. Om förkontrollerna motsvarar ovanstående förutsättningar, kör bara [`ops/repair_0011_missing_tables.sql`](ops/repair_0011_missing_tables.sql). Filen innehåller ingen radering, uppdatering av befintliga data eller `ALTER TABLE`, och använder `IF NOT EXISTS` för tabeller, index och historiktriggers. Den är ett återställningssteg, inte en ny numrerad migrering.
+
+Från katalogen `politikverkstan-lekeberg` med korrekt Cloudflare-inloggning och befintlig Wrangler-konfiguration:
+
+```bash
+npx wrangler d1 export <DATABASNAMN> --remote --output backup_fore_reparation.sql
+npx wrangler d1 execute <DATABASNAMN> --remote --file=ops/repair_0011_missing_tables.sql
+```
+
+Byt `<DATABASNAMN>` mot den faktiska databasen i projektets befintliga `wrangler.jsonc`. Exporten ska slutföras och sparas säkert innan exekvering. Cloudflare D1 Time Travel är ytterligare ett alternativ för återställning, men ska inte förväxlas med att en export har skapats.
+
+4. Kör efterkontrollerna och säkerställ att de tre tabellerna och alla sex historiktriggers finns. Kontrollera att `PRAGMA foreign_key_check` ger **inga rader** och att `PRAGMA quick_check` ger **ok**:
+
+```sql
+SELECT name FROM sqlite_master
+WHERE type='table' AND name IN
+ ('work_case_events','work_followups','work_case_positions')
+ORDER BY name;
+SELECT name FROM sqlite_master
+WHERE type='trigger' AND name IN
+ ('work_case_audit_create','work_case_audit_update',
+  'work_followups_audit_create','work_followups_audit_update',
+  'work_positions_audit_create','work_positions_audit_update')
+ORDER BY name;
+PRAGMA foreign_key_check;
+PRAGMA quick_check;
+```
+
+5. Öppna ett tidigare sparat ärende och kontrollera att delning, sammanträdeskopplingar, ändringshistorik, uppföljningar och ställningstaganden fungerar. Kontrollera med ett annat godkänt konto att privata data fortfarande är skyddade.
+
+**Avbryt vid andra schemavarianter** (exempelvis avvikande kolumner eller redan existerande tabeller med annan definition). `IF NOT EXISTS` kontrollerar inte att en befintlig tabells kolumner är rätt. Reparationsfilen är därför inte en generell ersättning för verifiering av schemat.
+
 ## Kvalitetskontroller för release
 
 Kör från `politikverkstan-lekeberg`:
