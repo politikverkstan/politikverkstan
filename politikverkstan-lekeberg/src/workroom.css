@@ -525,3 +525,7 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
 .wf-search-result{display:flex;flex-direction:column;gap:7px;width:100%;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--ink);text-align:left;text-decoration:none;margin:8px 0}
 .wf-search-result small{color:var(--muted);font-size:11px}
 @media print{.wf-panel,.wf-search{display:none!important}}
+
+/* Feature-specific recovery: unrelated history, meetings and follow-ups remain visible. */
+.wf-section-error{margin:12px 0;padding:13px;border:1px solid var(--border);border-radius:10px}
+.wf-section-error p{margin:0 0 10px;overflow-wrap:anywhere;font-size:13px}
