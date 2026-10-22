@@ -508,3 +508,20 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
 .work-back-symbol{font-size:18px;line-height:1;position:relative;top:-1px}
 @media(max-width:900px){.work-nav-back span:last-child{display:none}.work-nav-back{padding:8px 10px}.work-topbar-left{gap:8px}}
 @media print{.work-nav-back{display:none!important}}
+
+/* Version 1.0: traceability and search */
+.wf-panel{margin-top:16px}
+.wf-row{display:flex;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid var(--border)}
+.wf-row strong,.wf-row small{display:block;overflow-wrap:anywhere}
+.wf-row small{font-size:11px;color:var(--muted);margin-top:4px}
+.wf-row p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}
+.wf-form{display:grid;gap:12px;padding:14px;border:1px solid var(--border);border-radius:10px}
+.wf-history-event{margin:12px 0;padding:12px;border-left:3px solid var(--border);background:var(--bg)}
+.wf-history-title{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.wf-history-title small,.wf-diff small{font-size:11px;color:var(--muted)}
+.wf-history-event summary{cursor:pointer}
+.wf-diff>div{padding:9px 0;border-top:1px solid var(--border);overflow-wrap:anywhere}
+.wf-diff small{display:block;white-space:pre-wrap}
+.wf-search-result{display:flex;flex-direction:column;gap:7px;width:100%;padding:14px;border:1px solid var(--border);border-radius:10px;background:var(--card);color:var(--ink);text-align:left;text-decoration:none;margin:8px 0}
+.wf-search-result small{color:var(--muted);font-size:11px}
+@media print{.wf-panel,.wf-search{display:none!important}}
