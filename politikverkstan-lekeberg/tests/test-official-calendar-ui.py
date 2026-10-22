@@ -42,6 +42,7 @@ with sync_playwright() as p:
  errors=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.set_content(html,wait_until='domcontentloaded')
+ page.locator('#mobile-menu').click()
  page.locator('[data-tab="meetings"]').first.click()
  page.locator('.official-calendar').wait_for()
  assert page.locator('.official-calendar-grid .official-day').count()>=28
