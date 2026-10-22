@@ -79,6 +79,7 @@ function meetingDetails(m){
 function meetingsPage(){
  const filtered=state.meetingList.filter(x=>(state.meetingVisibility==='all'||(state.meetingVisibility==='mine'?x.scope==='mine'&&x.is_owner:x.scope==='team'))&&(!state.meetingSearch||[x.title,x.committee,x.meeting_date,x.location].join(' ').toLocaleLowerCase('sv-SE').includes(state.meetingSearch.toLocaleLowerCase('sv-SE'))));
  return `
+ ${officialCalendarView()}
  ${header('SAMMANTRÄDESVERKSTAD','Sammanträden','Skapa dagordningar, koppla ärenden och förbered kommunfullmäktige och nämndmöten. Privata mötesanteckningar hålls alltid separata.','<button type="button" class="btn btn-primary" id="meeting-new">'+icons.plus+' Nytt sammanträde</button>')}
  <section class="meeting-layout">
   <div class="card meeting-list-pane">
