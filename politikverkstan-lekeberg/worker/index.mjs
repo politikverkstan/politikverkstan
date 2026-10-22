@@ -1,4 +1,5 @@
 import {handlePrivate} from './private.mjs';
+import {syncOfficialMeetings} from './official-meetings.mjs';
 /* Cloudflare Worker: privacy-minimized optional aggregate telemetry; fail-closed private administration.
  * Not part of the public HTML bundle. No visitor IP is read on telemetry endpoint. */
 const JSON_HEADERS={'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
