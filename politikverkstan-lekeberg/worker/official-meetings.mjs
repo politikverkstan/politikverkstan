@@ -1,3 +1,4 @@
+import {OFFICIAL_MEETING_CACHE} from './official-meetings-cache.mjs';
 /* Lekeberg public MeetingPlus calendar. No private credentials, document
  * downloads, meeting notes or user data are sent to the source website.
  * Four fixed allowlisted URLs only; runs on the Worker cron or admin request. */
@@ -58,79 +59,49 @@ export function parseOfficialMeetings(html,source,today=localDate()){
  return [...found.values()].sort((a,b)=>a.meeting_date.localeCompare(b.meeting_date)||a.source_url.localeCompare(b.source_url));
 }
 function sourceUrl(s){return origin+'/committees/'+s.slug;}
-export async function syncOfficialMeetings(env,{fetcher=fetch,now=new Date().toISOString()}={}){
- if(!env.DB)throw Error('Databasbindning saknas');
- const status=[];
+// A compiled snapshot is loaded with the Worker. No outbound subrequest is
+// performed by Cloudflare, including when reading the authenticated calendar.
+export function normalizeCachedCalendar(snapshot,today=localDate()){
+ const entries=Array.isArray(snapshot?.sources)?snapshot.sources:[];
+ const seen=new Set(),meetings=[],sources=[];
+ const minimum=new Date(today+'T00:00:00Z');minimum.setUTCDate(minimum.getUTCDate()-31);
+ const cutoff=minimum.toISOString().slice(0,10);
  for(const source of OFFICIAL_SOURCES){
-  const url=sourceUrl(source);
-  let phase='fetch';
-  try{
-   const result=await fetcher(url,{headers:{accept:'text/html','accept-language':'sv-SE,sv;q=0.9','user-agent':'Politikverkstan-Calendar/1.0 (+public meeting metadata)'},redirect:'error',signal:AbortSignal.timeout(12000)});
-   if(!result.ok)throw Error('HTTP '+result.status);
-   if(!((result.headers.get('content-type')||'').toLowerCase().includes('text/html')))throw Error('Felaktigt innehållsformat');
-   const html=await result.text();
-   phase='parse';
-   const records=parseOfficialMeetings(html,source,now.slice(0,10));
-   // Empty result may mean changed markup, outage or legitimately no future meetings.
-   // Preserve previous data, report the problem instead of erasing valid entries.
-   if(!records.length)throw Error('Inga igenkända möten – kontrollera källformatet');
-   phase='storage';
-   for(const m of records){
-    await env.DB.prepare(`INSERT INTO official_meetings
-    (source_url,committee_key,committee,meeting_date,start_time,end_time,location,first_seen_at,last_seen_at,updated_at)
-    VALUES(?,?,?,?,?,?,?,?,?,?)
-    ON CONFLICT(source_url) DO UPDATE SET committee=excluded.committee,
-     meeting_date=excluded.meeting_date,start_time=excluded.start_time,end_time=excluded.end_time,
-     location=excluded.location,last_seen_at=excluded.last_seen_at,
-     updated_at=CASE WHEN meeting_date IS NOT excluded.meeting_date OR start_time IS NOT excluded.start_time
-      OR end_time IS NOT excluded.end_time OR location IS NOT excluded.location THEN excluded.updated_at ELSE official_meetings.updated_at END`)
-     .bind(m.source_url,m.committee_key,m.committee,m.meeting_date,m.start_time,m.end_time,m.location,now,now,now).run();
-   }
-   await env.DB.prepare(`INSERT INTO official_meeting_sources
-    (committee_key,source_url,last_attempt_at,last_success_at,last_count,last_error)
-    VALUES(?,?,?,?,?,'')
-    ON CONFLICT(committee_key) DO UPDATE SET source_url=excluded.source_url,
-    last_attempt_at=excluded.last_attempt_at,last_success_at=excluded.last_success_at,
-    last_count=excluded.last_count,last_error=''`)
-    .bind(source.key,url,now,now,records.length).run();
-   status.push({committee:source.name,count:records.length,ok:true});
-  }catch(e){
-   // Persist only bounded, predefined categories; no upstream body or headers.
-   const message=String(e?.message||'');
-   const detail=phase==='storage'?'Databasfel vid lagring':
-    /^HTTP [1-5][0-9]{2}$/.test(message)?message:
-    phase==='parse'?'Källan innehåller inga igenkända möteslänkar':
-    e?.name==='TimeoutError'||e?.name==='AbortError'?'Tidsgräns vid hämtning':
-    message==='Felaktigt innehållsformat'?'Källan svarade inte med HTML':
-    'Nätverksfel vid hämtning';
-   console.error('Official meeting sync failed:',source.key,phase,detail);
-   await env.DB.prepare(`INSERT INTO official_meeting_sources
-    (committee_key,source_url,last_attempt_at,last_error)
-    VALUES(?,?,?,?)
-    ON CONFLICT(committee_key) DO UPDATE SET last_attempt_at=excluded.last_attempt_at,
-    last_error=excluded.last_error`).bind(source.key,url,now,detail).run();
-   status.push({committee:source.name,ok:false,error:detail});
+  const item=entries.find(x=>x?.committee_key===source.key);
+  let accepted=0;
+  for(const m of Array.isArray(item?.meetings)?item.meetings.slice(0,250):[]){
+   if(typeof m?.source_url!=='string')continue;
+   let uri;try{uri=new URL(m.source_url);}catch{continue;}
+   if(uri.origin!==origin||!uri.pathname.startsWith('/committees/'+source.slug+'/'))continue;
+   const date=uri.pathname.match(/\/mote-(\d{4}-\d{2}-\d{2})\/?$/)?.[1];
+   if(!date||date!==m.meeting_date||!dateOK(date)||date<cutoff)continue;
+   if(!timeOK(m.start_time)||!timeOK(m.end_time))continue;
+   if(seen.has(uri.href))continue;seen.add(uri.href);
+   meetings.push({
+    source_url:uri.origin+uri.pathname.replace(/\/$/,''),
+    committee_key:source.key,committee:source.name,meeting_date:date,
+    start_time:m.start_time||'',end_time:m.end_time||'',
+    location:typeof m.location==='string'?m.location.slice(0,160):''
+   });accepted++;
   }
+  sources.push({
+   committee_key:source.key,
+   last_attempt_at:typeof item?.last_attempt_at==='string'?item.last_attempt_at:'',
+   last_success_at:typeof item?.last_success_at==='string'?item.last_success_at:'',
+   last_count:Number(item?.last_count)||0,
+   last_error:typeof item?.last_error==='string'?item.last_error.slice(0,120):''
+  });
  }
- return {status,updated:status.some(s=>s.ok)};
+ meetings.sort((a,b)=>a.meeting_date.localeCompare(b.meeting_date)||a.start_time.localeCompare(b.start_time)||a.committee_key.localeCompare(b.committee_key));
+ return {meetings:meetings.slice(0,280),sources,committees:OFFICIAL_SOURCES.map(s=>({key:s.key,name:s.name,url:sourceUrl(s)})),can_sync:false,source:'github'};
 }
 const headers={'content-type':'application/json; charset=utf-8','cache-control':'private, no-store','x-content-type-options':'nosniff'};
-const reply=(o,status=200)=>new Response(JSON.stringify(o),{status,headers});
+const reply=(v,status=200)=>new Response(JSON.stringify(v),{status,headers});
 export async function handleOfficialMeetings(req,env,user){
  const path=new URL(req.url).pathname;
  if(path!=='/api/private/official-meetings'&&path!=='/api/private/official-meetings/sync')return null;
- if(path.endsWith('/sync')){
-  if(req.method!=='POST')return reply({error:'Metod tillåts inte'},405);
-  if(user.role!=='admin')return reply({error:'Administratör krävs'},403);
-  // Avoid parallel rapid polls from users; scheduled checks use the same tables.
-  const last=await env.DB.prepare('SELECT MAX(last_attempt_at) AS stamp FROM official_meeting_sources').first();
-  if(last?.stamp&&Date.now()-Date.parse(last.stamp)<5*60_000)return reply({error:'Synkronisering utfördes nyligen, försök senare'},429);
-  return reply(await syncOfficialMeetings(env));
+ if(req.method!=='GET' || path.endsWith('/sync')){
+  return reply({error:'Kommunens möten hämtas automatiskt genom GitHub. Uppdatera kalendern för att se senaste publicerade uppgifter.'},405);
  }
- if(req.method!=='GET')return reply({error:'Metod tillåts inte'},405);
- const [meetings,sources]=await Promise.all([
-  env.DB.prepare("SELECT source_url,committee_key,committee,meeting_date,start_time,end_time,location,last_seen_at,updated_at FROM official_meetings WHERE meeting_date>=date('now','-31 days') ORDER BY meeting_date,start_time,committee LIMIT 280").all(),
-  env.DB.prepare('SELECT committee_key,last_attempt_at,last_success_at,last_count,last_error FROM official_meeting_sources ORDER BY committee_key').all()
- ]);
- return reply({meetings:meetings.results||[],sources:sources.results||[],committees:OFFICIAL_SOURCES.map(s=>({key:s.key,name:s.name,url:sourceUrl(s)})),can_sync:user.role==='admin'});
+ return reply(normalizeCachedCalendar(OFFICIAL_MEETING_CACHE));
 }
