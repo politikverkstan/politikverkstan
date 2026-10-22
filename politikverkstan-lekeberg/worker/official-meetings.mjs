@@ -34,7 +34,7 @@ export function parseOfficialMeetings(html,source,today=localDate()){
   const rowStart=html.lastIndexOf('<tr',m.index);
   const rowEnd=html.indexOf('</tr>',m.index+m[0].length);
   const inRow=rowStart>=0&&rowEnd>=0&&m.index-rowStart<1200&&rowEnd-m.index<1600;
-  const after=inRow?html.slice(m.index+m[0].length,rowEnd):html.slice(m.index+m[0].length,m.index+m[0].length+350);
+  const after=inRow?html.slice(m.index+m[0].length,rowEnd):html.slice(m.index+m[0].length,m.index+m[0].length+1200);
   const label=plain(m[3]);
   // MeetingPlus places its schedule in an aria-label on the public link,
   // with the place in a separate div role="cell" rather than a <tr>.
