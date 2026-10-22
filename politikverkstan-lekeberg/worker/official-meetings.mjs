@@ -36,7 +36,11 @@ export function parseOfficialMeetings(html,source,today=localDate()){
   const inRow=rowStart>=0&&rowEnd>=0&&m.index-rowStart<1200&&rowEnd-m.index<1600;
   const after=inRow?html.slice(m.index+m[0].length,rowEnd):html.slice(m.index+m[0].length,m.index+m[0].length+350);
   const label=plain(m[3]);
-  const timeText=(label+' '+plain(after).slice(0,110));
+  // MeetingPlus places its schedule in an aria-label on the public link,
+  // with the place in a separate div role="cell" rather than a <tr>.
+  const opening=m[0].slice(0,m[0].indexOf('>')+1);
+  const aria=opening.match(/\baria-label\s*=\s*(["'])(.*?)\1/i);
+  const timeText=(decode(aria?.[2]||'')+' '+label+' '+plain(after).slice(0,110));
   const times=timeText.match(/((?:[01]\d|2[0-3]):[0-5]\d)\s*[-–]\s*((?:[01]\d|2[0-3]):[0-5]\d)/)||
     timeText.match(/([01]\d|2[0-3]):[0-5]\d\s*[-–]\s*/);
   const start=times?times[0].slice(0,5):'';
@@ -49,6 +53,10 @@ export function parseOfficialMeetings(html,source,today=localDate()){
    if(cells.length>=2)location=plain(cells.at(-1));
   }
   // For non-table layouts accept only the first adjacent short text block.
+  if(!location){
+   const locationCell=after.match(/class\s*=\s*["'][^"']*\blocation-text\b[^"']*["'][^>]*>([\s\S]*?)<\/span>/i);
+   if(locationCell)location=plain(locationCell[1]);
+  }
   if(!location){
    const part=after.match(/^\s*(?:<\/(?:a|div|span)>\s*)*(?:<(?:td|div|span|p)[^>]*>)?\s*([^<]{2,140})/i);
    if(part)location=plain(part[1]);
