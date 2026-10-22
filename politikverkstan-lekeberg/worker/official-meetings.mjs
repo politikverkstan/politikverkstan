@@ -1,7 +1,7 @@
 import {OFFICIAL_MEETING_CACHE} from './official-meetings-cache.mjs';
 /* Lekeberg public MeetingPlus calendar. No private credentials, document
  * downloads, meeting notes or user data are sent to the source website.
- * Four fixed allowlisted URLs only; runs on the Worker cron or admin request. */
+ * Four fixed allowlisted sources. GitHub Actions fetches, Cloudflare serves cached data. */
 export const OFFICIAL_SOURCES=[
  {key:'kf',name:'Kommunfullmäktige',slug:'kommunfullmaktige'},
  {key:'bun',name:'Barn- och utbildningsnämnden',slug:'barn-och-utbildningsnamnden'},
@@ -72,13 +72,14 @@ export function normalizeCachedCalendar(snapshot,today=localDate()){
   for(const m of Array.isArray(item?.meetings)?item.meetings.slice(0,250):[]){
    if(typeof m?.source_url!=='string')continue;
    let uri;try{uri=new URL(m.source_url);}catch{continue;}
-   if(uri.origin!==origin||!uri.pathname.startsWith('/committees/'+source.slug+'/'))continue;
+   if(uri.origin!==origin||!uri.pathname.startsWith('/committees/'+source.slug+'/')||uri.search||uri.hash)continue;
    const date=uri.pathname.match(/\/mote-(\d{4}-\d{2}-\d{2})\/?$/)?.[1];
    if(!date||date!==m.meeting_date||!dateOK(date)||date<cutoff)continue;
    if(!timeOK(m.start_time)||!timeOK(m.end_time))continue;
-   if(seen.has(uri.href))continue;seen.add(uri.href);
+   const canonical=uri.origin+uri.pathname.replace(/\/$/,'');
+   if(seen.has(canonical))continue;seen.add(canonical);
    meetings.push({
-    source_url:uri.origin+uri.pathname.replace(/\/$/,''),
+    source_url:canonical,
     committee_key:source.key,committee:source.name,meeting_date:date,
     start_time:m.start_time||'',end_time:m.end_time||'',
     location:typeof m.location==='string'?m.location.slice(0,160):''
