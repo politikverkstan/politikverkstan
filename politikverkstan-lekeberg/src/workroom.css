@@ -496,3 +496,15 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
 @media(max-width:800px){.db-columns{grid-template-columns:1fr}.db-head{flex-wrap:wrap}}
 @media(max-width:580px){.db-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.db-kpi{padding:13px}.db-kpi strong{font-size:24px}.db-task-fields{grid-template-columns:1fr}.db-task-row{grid-template-columns:1fr}.db-task-actions{grid-column:1;grid-row:auto;justify-content:flex-start;margin-left:27px}}
 @media print{.db-root{display:none!important}}
+
+
+/* Compact in-workroom Back control; browser mouse Back uses the same history. */
+.work-topbar-left{display:flex;align-items:center;gap:12px;min-width:0}
+.work-topbar-left>div{min-width:0}
+.work-nav-back{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--border);background:var(--card,#fff);color:var(--ink);padding:8px 11px;border-radius:9px;font-size:12px;font-weight:750;cursor:pointer;white-space:nowrap;flex:none;transition:background .15s,border-color .15s}
+.work-nav-back:hover:not(:disabled){background:var(--bg);border-color:#ad7c68}
+.work-nav-back:disabled{opacity:.4;cursor:default}
+.work-nav-back:focus-visible{outline:3px solid #c87755;outline-offset:2px}
+.work-back-symbol{font-size:18px;line-height:1;position:relative;top:-1px}
+@media(max-width:900px){.work-nav-back span:last-child{display:none}.work-nav-back{padding:8px 10px}.work-topbar-left{gap:8px}}
+@media print{.work-nav-back{display:none!important}}
