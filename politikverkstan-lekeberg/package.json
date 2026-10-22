@@ -1,11 +1,14 @@
 {
   "name": "politikverkstan-lekeberg",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "private": true,
   "scripts": {
     "build": "python build.py",
-    "test": "node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs && node tests/test-cases.mjs && node tests/test-cases-share.mjs && node tests/test-meetings.mjs",
-    "test:browser": "python tests/test-ui.py && python tests/test-candidate-ui.py && python tests/test-v4-ui.py && python tests/test-workroom-ui.py && python tests/test-collaboration-ui.py && python tests/test-layout-052.py && python tests/test-theme-ui.py && python tests/test-landing-056.py && python tests/test-guide-ui.py && python tests/test-stage2-ui.py && python tests/test-shared-cases-ui.py && python tests/test-meetings-ui.py"
+    "test": "npm run test:build && npm run test:migrations && npm run test:unit",
+    "test:browser": "python tests/test-ui.py && python tests/test-candidate-ui.py && python tests/test-v4-ui.py && python tests/test-workroom-ui.py && python tests/test-collaboration-ui.py && python tests/test-layout-052.py && python tests/test-theme-ui.py && python tests/test-landing-056.py && python tests/test-guide-ui.py && python tests/test-stage2-ui.py && python tests/test-shared-cases-ui.py && python tests/test-meetings-ui.py",
+    "test:build": "python build.py --check && python tests/test-build.py",
+    "test:migrations": "python tests/test-migrations.py",
+    "test:unit": "node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs && node tests/test-cases.mjs && node tests/test-cases-share.mjs && node tests/test-meetings.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
