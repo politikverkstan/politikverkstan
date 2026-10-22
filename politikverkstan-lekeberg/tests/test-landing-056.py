@@ -38,6 +38,8 @@ with sync_playwright() as p:
  assert page.locator('.pv-hero').is_visible()
  assert page.locator('.pv-protected').count()==1
  assert page.locator('.aw-motion-card').count()==0
+ assert page.locator('.coalition-card').count()==0
+ page.locator('.pv-feature[data-page="builder"]').click()
  assert page.locator('.coalition-card').count()==9
  page.locator('.pv-feature[data-page="matrix"]').click()
  assert page.get_by_text('Fullständig fördelningsmatris').is_visible()
