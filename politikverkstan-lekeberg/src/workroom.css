@@ -547,3 +547,35 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
   .aw-workbox{padding:20px 18px}
   .db-task-form{padding:14px}
 }
+
+
+/* Read-only municipality calendar; independent of private meeting workspace. */
+.official-calendar{padding:22px;margin-bottom:18px;min-width:0}
+.official-calendar-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.official-calendar-header h2{margin:5px 0 7px;font-size:21px}
+.official-calendar-header p{font-size:12px;color:var(--muted);line-height:1.55;max-width:690px;margin:0}
+.official-calendar-buttons{display:flex;flex-wrap:wrap;gap:8px}
+.official-calendar-status{display:flex;gap:10px 20px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin:13px 0}
+.official-warning{color:#bd6d38;font-weight:750}
+.official-month{display:flex;justify-content:center;gap:18px;align-items:center;margin:18px 0 10px}
+.official-month h3{font-size:17px;margin:0;text-transform:capitalize;min-width:170px;text-align:center}
+.official-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.official-weekday{padding:6px 2px;text-align:center;font-size:11px;font-weight:800;color:var(--muted)}
+.official-day{border:1px solid var(--border);border-radius:7px;min-height:92px;padding:7px 6px;min-width:0;overflow-wrap:anywhere}
+.official-day.outside{opacity:.25;background:var(--bg)}
+.official-day-number{display:block;font-size:11px;font-weight:750;margin-bottom:6px}
+.official-event{display:block;background:var(--bg);color:var(--ink);border-left:3px solid #ba6f58;border-radius:4px;margin:3px 0;padding:5px 4px;font-size:10px;line-height:1.45;text-decoration:none}
+.official-event:hover,.official-event:focus-visible{background:var(--card);outline:1px solid #ba6f58;text-decoration:underline}
+.official-event b{font-weight:850}
+.official-calendar-footer{display:flex;gap:6px 20px;flex-wrap:wrap;border-top:1px solid var(--border);padding-top:13px;margin-top:14px}
+.official-calendar-footer a{font-size:11px;font-weight:650}
+.official-calendar .case-hint{margin:11px 0 0}
+@media(max-width:700px){
+ .official-calendar{padding:15px}
+ .official-calendar-header{flex-direction:column}
+ .official-day{min-height:65px;padding:4px 2px}
+ .official-event{font-size:9px;padding:4px 2px}
+ .official-day-number{font-size:10px}
+ .official-calendar-grid{gap:2px}
+ .official-calendar-footer{gap:8px 13px}
+}
