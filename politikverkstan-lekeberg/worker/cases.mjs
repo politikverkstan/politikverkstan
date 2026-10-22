@@ -177,5 +177,10 @@ export async function handleCases(req,env,user){
 function catchCase(e){
  if(e instanceof SyntaxError||/^(För stor|Ogiltig|Ange en rubrik|Rubriken får|Högst åtta|För långt)/.test(e.message))return err(400,e.message);
  console.error('Casework error',e.message);
- return err(503,'Ärendehanteringen är inte tillgänglig. Kontrollera migrering 0008.');
+ // A v1.0 Worker must not share or modify cases against the older v0.9.2 schema:
+ // without 0011 the audit trigger and last_editor_email do not exist.
+ if(/no such column:\s*(?:\w+\.)?last_editor_email|no such table:\s*work_case_events|has no column named last_editor_email/i.test(e.message)){
+  return err(503,'Databasen saknar uppgraderingen för Politikverkstan 1.0 (migrering 0011). Delningen är inte genomförd. Administratören behöver kontrollera och uppgradera Cloudflare D1 efter säkerhetskopiering.');
+ }
+ return err(503,'Ett databasfel uppstod i ärendehanteringen. Kontakta administratören och kontrollera Worker-loggen.');
 }
