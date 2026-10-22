@@ -3,7 +3,7 @@
 // separately approved operation after auditing the live database schema.
 import {execFileSync} from 'node:child_process';
 import {readdirSync,readFileSync} from 'node:fs';
-import {dirname,join} from 'node:path';
+import {dirname,join,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const project=dirname(dirname(fileURLToPath(import.meta.url)));
@@ -52,15 +52,15 @@ function main(){
  if(pending.length){
   console.log('Nya migreringar: '+pending.join(', '));
   // Wrangler creates a D1 snapshot before applying and tracks filenames.
-  wrangler('d1','migrations','apply',database,'--remote');
+  console.log(wrangler('d1','migrations','apply',database,'--remote'));
   // Confirm the remote migration ledger now contains every local migration.
   const after=readHistory();
   const remaining=validateMigrationHistory(after,filenames);
   if(remaining.length)throw Error('Migreringarna blev inte fullständigt registrerade: '+remaining.join(', '));
  }else console.log('Inga nya D1-migreringar.');
  console.log('Databassteget klart. Publicerar Worker.');
- wrangler('deploy');
+ console.log(wrangler('deploy'));
 }
-if(process.argv[1]&&fileURLToPath(import.meta.url)===join(process.cwd(),process.argv[1])){
+if(process.argv[1]&&fileURLToPath(import.meta.url)===resolve(process.argv[1])){
  try{main();}catch(err){console.error('Avbruten Cloudflare-publicering:',err.message);process.exitCode=1;}
 }
