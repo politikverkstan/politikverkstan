@@ -1,5 +1,14 @@
 # Ändringslogg – Politikverkstan Lekeberg
 
+## 1.0.2 – Automatisk offentlig sammanträdeskalender
+
+- Ny månadskalender på den skyddade sidan Sammanträden med offentlig information från Kommunfullmäktige, barn- och utbildningsnämnden, socialnämnden och kommunstyrelsen.
+- Fyra fasta källadresser på meetings.lekeberg.se kontrolleras dagligen av Cloudflare Workers cron; administratören kan också initiera hämtning.
+- D1-migrering 0012 lagrar offentligt källmaterial separat från privata sammanträden och mötesanteckningar; samma originalmöte uppdateras i stället för att dupliceras.
+- Källstatus och tidigare inlästa uppgifter bevaras vid tillfälliga hämtningsfel. Webbläsare och behörighetstester omfattar den nya kalendern.
+- Ännu ingen automatisk nedladdning av handlingar eller dagordningar. [Driftguide 1.0.2](UPPGRADERING_1.0.2_CLOUDFLARE.md).
+
+
 ## 1.0.1 – Stabilisering och arbetsöversikt
 
 - Arbetsöversikten räknar och listar nu öppna strukturerade ärendeuppföljningar utöver den personliga uppgiftslistan, utan att dubbelräkna enbart ärendestatus.
