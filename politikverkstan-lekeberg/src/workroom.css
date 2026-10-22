@@ -529,3 +529,21 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
 /* Feature-specific recovery: unrelated history, meetings and follow-ups remain visible. */
 .wf-section-error{margin:12px 0;padding:13px;border:1px solid var(--border);border-radius:10px}
 .wf-section-error p{margin:0 0 10px;overflow-wrap:anywhere;font-size:13px}
+
+/* Responsive spacing audit: protected workroom */
+@media(max-width:690px){
+  .card{padding:20px}
+  .aw-workbox{padding:22px 20px}
+  .db-task-form{padding:16px}
+  .db-panel-head{flex-wrap:wrap}
+  .wf-row{flex-wrap:wrap}
+  .wf-row>button{max-width:100%}
+}
+@media(max-width:380px){
+  .container{padding-right:12px;padding-left:12px}
+  .card{padding:16px}
+  .aw-shortcut{padding:15px 14px;gap:12px}
+  .aw-shortcut-icon{width:42px;height:42px}
+  .aw-workbox{padding:20px 18px}
+  .db-task-form{padding:14px}
+}
