@@ -23,7 +23,7 @@ with sync_playwright() as p:
     assert page.get_by_role('button',name='Dela nuvarande kartellindelning som statistik').is_disabled()
     page.locator('#telemetry-consent').check()
     assert page.get_by_role('button',name='Dela nuvarande kartellindelning som statistik').is_enabled()
-    page.get_by_role('button',name='Kartellbyggare').click()
+    page.locator('.sidebar [data-page="workspace"]').click()
     assert page.get_by_text('Valtekniska karteller').is_visible()
     page.get_by_role('button',name='Kandidatval').click()
     assert page.get_by_text('Kandidatval & valsedlar').is_visible()
