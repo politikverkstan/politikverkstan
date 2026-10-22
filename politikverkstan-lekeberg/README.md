@@ -1,6 +1,6 @@
-# Politikverkstan Lekeberg – 0.9.2
+# Politikverkstan Lekeberg – 1.0.0
 
-**Status:** Kodbas för den publika mandatportalen och den inloggningsskyddade Arbetsytan. Version 0.9.2 bygger vidare på den kvalitetssäkrade 0.9.1-versionen med en privat arbetsöversikt och personliga att-göra-uppgifter. Den uppgraderar **inte** produktionsdatabasen och publicerar **inte** automatiskt till Cloudflare. [Drift- och releasechecklista](UPPGRADERING_0.9.1_CLOUDFLARE.md).
+**Status:** Kodbas för den publika mandatportalen och den inloggningsskyddade Arbetsytan. Version 1.0.0 bygger vidare på 0.9.2 och samlar ärendehistorik, möteskopplingar, uppföljningar, sökning och spårbart förankrade ställningstaganden. Den publika startsidan har en separat Scenarioverkstad och mer särskiljande navigationsikoner. Den uppgraderar **inte** produktionsdatabasen och publicerar **inte** automatiskt till Cloudflare. [Drift- och releasechecklista för 1.0](UPPGRADERING_1.0_CLOUDFLARE.md).
 
 ## Funktioner
 
@@ -9,8 +9,9 @@
 | Publik mandatportal | Mandatfördelning, kandidater, samverkansscenarier, inflytande, register, metod och guidad analys | Öppen webbplats. Simuleringar är hypotetiska. |
 | Arbetsyta – motioner | Privata och uttryckligen delade utkast, kommentarer, versionshistorik, export | Inloggad, behörighetsstyrd |
 | Arbetsyta – dokument | Privata och gemensamma mappar/filer, filnamnssökning, privata kopplingar | Inloggad, behörighetsstyrd |
-| Arbetsyta – ärenden | Privata/gemensamma ärenden, ansvar, diskussion, risker, ekonomi, uppföljning | Inloggad, behörighetsstyrd |
+| Arbetsyta – ärenden | Privata/gemensamma ärenden, ansvar, diskussion, risker, ekonomi, versionsspårning, kopplade möten och uppföljningar | Inloggad, behörighetsstyrd |
 | Arbetsyta – arbetsöversikt | Kommande sammanträden, egna/tilldelade ärenden, personliga uppgifter, prioritering och uppföljning | Inloggad, uppgifter är privata även för admin |
+| Arbetsyta – sökning och förankring | Gemensam behörighetsstyrd sökning, skiljer arbetsförslag från explicit internt förankrat ställningstagande | Inloggad, behörighetsstyrd |
 | Arbetsyta – sammanträden | Privat/gemensam agenda, ärendekoppling, mötesförberedelser, uppföljning | Inloggad, behörighetsstyrd |
 | Arbetsyta – privata anteckningar | Personliga ärende- och mötesanteckningar | Enbart anteckningens ägare |
 | Administration | Aktivt godkända konton och valfri aggregerad statistik | Separat behörighet |
@@ -24,7 +25,7 @@ Arbetsytans gemensamma innehåll är för närvarande avsett för **en enda godk
 - \`src/workroom.js\`, \`src/meetings-*.js\`, \`src/workroom.css\`: skyddad Arbetsyta. \`src/workroom-pdf.js\` ger dokument- och utskriftsstöd.
 - \`worker/private.mjs\`, \`worker/collaboration.mjs\`, \`worker/cases.mjs\`, \`worker/meetings.mjs\`, \`worker/files.mjs\`: skyddade API:er med Cloudflare Access/JWT och D1-åtkomstkontroller.
 - \`worker/index.mjs\`: Worker-routning, publik portal och frivillig telemetri.
-- \`migrations/0001_*.sql\` till \`0009_*.sql\`: D1-migreringar. **0.9.2 kräver 0010_dashboard_tasks.sql efter 0009.**
+- \`migrations/0001_*.sql\` till \`0009_*.sql\`: D1-migreringar. **1.0.0 kräver 0011_traceability.sql efter 0010.**
 - \`build.py\`: genererar \`dist/index.html\`, rotens \`index.html\`, kopierar statiska tillgångar och bygger \`worker/workroom-page.mjs\`. Skyddad data ingår aldrig i den publika HTML-filen.
 - \`.github/workflows/politikverkstan-ci.yml\`: automatiska bygg-, migrations-, Node- och webbläsartester. CI-aktivering och godkänt resultat måste kontrolleras på GitHub.
 
@@ -54,10 +55,10 @@ python build.py --check
 
 ## Driftguider och historik
 
-**Gällande:** [0.9.2 – arbetsöversikt och privata uppgifter](UPPGRADERING_0.9.2_CLOUDFLARE.md). Tidigare: [0.9.1 – kvalitetssäkring och Cloudflare](UPPGRADERING_0.9.1_CLOUDFLARE.md).
+**Gällande:** [1.0.0 – spårbarhet och sammanhängande arbetsflöde](UPPGRADERING_1.0_CLOUDFLARE.md). Tidigare: [0.9.2 – arbetsöversikt och privata uppgifter](UPPGRADERING_0.9.2_CLOUDFLARE.md). Tidigare: [0.9.1 – kvalitetssäkring och Cloudflare](UPPGRADERING_0.9.1_CLOUDFLARE.md).
 
 **Senaste funktionsutgåvor:** [0.9.0 – Sammanträdesverkstad](UPPGRADERING_0.9.0_CLOUDFLARE.md), [0.8.0 – gemensamma ärenden](UPPGRADERING_0.8.0_CLOUDFLARE.md), [0.7.0 – privata ärenden](UPPGRADERING_0.7.0_CLOUDFLARE.md).
 
 **Tidigare referensmaterial:** [Historisk README](README_HISTORIK.md), [arkitektur- och säkerhetsbegränsningar](SAKERHET_OCH_BEGRANSNINGAR.md), [källverifiering](ETAPP_1_VERIFIERING.md), [äldre testrapporter](TESTRAPPORT.md). Äldre texter är inte bevis för godkänd drift av 0.9.1.
 
-**Nästa steg:** spårbar ändringshistorik för ärenden och sammanträden, förbättrad gemensam uppföljning och sökning.
+**Driftstatus:** GitHub-kod och byggfiler är skilda från skarp driftsättning. Produktionsmigrering, åtkomstkontroll med verkliga användare och säkerhetskopia kräver separat verifiering.
