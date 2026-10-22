@@ -15,7 +15,7 @@ const legacy='11111111-1111-4111-8111-111111111111';
 db.prepare("INSERT INTO work_cases(id,owner_email,title,committee,status,meeting_date,labels_json,content_json,revision,created_at,updated_at) VALUES(?,?,'Äldre ärende','Kommunfullmäktige','nytt','','[]',?,1,?,?)")
  .run(legacy,'owner@test.se',JSON.stringify({summary:'Delbart underlag',meeting_notes:'Min hemliga anteckning'}),'2026-10-10','2026-10-10');
 migrate('0008_shared_cases.sql');
-for(const n of ['0009_meetings.sql','0010_dashboard_tasks.sql','0011_traceability.sql'])migrate(n);
+for(const n of ['0009_meetings.sql','0010_dashboard_tasks.sql'])migrate(n);
 assert.equal(db.prepare("SELECT scope FROM work_cases WHERE id=?").get(legacy).scope,'mine','Migration must leave old cases private');
 assert.equal(db.prepare("SELECT body FROM work_case_notes WHERE case_id=? AND user_email=?").get(legacy,'owner@test.se').body,'Min hemliga anteckning','Legacy notes retained privately');
 assert.equal(JSON.parse(db.prepare("SELECT content_json FROM work_cases WHERE id=?").get(legacy).content_json).meeting_notes,undefined,'Legacy personal note removed from shared content');
@@ -26,6 +26,14 @@ const DB={prepare(sql){let args=[];return {bind(...x){args=x;return this},async 
 const users={owner:{email:'owner@test.se',role:'user'},member:{email:'member@test.se',role:'user'},observer:{email:'observer@test.se',role:'admin'}};
 const call=(who,path,method='GET',input)=>handleCases(new Request('https://example.se/api/private/'+path,{method,headers:input===undefined?{}:{'content-type':'application/json'},body:input===undefined?undefined:JSON.stringify(input)}),{DB},users[who]);
 const data=r=>r.json();
+ // Regression: a Worker with v1.0 sharing code against a database still on 0010
+ // must fail closed, identify 0011, and leave the case private.
+ const unmigrated=await call('owner','cases/'+legacy+'/sharing','PUT',{scope:'team',revision:1});
+ assert.equal(unmigrated.status,503,'No sharing before migration 0011');
+ assert.match((await data(unmigrated)).error,/0011/,'Specific upgrade instruction');
+ assert.equal(db.prepare('SELECT scope FROM work_cases WHERE id=?').get(legacy).scope,'mine');
+ migrate('0011_traceability.sql');
+
 assert.equal((await data(await call('member','cases'))).cases.length,0,'Private cases invisible to others');
 const initial=(await data(await call('owner','cases/'+legacy))).case;
 assert.equal(initial.meeting_notes,'Min hemliga anteckning');
