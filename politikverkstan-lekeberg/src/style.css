@@ -389,3 +389,12 @@ html[data-theme="dark"] .guide-steps span.current{color:#171f22;background:#eda5
 html[data-theme="dark"] .guide-steps span.done{color:#e7f1f2}
 @media(max-width:780px){.guide-panel{padding:18px 16px}.guide-choices{grid-template-columns:1fr}.guide-steps span{font-size:10px;padding:6px 9px}.guide-footer{flex-wrap:wrap}.guide-footer button{flex:1}}
 @media print{.guide-panel{display:none!important}}
+
+
+/* In-portal history navigation: distinct from scenario undo/redo. */
+.pv-nav-back{border:1px solid var(--border);background:var(--surface,#fff);color:var(--ink,#334155);display:inline-flex;align-items:center;gap:7px;justify-content:center;padding:8px 11px;border-radius:9px;font-size:11px;font-weight:750;letter-spacing:0;cursor:pointer;flex:none;transition:border-color .15s,background .15s}
+.pv-nav-back:hover:not(:disabled){border-color:#c5d3e4;background:#f4f8fc}
+.pv-nav-back:disabled{opacity:.4;cursor:default}
+.pv-nav-back:focus-visible{outline:3px solid #cf8565;outline-offset:2px}
+html[data-theme="dark"] .pv-nav-back{background:var(--card,#19222b);color:var(--ink,#eee)}
+@media(max-width:950px){.pv-nav-back span{display:none}.pv-nav-back{padding:8px}}
