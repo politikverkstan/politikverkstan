@@ -1,12 +1,12 @@
 // Public, automatically refreshed by .github/workflows/meetingplus-calendar.yml.
 export const OFFICIAL_MEETING_CACHE = {
   "version": 1,
-  "generated_at": "2026-10-22T22:42:17.156Z",
+  "generated_at": "2026-10-22T22:46:10.760Z",
   "sources": [
     {
       "committee_key": "kf",
-      "last_attempt_at": "2026-10-22T22:42:17.156Z",
-      "last_success_at": "2026-10-22T22:42:17.156Z",
+      "last_attempt_at": "2026-10-22T22:46:10.760Z",
+      "last_success_at": "2026-10-22T22:46:10.760Z",
       "last_count": 4,
       "last_error": "",
       "meetings": [
@@ -50,8 +50,8 @@ export const OFFICIAL_MEETING_CACHE = {
     },
     {
       "committee_key": "bun",
-      "last_attempt_at": "2026-10-22T22:42:17.156Z",
-      "last_success_at": "2026-10-22T22:42:17.156Z",
+      "last_attempt_at": "2026-10-22T22:46:10.760Z",
+      "last_success_at": "2026-10-22T22:46:10.760Z",
       "last_count": 3,
       "last_error": "",
       "meetings": [
@@ -86,8 +86,8 @@ export const OFFICIAL_MEETING_CACHE = {
     },
     {
       "committee_key": "sn",
-      "last_attempt_at": "2026-10-22T22:42:17.156Z",
-      "last_success_at": "2026-10-22T22:42:17.156Z",
+      "last_attempt_at": "2026-10-22T22:46:10.760Z",
+      "last_success_at": "2026-10-22T22:46:10.760Z",
       "last_count": 3,
       "last_error": "",
       "meetings": [
@@ -122,8 +122,8 @@ export const OFFICIAL_MEETING_CACHE = {
     },
     {
       "committee_key": "ks",
-      "last_attempt_at": "2026-10-22T22:42:17.156Z",
-      "last_success_at": "2026-10-22T22:42:17.156Z",
+      "last_attempt_at": "2026-10-22T22:46:10.760Z",
+      "last_success_at": "2026-10-22T22:46:10.760Z",
       "last_count": 3,
       "last_error": "",
       "meetings": [
