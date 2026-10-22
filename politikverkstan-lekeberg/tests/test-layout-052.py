@@ -48,8 +48,8 @@ with sync_playwright() as p:
  assert pub.locator('.privacy-panels .main-card').count()==3
  pad=pub.locator('.privacy-panels .main-card').first.evaluate('(e)=>parseFloat(getComputedStyle(e).paddingLeft)');assert pad>=24,pad
  pub.screenshot(path=str(root/'forhandsbild-052-integritet.png'),full_page=True)
- mobile=b.new_page(viewport={'width':390,'height':844},is_mobile=True,has_touch=True);mobile.set_content(html,wait_until='domcontentloaded');mobile.locator('.tile').first.wait_for()
- assert mobile.locator('.tiles').evaluate('(e)=>getComputedStyle(e).gridTemplateColumns.split(" ").length')==1
+ mobile=b.new_page(viewport={'width':390,'height':844},is_mobile=True,has_touch=True);mobile.set_content(html,wait_until='domcontentloaded');mobile.locator('.aw-shortcut').first.wait_for()
+ assert mobile.locator('.aw-shortcuts').evaluate('(e)=>getComputedStyle(e).gridTemplateColumns.split(" ").length')==1
  mobile.screenshot(path=str(root/'forhandsbild-052-mobil.png'),full_page=True)
  b.close()
 print('PASS 0.5.2 UI: 2-column balanced layout, owner sees shared motion, archive/restore, idea status filters, privacy padding, mobile')
