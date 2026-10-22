@@ -18,6 +18,7 @@ function meetingMetaForm(m){
    <label class="field"><span>Plats / mötesform</span><input name="location" maxlength="160" value="${h(m.location||'')}"></label>
    <label class="field"><span>Status</span><select name="status">${Object.entries(meetingStatuses).map(([k,v])=>`<option value="${k}" ${m.status===k?'selected':''}>${h(v)}</option>`).join('')}</select></label>
   </div></fieldset>
+  ${m.official_source_url?`<p class="case-hint">Officiellt publicerat sammanträde: <a href="${h(m.official_source_url)}" target="_blank" rel="noopener noreferrer">Kontrollera datum och kallelse hos kommunen ↗</a>. Denna länk är en källa, inte ett bekräftat beslut.</p>`:''}
   <div class="meeting-form-actions">
    ${owner?'<button type="submit" class="btn btn-primary">Spara sammanträdet</button>':'<span class="case-hint">Enbart skaparen kan ändra sammanträdet och dagordningen.</span>'}
    ${m.id?'<button type="button" class="btn" id="meeting-print-button">Skriv ut mötesunderlag</button>':''}
