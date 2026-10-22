@@ -1,5 +1,18 @@
 # Ändringslogg – Politikverkstan Lekeberg
 
+## 1.0.0 – Spårbarhet och sammanhängande arbetsflöde
+
+- Ärenden får databasstyrd historik över skapande, innehållsändringar, delning och ansvar. Händelser och ändringar skrivs i samma SQLite-transaktion via triggers. Historik för före-migreringsändringar kan inte återskapas.
+- Ärendevyn visar behörighetskontrollerade sammanträdeskopplingar, dagordningsutfall, uppföljningar med ansvarig och tidsfrist samt detaljerad ändringshistorik.
+- Särskild hantering av ställningstaganden: arbetsdiskussion, personligt, föreslaget gemensamt och uttryckligen förankrat gemensamt med källa och datum. Endast ärendeägaren kan markera internt förankrat.
+- Gemensam sökingång i Arbetsytan för åtkomliga ärenden, sammanträden, motioner och dokument. Resultat filtreras server-side efter resursens behörighetsmodell.
+- Publik startsida visar nu främst val av analysverktyg. Scenarioverkstaden finns som egen ingång; befintliga scenarier och beräkningar bevaras. Sidornas navigationsikoner har gjorts mer särskiljande. Beskrivningar av internt material på den publika startsidan har tonats ned.
+- D1-migrering `0011_traceability.sql` lägger till granskningshändelser, uppföljningar, ställningstaganden och redaktörsmetadata. Den ändrar inga befintliga privata anteckningar.
+- Nya Node-regressioner prövar historikens integritet, behörigheter, gemensam sökning, förankringskontroll och uppföljning. Produktionsmigrering och publicering sker inte automatiskt genom GitHub-ändringen.
+
+**Begränsning:** Arbetsytans ställningstaganden och mötesutfall är internt arbetsmaterial, inte officiella kommunala beslut. Historiken innehåller avsiktligt inte privata dokument-ID:n eller personliga anteckningar. [Driftguide 1.0](UPPGRADERING_1.0_CLOUDFLARE.md).
+
+
 ## Förbättring efter 0.9.2 – Navigering
 
 - Diskret tillbaka-knapp i sidhuvudet i både publik portal och skyddad Arbetsyta.
