@@ -14,7 +14,7 @@ assert.throws(()=>validateMigrationHistory(files.slice().reverse(),files.slice(1
 const sql=readFileSync(new URL('../ops/manual-baseline-0001-to-0011.sql',import.meta.url),'utf8');
 const real=readdirSync(new URL('../migrations/',import.meta.url)).filter(x=>/^[0-9]{4}_.*\.sql$/.test(x)).sort();
 assert.ok(real.length>=11);
-for(const filename of real)assert.ok(sql.includes("('"+filename+"')"),"Missing baseline filename: "+filename);
+for(const filename of real.slice(0,11))assert.ok(sql.includes("('"+filename+"')"),"Missing historical filename: "+filename);
 assert.match(sql,/required_objects/);
 assert.match(sql,/required_columns/);
 assert.doesNotMatch(sql,/\b(DROP TABLE|DELETE FROM|UPDATE work_)\b/i);
