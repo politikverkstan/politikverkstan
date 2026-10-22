@@ -29,6 +29,23 @@ with sync_playwright() as p:
  assert page.locator('#registry-enabled-count').text_content()=='13'
  page.locator('#search-org').fill('IT-nämnd')
  assert page.locator('.registry-row:visible').count()==1
+ page.locator('#search-org').fill('')
+ page.locator('#registry-status-filter').select_option('verified')
+ assert page.locator('.registry-row:visible').count()==0, 'Never invent 2026-2030 verification'
+ page.locator('#registry-status-filter').select_option('historical')
+ assert page.locator('.registry-row:visible').count()>0
+ page.locator('#registry-status-filter').select_option('selected')
+ assert page.locator('.registry-row:visible').count()==13
+ with page.expect_download() as audit_download:
+  page.locator('#registry-audit-export').click()
+ import json
+ download=audit_download.value
+ assert download.suggested_filename=='lekeberg-organisationer-kallgranskning.json'
+ report=json.loads(Path(download.path()).read_text(encoding='utf-8'))
+ assert len(report['poster'])==57
+ assert not any(o['aktuell_verifiering'] for o in report['poster'])
+ assert all('kalla' in o and 'status' in o for o in report['poster'])
+
  # Switch back and use preset
  page.locator('.sidebar [data-page=builder]').click()
  page.locator('[data-preset=example]').click()
