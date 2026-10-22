@@ -1,5 +1,13 @@
 # Ändringslogg – Politikverkstan Lekeberg
 
+## 1.1.0 – Ärendecentrerat arbetsflöde
+
+- Ny översikt över varje öppnat ärende med navigering till underlag, tillåtna sammanträdeskopplingar, öppna uppföljningar, internt ställningstagande och ändringshistorik.
+- Saknad eller otillgänglig API-information visas som ”Laddar” eller ”Okänt”, aldrig som en obekräftad nolla. Mötens och ärendens befintliga behörighetskontroller återanvänds.
+- Gränssnittet är responsivt. Ingen ny databasändring eller automatisk delning av privata uppgifter.
+- 1.0.2:s officiella MeetingPlus-kalender ligger kvar fristående och stör inte ärendenas personliga möteskopplingar.
+
+
 ## 1.0.2 – Automatisk offentlig sammanträdeskalender
 
 - Ny månadskalender på den skyddade sidan Sammanträden med offentlig information från Kommunfullmäktige, barn- och utbildningsnämnden, socialnämnden och kommunstyrelsen.
