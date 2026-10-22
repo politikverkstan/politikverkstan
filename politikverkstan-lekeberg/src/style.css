@@ -467,3 +467,16 @@ html[data-theme="dark"] .pv-scenario-edit .pv-feature-icon{background:#ffffff20;
 html[data-theme="dark"] .pv-feature.pv-scenario-edit small{color:#fff}
 @media(max-width:780px){.pv-scenario-panel{grid-template-columns:minmax(0,1fr)}.pv-home-analyses{margin-bottom:25px}.pv-scenario-context button{margin-left:0}.pv-home-other .pv-home-section{grid-template-columns:1fr}}
 @media(max-width:530px){.pv-scenario-panel h2{font-size:18px}.pv-feature.pv-scenario-edit{min-height:0}.pv-home-heading h2{font-size:20px}.pv-scenario-context{padding:11px 13px;gap:9px}}
+
+/* Compact workroom entry and scrollable navigation on short mobile screens. */
+.portal-login{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 8px 12px;padding:10px 13px;border:1px solid #455059;border-radius:9px;color:#ffe2d1;font-size:12px;font-weight:800;text-decoration:none;min-height:42px}
+.portal-login:hover,.portal-login:focus-visible{border-color:#e98c6b;background:#ffffff12;color:#fff;text-decoration:none}
+.portal-login span{font-size:16px;color:#e98c6b}
+html[data-theme="dark"] .portal-login{color:#ffe2d1}
+.pv-matrix-guide-actions{display:flex;justify-content:flex-end;margin:-8px 0 14px}
+@media(max-width:720px){
+ .sidebar{height:100dvh;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+ .sidebar-bottom{margin-top:12px;flex-shrink:0}
+ .portal-login{flex-shrink:0}
+ .pv-matrix-guide-actions{justify-content:flex-start;margin:0 0 15px}
+}
