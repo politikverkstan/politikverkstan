@@ -9,7 +9,7 @@
     "test:build": "python build.py --check && python tests/test-build.py",
     "test:migrations": "python tests/test-migrations.py && python tests/test-repair-0011.py && python tests/test-d1-baseline.py",
     "deploy:cloudflare": "npm run test:unit && node ops/deploy-with-d1-check.mjs",
-    "test:unit": "node tests/test-d1-deploy-guard.mjs && node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs && node tests/test-cases.mjs && node tests/test-cases-share.mjs && node tests/test-meetings.mjs && node tests/test-tasks.mjs && node tests/test-workflow.mjs"
+    "test:unit": "node tests/test-d1-deploy-guard.mjs && node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs && node tests/test-cases.mjs && node tests/test-cases-share.mjs && node tests/test-meetings.mjs && node tests/test-official-meetings.mjs && node tests/test-tasks.mjs && node tests/test-workflow.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
