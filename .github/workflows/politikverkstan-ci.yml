@@ -42,6 +42,9 @@ jobs:
         run: npm test
       - name: Verify data migration contracts
         run: python tests/test-migrations.py
+      - name: Diagnose public MeetingPlus source compatibility
+        continue-on-error: true
+        run: node ops/check-live-official-meetings.mjs
 
   browser:
     name: Chromium browser regressions
