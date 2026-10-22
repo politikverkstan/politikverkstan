@@ -15,6 +15,7 @@ const legacy='11111111-1111-4111-8111-111111111111';
 db.prepare("INSERT INTO work_cases(id,owner_email,title,committee,status,meeting_date,labels_json,content_json,revision,created_at,updated_at) VALUES(?,?,'Äldre ärende','Kommunfullmäktige','nytt','','[]',?,1,?,?)")
  .run(legacy,'owner@test.se',JSON.stringify({summary:'Delbart underlag',meeting_notes:'Min hemliga anteckning'}),'2026-10-10','2026-10-10');
 migrate('0008_shared_cases.sql');
+for(const n of ['0009_meetings.sql','0010_dashboard_tasks.sql','0011_traceability.sql'])migrate(n);
 assert.equal(db.prepare("SELECT scope FROM work_cases WHERE id=?").get(legacy).scope,'mine','Migration must leave old cases private');
 assert.equal(db.prepare("SELECT body FROM work_case_notes WHERE case_id=? AND user_email=?").get(legacy,'owner@test.se').body,'Min hemliga anteckning','Legacy notes retained privately');
 assert.equal(JSON.parse(db.prepare("SELECT content_json FROM work_cases WHERE id=?").get(legacy).content_json).meeting_notes,undefined,'Legacy personal note removed from shared content');
