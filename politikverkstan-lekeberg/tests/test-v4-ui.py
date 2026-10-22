@@ -25,7 +25,7 @@ with sync_playwright() as p:
     assert page.get_by_role('button',name='Dela nuvarande kartellindelning som statistik').is_enabled()
     page.locator('.sidebar [data-page="workspace"]').click()
     assert page.get_by_text('Valtekniska karteller').is_visible()
-    page.get_by_role('button',name='Kandidatval').click()
+    page.locator('.sidebar [data-page="candidates"]').click()
     assert page.get_by_text('Kandidatval & valsedlar').is_visible()
     assert not errors, errors
     mobile=browser.new_page(viewport={'width':390,'height':844},is_mobile=True,has_touch=True)
