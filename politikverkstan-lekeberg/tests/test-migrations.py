@@ -1,12 +1,12 @@
-"""Schema migrations through 0012, including legacy-note privacy."""
+"""Schema migrations through 0013, including legacy-note privacy."""
 from pathlib import Path
 import sqlite3
 
 root = Path(__file__).resolve().parents[1]
 sql_dir = root / "migrations"
 files = sorted(sql_dir.glob("*.sql"))
-assert len(files) == 12, f"Expected exactly twelve versioned SQL files; found {files}"
-assert [p.name[:4] for p in files] == [f"{i:04d}" for i in range(1, 13)]
+assert len(files) == 13, f"Expected exactly thirteen versioned SQL files; found {files}"
+assert [p.name[:4] for p in files] == [f"{i:04d}" for i in range(1, 14)]
 
 connection = sqlite3.connect(":memory:")
 connection.execute("PRAGMA foreign_keys=ON")
