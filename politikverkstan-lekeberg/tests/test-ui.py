@@ -10,7 +10,7 @@ with sync_playwright() as p:
  page.screenshot(path=str(PROJECT/'preview-desktop.png'),full_page=False)
  assert page.locator('.coalition-card').count()==9
  # Open all orgs registry, disabled for unknown legal rules
- page.locator('[data-page=registry]').click()
+ page.locator('.sidebar [data-page=registry]').click()
  assert page.locator('.registry-row').count()==57
  assert page.locator('[data-org-toggle=org21]').is_disabled()
  # Selectable registry checkboxes must update simulation without rerendering the scrolling table.
@@ -29,7 +29,7 @@ with sync_playwright() as p:
  page.locator('#search-org').fill('IT-nämnd')
  assert page.locator('.registry-row:visible').count()==1
  # Switch back and use preset
- page.locator('[data-page=workspace]').click()
+ page.locator('.sidebar [data-page=workspace]').click()
  page.locator('[data-preset=example]').click()
  assert page.locator('.coalition-card').count()==3
  # Check exactly expected for KS cell group 20 block
@@ -47,7 +47,7 @@ with sync_playwright() as p:
  page.locator('#undo-btn').click()
  assert '20' in page.locator('.coalition-card').first.text_content()
  # mergers
- page.locator('[data-page=mergers]').click()
+ page.locator('.sidebar [data-page=mergers]').click()
  assert page.locator('.merger-card').count()==3
  page.locator('[data-merge]').first.click()
  assert page.locator('.coalition-card').count()==2 if page.locator('.coalition-card').count() else True
@@ -58,14 +58,14 @@ with sync_playwright() as p:
  page.locator('[data-compare-save]').first.click()
  assert page.locator('.compare-grid').count()==1
  # Export CSV page matrix
- page.locator('[data-page=matrix]').click()
+ page.locator('.sidebar [data-page=matrix]').click()
  with page.expect_download() as download:
   page.locator('#export-csv').click()
  assert download.value.suggested_filename.endswith('.csv')
  print('Desktop UI tests passed; page errors:',errs)
  page.set_viewport_size({'width':390,'height':844})
  page.locator('#mobile-toggle').click()
- page.locator('[data-page=workspace]').click()
+ page.locator('.sidebar [data-page=workspace]').click()
  page.screenshot(path=str(PROJECT/'preview-mobile.png'),full_page=False)
  assert not errs,errs
  b.close()
