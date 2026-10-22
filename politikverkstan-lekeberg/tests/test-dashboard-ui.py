@@ -67,7 +67,7 @@ with sync_playwright() as playwright:
  assert 'Hög' in page.locator('.db-task-row').first.inner_text()
  page.locator('[data-db-task-toggle]').first.check()
  page.wait_for_function('window.dbTasks[0].done===true')
- assert page.locator('.db-completed').count()==1
+ page.locator('.db-completed').wait_for()
  page.locator('.db-completed summary').click()
  page.locator('[data-db-task-edit]').first.click()
  page.locator('#db-task-form [name=title]').fill('Uppdaterad prognos')
