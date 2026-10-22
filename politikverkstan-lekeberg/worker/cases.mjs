@@ -98,7 +98,7 @@ export async function handleCases(req,env,user){
    }
    if(method==='POST'){
     const v=normalizeCase(await body(req));
-    if(!await hasOwnMotion(env,user,v.motion_id)||!await hasOwnFile(env,user,v.file_id))return err(403,'Kopplat dokument tillhör inte din privata arbetsyta');
+    if(!await hasOwnMotion(env.DB,user,v.motion_id)||!await hasOwnFile(env.DB,user,v.file_id))return err(403,'Kopplat dokument tillhör inte din privata arbetsyta');
     const id=crypto.randomUUID(),now=new Date().toISOString();
     // Never allow a client to create a team record without an explicit share action.
     await env.DB.prepare('INSERT INTO work_cases(id,owner_email,title,committee,status,meeting_date,labels_json,content_json,revision,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,1,?,?)').bind(id,user.email,v.title,v.committee,v.status,v.meeting_date,JSON.stringify(v.labels),payload(v),now,now).run();
@@ -159,7 +159,7 @@ export async function handleCases(req,env,user){
    const v=normalizeCase(raw),isOwner=owner(row,user);
    // An assignee cannot replace or borrow the owner's private file/motion IDs.
    if(!isOwner&&(v.motion_id||v.file_id))return err(403,'Privata dokumentkopplingar kan endast ändras av ägaren');
-   if(isOwner&&(!await hasOwnMotion(env,user,v.motion_id)||!await hasOwnFile(env,user,v.file_id)))return err(403,'Kopplat dokument tillhör inte din privata arbetsyta');
+   if(isOwner&&(!await hasOwnMotion(env.DB,user,v.motion_id)||!await hasOwnFile(env.DB,user,v.file_id)))return err(403,'Kopplat dokument tillhör inte din privata arbetsyta');
    if(!isOwner){
     const old=JSON.parse(row.content_json);
     v.motion_id=old.motion_id||null;v.file_id=old.file_id||null;
