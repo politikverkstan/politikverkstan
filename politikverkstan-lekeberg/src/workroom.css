@@ -579,3 +579,10 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
  .official-calendar-grid{gap:2px}
  .official-calendar-footer{gap:8px 13px}
 }
+
+.official-source-diagnostics{border-top:1px solid var(--border);padding-top:9px;margin:6px 0 13px;font-size:12px}
+.official-source-diagnostics summary{cursor:pointer;font-weight:750;color:var(--text)}
+.official-source-diagnostics ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:7px 14px;padding:0;margin:10px 0 0}
+.official-source-diagnostics li{display:flex;flex-direction:column;gap:3px;font-size:11px}
+.official-source-diagnostics li span{color:var(--muted)}
+.official-source-diagnostics li span.official-warning{color:#bd6d38}
