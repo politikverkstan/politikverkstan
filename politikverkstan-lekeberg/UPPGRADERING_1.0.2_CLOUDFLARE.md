@@ -1,47 +1,33 @@
 # Politikverkstan 1.0.2 – Offentlig sammanträdeskalender
 
-## Leverans
-- En läsbar månadskalender över fyra officiella sammanträdesorgan i den skyddade fliken **Sammanträden**.
-- Källa: `https://meetings.lekeberg.se/committees/{slug}`, begränsat till kommunfullmäktige (KF), barn- och utbildningsnämnden (BUN), socialnämnden (SN) och kommunstyrelsen (KS).
-- Kalendern visar datum, start- och sluttid, eventuellt publicerad plats, källänk och senaste lyckade hämtning. Visas även om det saknas egna möten.
-- Import sker automatiskt genom Cloudflare Workers befintliga cron `0 3 * * *` (03:00 UTC, inte svensk lokal tid). Administratörer kan också starta hämtning direkt med knappen **Hämta från kommunen**, tidigast 5 minuter efter föregående försök.
-- Endast metadata från publika sidor importeras. Inga PDF-filer laddas ned, inga personuppgifter eller privata anteckningar skickas till kommunen. `work_meetings`, `work_meeting_notes` och `work_meeting_items` ändras inte av synkroniseringen.
+## Aktuell lösning (GitHub → Cloudflare)
 
-## Databasmigrering 0012
+Den ursprungliga importen via Cloudflare Workerns utgående `fetch()` misslyckades mot samtliga fyra MeetingPlus-sidor med nätverksfel. Samma fyra sidor kunde läsas och tolkas korrekt i GitHub Actions. Därför är den operativa importen flyttad från Cloudflare till GitHub.
 
-`migrations/0012_official_meetings.sql` lägger till två separata tabeller:
-- `official_meetings`: offentlig mötesmetadata med unik källadress, namn, datum/tid, plats och tidsstämplar.
-- `official_meeting_sources`: senast försökt/lyckats, felindikering och mötesantal per källa.
+1. GitHub Actions, workflow `.github/workflows/meetingplus-calendar.yml`, körs två gånger dagligen (05:35 och 17:35 UTC) samt manuellt.
+2. `ops/refresh-official-calendar.mjs` hämtar fyra fasta offentliga MeetingPlus-källor, kontrollerar länkar/datum och bygger `worker/official-meetings-cache.mjs`. Vid fel bevaras tidigare uppgifter per källa, med tydlig felstatus.
+3. Om uppgifterna ändrats committar workflowfilen den nya offentliga ögonblicksbilden till `main` med GitHubs inbyggda token. **Inga API-nycklar för Cloudflare eller GitHub behöver läggas till**.
+4. Den befintliga GitHub-anslutningen för Cloudflare Workers Builds ska publicera den nya kodversionen. Workern läser då den inbyggda ögonblicksbilden lokalt och gör **inga nätverksanrop till MeetingPlus**.
+5. `GET /api/private/official-meetings` lämnar datum, tider, eventuellt publicerad plats, originaladress och hämtningsstatus till inloggade användare. Befintliga privata möten och anteckningar påverkas inte.
 
-Migreringen ändrar inga äldre tabeller eller användardata och måste köras **en gång** efter 0011. Vid befintligt kontrollerat Cloudflare-deployflöde körs den automatiskt via `npm run deploy:cloudflare`, efter att de äldre posterna 0001–0011 verifierats.
+`Hämta från kommunen` har tagits bort från arbetsytan eftersom realtidshämtning inte fungerar i Cloudflare. `Uppdatera vy` läser den senast publicerade ögonblicksbilden. Den som vill ha ett nytt källutdrag omedelbart kan starta GitHub Actions-workflowet manuellt.
 
-**Säkerhetskopiera D1 före första produktionsmigreringen**, och kontrollera i Cloudflare efter publicering:
+## Initial kontroll
 
-```sql
-SELECT name FROM d1_migrations ORDER BY id;
-SELECT committee_key, last_success_at, last_count, last_error
-FROM official_meeting_sources ORDER BY committee_key;
-SELECT committee, meeting_date, start_time, end_time, location, source_url
-FROM official_meetings ORDER BY meeting_date LIMIT 30;
-PRAGMA foreign_key_check;
-PRAGMA quick_check;
-```
+- Kontrollera [GitHub Actions – MeetingPlus](https://github.com/politikverkstan/politikverkstan/actions/workflows/meetingplus-calendar.yml) och att jobbet har åtkomst att skriva tillbaka offentliga kalenderdata till `main`.
+- Kontrollera att `worker/official-meetings-cache.mjs` innehåller `generated_at`, fyra poster och minst ett validerat möte per källa.
+- Kontrollera att Cloudflare Workers Builds verkligen publicerat **kalenderdatacommitten**, inte bara den tidigare funktionskoden.
+- Öppna **Arbetsytan → Sammanträden**, klicka **Uppdatera vy** och kontrollera fyra källors senaste hämtning samt datum i kalendern. Öppna originaladresserna hos kommunen och jämför tider.
+- Vid fel visas orsak per organ och tidigare kända kalenderposter bevaras när det är möjligt. Ett misslyckat GitHub-jobb får inte skriva över den inlästa ögonblicksbilden med tomt innehåll.
 
-Förväntat är **12** migrationsposter 0001–0012. Importtabellerna kan vara tomma tills nästa cron eller en administratör tryckt **Hämta från kommunen**.
+## Databas
 
-## Första röktestet
+`0012_official_meetings.sql` skapade tidigare de separata tabellerna `official_meetings` och `official_meeting_sources`. De ligger kvar i D1 som äldre versionsdata, men **den uppdaterade kalendern använder nu en inbyggd GitHub-ögonblicksbild** och behöver ingen ny D1-migrering. Migreringen 0012 ska inte köras om. Den ordinarie `wrangler`-publiceringen behålls.
 
-1. Kontrollera att senaste Cloudflare Builds för `main` har lyckats och att migration 0012 registrerats.
-2. Logga in med ett godkänt Cloudflare Access-konto, gå till **Sammanträden**. En månadsöversikt över offentliga möten ska synas ovanför dina egna möten.
-3. Om ingen källa hämtats ännu: som administratör, tryck **Hämta från kommunen**. Vänta in svaret i vyn. Kontrollera sedan D1-tabellen `official_meeting_sources` för alla fyra källor.
-4. Växla mellan månader och kontrollera att de officiella mötena leder till `https://meetings.lekeberg.se`.
-5. Öppna och redigera ett eget privat möte; dess anteckningar och dagordning ska vara oförändrade.
-6. Om en källa markerar fel men tidigare uppgifter finns visas dessa fortsatt. Kontrollera uppströms webbplats och parserns kompatibilitet; systemet raderar inte uppgifter bara för att webbplatsen misslyckades.
+## Säkerhet och begränsningar
 
-## Avgränsningar och kvalitetsrisker
-
-- Mötet är **inte** en officiell kallelse eller bevis på att ett möte verkligen genomfördes. Källa och status måste kontrolleras på originalwebbplatsen.
-- Ingen officiellt dokumenterad API-kontrakt har verifierats för MeetingPlus. Importen bygger därför på publika HTML-länkar. Ändrad sidstruktur kan ge importfel; detta ska framgå av synkroniseringsstatus och tidigare data får inte raderas.
-- Frånvaro på ett senare webbplatsutdrag betyder inte automatiskt inställt möte. Kvarvarande uppgifter märks med tid för senaste inläsning och bör verifieras mot originalkällan.
-- Dagordningar och handlingar (PDF) integreras ännu inte. Kommande funktion måste hantera källversioner, offentliga/sekretesskyddade handlingar, lagringskostnader och separering från privata dokument.
-- Chromium-/Node-tester kör lokalt med HTML-fixturer och kontrollerad D1-simulering, inte mot kommunens liveserver. Bekräfta faktisk första lyckade import i D1 innan den anses produktionsverifierad.
+- Endast fyra allowlistade offentliga kommittésidor läses. Hämtningen sker utan användarcookies eller inloggningsuppgifter.
+- Ögonblicksbilden innehåller endast officiellt publicerade mötesmetadata och publiceras som kod i GitHub. Inga privata anteckningar, interna möten eller dokument ingår.
+- GitHub-jobbet skriver inte en tom kalender om alla fyra externa källor misslyckas. Källornas HTML kan ändras och måste kontrolleras vid parserfel.
+- Ändringar i kommunens kalender syns först efter nästa lyckade GitHub-hämtning **och** lyckad Cloudflare-publicering; detta är inte en realtidstjänst.
+- Publicerade tider är preliminära tills de kontrolleras mot kallelsen. Inga PDF-handlingar eller dagordningar lagras i denna version.
