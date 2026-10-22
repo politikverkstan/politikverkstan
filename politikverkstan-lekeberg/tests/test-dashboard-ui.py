@@ -11,6 +11,8 @@ const taskId='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 const caseId='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 const meetingId='cccccccc-cccc-4ccc-8ccc-cccccccccccc';
 window.dbTasks=[];
+window.failFollowups=false;
+window.mockFollowups=[{id:'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',case_id:caseId,title:'Kontrollera beslutad besparing',case_title:'Budgetuppföljning BUN',due_date:'2026-11-03',assignee_email:'user@test.se'}];
 window.mockCases=[{id:caseId,title:'Budgetuppföljning BUN',committee:'Barn- och utbildningsnämnden',status:'granskning',meeting_date:'2026-11-02',labels:[],owner_email:'teammate@test.se',assignee_email:'user@test.se',scope:'team',is_owner:false,can_edit:true,revision:1}];
 window.mockMeetings=[{id:meetingId,title:'Nästa nämndmöte',committee:'Barn- och utbildningsnämnden',meeting_date:'2026-11-02',start_time:'09:00',status:'planned',scope:'team',agenda_count:2}];
 window.fetch=async(path,options={})=>{
@@ -24,6 +26,10 @@ window.fetch=async(path,options={})=>{
  else if(path==='/api/private/cases') response={cases:window.mockCases};
  else if(path==='/api/private/meetings') response={meetings:window.mockMeetings};
  else if(path==='/api/private/tasks'&&method==='GET') response={tasks:window.dbTasks};
+ else if(path==='/api/private/workflow/dashboard'){
+  if(window.failFollowups){status=503;response={error:'Uppföljningarna går inte att läsa'};}
+  else response={followups:window.mockFollowups,total_open:window.mockFollowups.length};
+ }
  else if(path==='/api/private/tasks'&&method==='POST'){
   window.dbTasks.push({...value,id:taskId,revision:1,done:false,created_at:'2026-10-22',updated_at:'2026-10-22'});
   response={id:taskId,revision:1};status=201;
@@ -57,6 +63,11 @@ with sync_playwright() as playwright:
  assert 'Budgetuppföljning BUN' in page.locator('.db-root').inner_text()
  assert page.locator('.db-kpi').count()==4
  assert 'Motionsutkast' in page.locator('.db-kpis').inner_text()
+ assert 'Kontrollera beslutad besparing' in page.locator('#db-followups').inner_text()
+ assert '1 ärendeuppföljningar' in page.locator('.db-kpis').inner_text()
+ assert page.locator('.db-kpi').nth(2).locator('strong').inner_text()=='1'
+ page.locator('[data-db-followups-jump]').click()
+ assert page.locator('#db-followups').is_visible()
  page.locator('#db-task-form [name=title]').fill('Kontrollera prognosen')
  page.locator('#db-task-form [name=due_date]').fill('2026-11-01')
  page.locator('#db-task-form [name=priority]').select_option('high')
@@ -65,6 +76,16 @@ with sync_playwright() as playwright:
  page.locator('.db-task-row').first.get_by_text('Kontrollera prognosen').wait_for()
  assert page.evaluate('window.dbTasks[0].case_id')=='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
  assert 'Hög' in page.locator('.db-task-row').first.inner_text()
+ assert page.locator('.db-kpi').nth(2).locator('strong').inner_text()=='2'
+ page.evaluate('window.failFollowups=true')
+ page.locator('#db-refresh').click()
+ page.get_by_text('Ärendeuppföljningarna kunde inte hämtas.',exact=False).wait_for()
+ assert page.locator('.db-kpi').nth(2).locator('strong').inner_text()=='–'
+ assert page.locator('.db-task-row').count()==1, 'Personal tasks remain available when followups fail'
+ page.evaluate('window.failFollowups=false')
+ page.locator('#db-refresh').click()
+ page.get_by_text('Kontrollera beslutad besparing').wait_for()
+ assert page.locator('.db-kpi').nth(2).locator('strong').inner_text()=='2'
  page.locator('[data-db-task-toggle]').first.check()
  page.wait_for_function('window.dbTasks[0].done===true')
  page.locator('.db-completed').wait_for()
@@ -84,4 +105,4 @@ with sync_playwright() as playwright:
  page.locator('#case-form').wait_for()
  assert not errors,errors
  browser.close()
-print('PASS 0.9.2 UI: upcoming meetings, assigned cases, task CRUD, progress and deep navigation')
+print('PASS 1.0.1 UI: scoped followups, counts, partial failure recovery, tasks and deep navigation')
