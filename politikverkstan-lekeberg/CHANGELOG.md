@@ -1,5 +1,13 @@
 # Ändringslogg – Politikverkstan Lekeberg
 
+## 1.2.0 – Källgranskning av organisationer och uppdrag
+
+- Organisationernas befintliga källstatusar kan filtreras efter aktuell verifiering, historiskt dokumenterade uppgifter, saknad aktuell verifiering och valda organ utan aktuell verifiering.
+- Det går att exportera en granskningslista (JSON) för samtliga 57 poster, inklusive uppgivet respektive dokumenterat platstal, källa, länk, granskningsdatum och status.
+- Äldre reglementen och preliminära underlag får inte automatiskt status ”verifierad för 2026–2030”. Modellen beräknar hypotetiska utfall på tidigare kända uppgifter; rättsligt giltiga beslut måste kontrolleras.
+- Publiceringskalendern från 1.0.2 och ärendeöversikten från 1.1.0 påverkas inte.
+
+
 ## 1.1.0 – Ärendecentrerat arbetsflöde
 
 - Ny översikt över varje öppnat ärende med navigering till underlag, tillåtna sammanträdeskopplingar, öppna uppföljningar, internt ställningstagande och ändringshistorik.
