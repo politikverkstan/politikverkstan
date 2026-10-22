@@ -12,6 +12,8 @@ with sync_playwright() as p:
     assert page.locator('.guide-panel').count()==0
     assert page.locator('.coalition-card').count()==0
     assert page.locator('.pv-workshop-entry').count()==1
+    assert page.locator('#pv-guide-open').count()==0, 'Guided calculation is no longer on the public landing page'
+    page.locator('.pv-home-analyses [data-page="matrix"]').click()
     page.locator('#pv-guide-open').click()
     assert page.locator('.guide-panel').is_visible()
     assert page.locator('.guide-steps .current').count()==1
