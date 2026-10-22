@@ -63,6 +63,14 @@ with sync_playwright() as p:
  assert page.locator('.official-event').count()==0
  page.locator('[data-official-month="-1"]').click()
  assert page.locator('.official-event').count()==1
+ assert page.locator('[data-official-prepare]').count()==1
+ page.locator('[data-official-prepare]').click()
+ assert page.locator('#meeting-form').is_visible()
+ assert page.locator('#meeting-form [name="title"]').input_value()=='Kommunfullmäktige – mötesförberedelser'
+ assert page.locator('#meeting-form [name="meeting_date"]').input_value()==meeting_date
+ assert page.locator('#meeting-form [name="start_time"]').input_value()=='18:00'
+ assert page.locator('.meeting-metadata a[href="'+source+'"]').count()==1
+ assert page.evaluate('window.officialGets')==2, 'Preparing a draft must not fetch or change external data'
  assert page.evaluate('document.documentElement.scrollWidth')<=390+2
  assert not errors,errors
  browser.close()
