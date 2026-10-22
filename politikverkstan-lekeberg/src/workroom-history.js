@@ -46,7 +46,12 @@ async function restoreWorkHistory(event){
  try{
   await openTab(target.tab,true);
   if(state.tab!==target.tab)return;
-  if(target.tab==='cases'&&target.caseId){
+  if(target.tab==='cases'&&!target.caseId){
+   state.caseCurrent=null;state.caseComments=[];state.caseDirty=false;state.caseNoteDirty=false;render();
+  }else if(target.tab==='meetings'&&!target.meetingId){
+   state.meetingCurrent=null;state.meetingAgenda=[];state.meetingItemEdit=null;
+   state.meetingNote='';state.meetingDirty=false;state.meetingNoteDirty=false;render();
+  }else if(target.tab==='cases'&&target.caseId){
    const record=state.caseItems.find(x=>x.id===target.caseId);
    if(record){
     state.caseCurrent={...record,labels:[...(record.labels||[])]};
