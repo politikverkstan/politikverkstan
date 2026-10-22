@@ -80,6 +80,14 @@ function officialCalendarView(){
  const synced=sources.filter(s=>s.last_success_at).sort((a,b)=>b.last_success_at.localeCompare(a.last_success_at));
  const last=synced[0]?.last_success_at||'';
  const failures=sources.filter(s=>s.last_error);
+ const sourceNames=Object.fromEntries((state.officialCalendarCommittees||[]).map(c=>[c.key,c.name]));
+ const sourceDetails=(state.officialCalendarCommittees||[]).map(c=>{
+  const item=sources.find(s=>s.committee_key===c.key);
+  const result=item?.last_error?'Kunde inte uppdateras: '+item.last_error:
+   item?.last_success_at?'Senast inlästa möten: '+item.last_count:'Ännu inte hämtad';
+  return `<li><a href="${h(c.url)}" target="_blank" rel="noopener noreferrer">${h(c.name)} ↗</a>
+   <span class="${item?.last_error?'official-warning':''}">${h(result)}</span></li>`;
+ }).join('');
  return `<section class="card official-calendar" aria-labelledby="official-calendar-title">
   <div class="official-calendar-header"><div><span class="eyebrow">OFFENTLIG SAMMANTRÄDESKALENDER</span><h2 id="official-calendar-title">Lekebergs kommun</h2>
    <p>Automatiskt hämtade mötestider från MeetingPlus. Öppna ett möte för officiell information. Dina privata sammanträden nedan påverkas inte.</p></div>
@@ -87,7 +95,9 @@ function officialCalendarView(){
    ${state.officialCalendarAdmin?'<button class="btn btn-sm" type="button" id="official-calendar-sync">Hämta från kommunen</button>':''}</div></div>
   ${state.officialCalendarError?`<p class="db-alert" role="status">${h(state.officialCalendarError)}</p>`:''}
   <div class="official-calendar-status"><span>${last?'Senast lyckade hämtning: '+h(last.replace('T',' ').slice(0,16))+' (UTC)':'Ännu ingen bekräftad hämtning'}</span>
-   ${failures.length?'<span class="official-warning">Vissa källor kunde inte uppdateras. Senast kända uppgifter visas.</span>':''}</div>
+   ${failures.length?`<span class="official-warning">Misslyckade källor: ${h(failures.map(x=>sourceNames[x.committee_key]||x.committee_key).join(', '))}. Tidigare uppgifter visas där de finns.</span>`:''}</div>
+  <details class="official-source-diagnostics" ${failures.length?'open':''}><summary>Visa hämtstatus per nämnd</summary>
+   <ul>${sourceDetails}</ul></details>
   <div class="official-month"><button class="btn btn-sm" type="button" data-official-month="-1" aria-label="Föregående månad">←</button>
   <h3>${h(new Intl.DateTimeFormat('sv-SE',{month:'long',year:'numeric',timeZone:'UTC'}).format(first))}</h3>
   <button class="btn btn-sm" type="button" data-official-month="1" aria-label="Nästa månad">→</button></div>
@@ -111,7 +121,11 @@ function attachOfficialCalendarActions(){
   const b=e.currentTarget;b.disabled=true;
   try{const result=await api('/api/private/official-meetings/sync','POST',{});
    await loadOfficialCalendar();render();
-   toast(result.updated?'Kommunens mötestider hämtades.':'Inga källor kunde uppdateras. Kontrollera synkroniseringsstatus.',!result.updated);
+   const failed=(result.status||[]).filter(x=>!x.ok);
+   const ok=(result.status||[]).filter(x=>x.ok);
+   const info=failed.length?'Misslyckade källor: '+failed.map(x=>x.committee+(x.error?' ('+x.error+')':'')).join(', '):
+    ok.length?'Alla fyra sammanträdeskällor är uppdaterade.':'Ingen sammanträdeskälla kunde uppdateras.';
+   toast(info,failed.length>0);
   }catch(err){b.disabled=false;toast('Synkroniseringen kunde inte startas: '+err.message,true);}
  });
 }
