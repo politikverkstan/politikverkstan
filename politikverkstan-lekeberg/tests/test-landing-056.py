@@ -36,6 +36,9 @@ with sync_playwright() as p:
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.set_content(public,wait_until='domcontentloaded')
  assert page.locator('.pv-hero').is_visible()
+ assert page.locator('#pv-guide-open').count()==0
+ assert page.locator('.sidebar .portal-login').count()==1
+ assert page.locator('.sidebar .portal-workroom').count()==0
  assert page.locator('.pv-protected').count()==1
  assert page.locator('.pv-scenario-panel').count()==1
  assert page.locator('.pv-home-analyses .pv-feature').count()==4
