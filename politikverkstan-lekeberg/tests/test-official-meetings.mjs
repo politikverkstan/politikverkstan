@@ -37,7 +37,8 @@ assert.equal(db.prepare('SELECT location FROM official_meetings WHERE committee_
 const failed=async url=>url.endsWith('socialnamnden')?new Response('No',{status:500,headers:{'content-type':'text/plain'}}):changed(url);
 await syncOfficialMeetings({DB},{fetcher:failed,now:'2026-10-25T11:00:00Z'});
 assert.equal(db.prepare('SELECT COUNT(*) AS n FROM official_meetings').get().n,4,'Unavailable source must not erase previous entries');
-assert.equal(db.prepare("SELECT last_error FROM official_meeting_sources WHERE committee_key='sn'").get().last_error,'Källan kunde inte läsas');
+assert.equal(db.prepare("SELECT last_error FROM official_meeting_sources WHERE committee_key='sn'").get().last_error,'HTTP 500');
+assert.equal(db.prepare("SELECT COUNT(*) AS n FROM official_meetings").get().n,4,'Previous successful sync entries survive HTTP 500');
 
 const req=(path,method='GET')=>new Request('https://app.test/api/private/'+path,{method});
 const user={email:'member@example.se',role:'user'},admin={email:'admin@example.se',role:'admin'};
