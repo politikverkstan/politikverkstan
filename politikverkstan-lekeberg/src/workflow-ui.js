@@ -34,7 +34,7 @@ function wfEvent(event){
   sharing:'Delning/ansvar',followup:'Uppföljning',position:'Ställningstagande'}[event.kind]||event.kind;
  const changes=wfDiff(change);
  return '<div class="wf-history-event"><div class="wf-history-title"><strong>'+h(kind)+'</strong><small>'+
-  wfDate(event.created_at)+' · '+h(event.actor_email)+' · ärenderevision '+h(event.case_revision)+'</small></div>'+
+  wfDate(event.created_at)+' · '+h(event.actor_email)+' · version '+h(event.case_revision)+'</small></div>'+
   (changes.length?'<details><summary>Visa ändringar ('+changes.length+')</summary><div class="wf-diff">'+
    changes.map(x=>'<div><strong>'+h(x[0])+'</strong><small>Före: '+h(x[1]||'–')+'</small><small>Efter: '+h(x[2]||'–')+'</small></div>').join('')+'</div></details>':
    '<p class="case-hint">'+h(change.action||change.title||'Händelsen registrerades')+'</p>')+'</div>';
@@ -76,7 +76,7 @@ function workflowCaseSections(c){
  const editable=c.can_edit,own=c.is_owner,p=workflowState.position;
  const edit=workflowState.followupEdit;
  return '<section class="card wf-panel"><div class="split-line"><h2>Ärendets sammanträden</h2><span class="chip">'+(workflowState.errors.meetings?'Ej tillgängligt':workflowState.links.length+' punkter')+'</span></div>'+
-  '<p class="case-hint">Sammanträden och dagordningspunkter där ärendet är kopplat. Bara möten du får läsa visas.</p>'+
+  '<p class="case-hint">Sammanträden där ärendet finns på dagordningen.</p>'+
   (workflowState.errors.meetings?wfSectionError('meetings'):workflowState.links.length?workflowState.links.map(m=>'<div class="wf-row"><div><strong>'+h(m.title)+'</strong><small>'+
    h(m.committee)+' · '+h(m.meeting_date)+' · '+h(m.agenda_title)+'</small>'+
    (m.outcome?'<p><strong>Antecknat utfall:</strong> '+h(m.outcome)+'</p>':'')+
@@ -85,7 +85,7 @@ function workflowCaseSections(c){
    '<p class="case-hint">Inga åtkomliga sammanträden är kopplade till ärendet.</p>')+'</section>'+
   '<section class="card wf-panel"><div class="split-line"><h2>Uppföljningar</h2>'+
    (editable&&!workflowState.errors.followups?'<button type="button" class="btn btn-sm" id="wf-new-followup">+ Ny uppföljning</button>':'')+'</div>'+
-   '<p class="case-hint">Separata uppgifter med ansvarig, tidsfrist och avslutsstatus. Personliga uppgifter i översikten påverkas inte.</p>'+
+   '<p class="case-hint">Registrera vad som ska göras, vem som ansvarar och när det ska vara klart.</p>'+
    (workflowState.errors.followups?wfSectionError('followups'):workflowState.followups.length?workflowState.followups.map(f=>'<div class="wf-row"><div><strong>'+h(f.title)+'</strong><small>'+
     (f.status==='done'?'Avslutad':'Öppen')+(f.due_date?' · Senast '+h(f.due_date):'')+
     (f.assignee_email?' · '+h(f.assignee_email):'')+'</small>'+
@@ -108,7 +108,7 @@ function workflowCaseSections(c){
      '<button type="button" class="btn" id="wf-cancel-followup">Avbryt</button></div></form>':'')+
     '</section>'+
    '<section class="card wf-panel"><h2>Ställningstagande och förankring</h2>'+
-    '<p class="case-hint">Ett internt förslag är inte ett beslut. Status ”Förankrat” kräver att ägaren anger både datum och källa för förankringen.</p>'+
+    '<p class="case-hint">Markera som förankrat först när ställningstagandet har bekräftats. Ange datum och källa.</p>'+
     (workflowState.errors.position?wfSectionError('position'):own?'<form id="wf-position-form" class="wf-form">'+
      '<label class="field"><span>Ställningstagande</span><textarea name="body" maxlength="3500" rows="3" required>'+h(p?.body||'')+'</textarea></label>'+
      '<label class="field"><span>Status</span><select name="status">'+
@@ -122,7 +122,6 @@ function workflowCaseSections(c){
      (p.anchored_on?'<small> · '+h(p.anchored_on)+'</small>':'')+'</div></div>':
      '<p class="case-hint">Inget delat ställningstagande registrerat.</p>')+'</section>'+
    '<section class="card wf-panel"><div class="split-line"><h2>Ändringshistorik</h2><span class="chip">'+(workflowState.errors.history?'Ej tillgängligt':workflowState.events.length+' inlästa')+'</span></div>'+
-    '<p class="case-hint">Ändringar loggas i databasen. Historik från tiden före migrering 0011 kan inte återskapas i efterhand. Personliga anteckningar och privata dokument-ID:n ingår inte.</p>'+
     (workflowState.errors.history?wfSectionError('history'):workflowState.events.length?workflowState.events.map(wfEvent).join(''):'<p class="case-hint">Ännu inga historikhändelser.</p>')+
     (workflowState.nextOffset!==null&&!workflowState.errors.history?'<button type="button" class="btn" id="wf-more-history">Visa äldre händelser</button>':'')+
    '</section>';
