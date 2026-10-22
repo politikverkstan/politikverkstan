@@ -1,0 +1,52 @@
+name: Public Lekeberg meeting calendar
+
+on:
+  schedule:
+    - cron: '35 5,17 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/meetingplus-calendar.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: lekeberg-official-calendar
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    name: Fetch public committee meetings
+    if: github.repository == 'politikverkstan/politikverkstan'
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: politikverkstan-lekeberg
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch and validate four public MeetingPlus calendars
+        run: node ops/refresh-official-calendar.mjs
+      - name: Run core regressions before publishing snapshot
+        run: npm test
+      - name: Commit public calendar snapshot only
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- worker/official-meetings-cache.mjs
+          if git diff --cached --quiet; then
+            echo 'No changes to public calendar'
+          else
+            git commit -m 'Update published Lekeberg committee meeting snapshot'
+            git push origin HEAD:main
+          fi
