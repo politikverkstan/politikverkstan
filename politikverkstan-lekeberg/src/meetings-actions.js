@@ -8,7 +8,7 @@ function attachMeetingActions(){
  });
  document.querySelectorAll('[data-meeting-open]').forEach(b=>b.addEventListener('click',async()=>{
   if(!meetingSafeToLeave())return;
-  try{await openMeeting(b.dataset.meetingOpen);render();}catch(e){toast('Sammanträdet kunde inte öppnas: '+e.message,true);}
+  try{await openMeeting(b.dataset.meetingOpen);recordWorkView();render();}catch(e){toast('Sammanträdet kunde inte öppnas: '+e.message,true);}
  }));
  document.querySelectorAll('[data-meeting-visibility]').forEach(b=>b.addEventListener('click',()=>{state.meetingVisibility=b.dataset.meetingVisibility;render();}));
  $('meeting-search')?.addEventListener('input',e=>{
