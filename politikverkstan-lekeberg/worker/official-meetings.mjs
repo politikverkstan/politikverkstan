@@ -36,7 +36,7 @@ export function parseOfficialMeetings(html,source,today=localDate()){
   const after=inRow?html.slice(m.index+m[0].length,rowEnd):html.slice(m.index+m[0].length,m.index+m[0].length+350);
   const label=plain(m[3]);
   const timeText=(label+' '+plain(after).slice(0,110));
-  const times=timeText.match(/([01]\d|2[0-3]):[0-5]\d\s*[-–]\s*([01]\d|2[0-3]):[0-5]\d/)||
+  const times=timeText.match(/((?:[01]\d|2[0-3]):[0-5]\d)\s*[-–]\s*((?:[01]\d|2[0-3]):[0-5]\d)/)||
     timeText.match(/([01]\d|2[0-3]):[0-5]\d\s*[-–]\s*/);
   const start=times?times[0].slice(0,5):'';
   const end=times&&times[2]?times[2]:'';
