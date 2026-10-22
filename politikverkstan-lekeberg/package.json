@@ -1,6 +1,6 @@
 {
   "name": "politikverkstan-lekeberg",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "private": true,
   "scripts": {
     "build": "python build.py",
@@ -8,7 +8,7 @@
     "test:browser": "python tests/run-browser-suite.py",
     "test:build": "python build.py --check && python tests/test-build.py",
     "test:migrations": "python tests/test-migrations.py",
-    "test:unit": "node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs && node tests/test-cases.mjs && node tests/test-cases-share.mjs && node tests/test-meetings.mjs"
+    "test:unit": "node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs && node tests/test-cases.mjs && node tests/test-cases-share.mjs && node tests/test-meetings.mjs && node tests/test-tasks.mjs"
   },
   "devDependencies": {
     "wrangler": "^4.0.0"
