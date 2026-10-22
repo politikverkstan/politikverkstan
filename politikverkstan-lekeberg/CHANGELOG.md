@@ -1,5 +1,13 @@
 # Ändringslogg – Politikverkstan Lekeberg
 
+## 0.9.2 – Min arbetsöversikt
+
+- Ny inloggad arbetsöversikt med kommande möten, tilldelade ärenden, uppföljningar och motionsutkast.
+- Privat att-göra-lista med prioritering, förfallodatum, status och behörighetskontrollerade länkar till egna/delade ärenden och möten.
+- Ny D1-migrering 0010_dashboard_tasks.sql skapar work_tasks. Befintliga ärenden och möten ändras inte.
+- Behörighets- och versionskontroller på servern; ingen administratör kan läsa andra användares privata uppgifter.
+- Utökade Node-, migrations- och webbläsartester. Den publika portalen behåller sina funktioner.
+
 ## 0.9.1 – stabilisering och kvalitet
 
 - Byggskriptet stoppar nu vid saknade mallmarkörer och skyddar mot att privata API-referenser av misstag byggs in i det publika paketet.
