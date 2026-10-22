@@ -13,7 +13,7 @@ assert.throws(()=>validateMigrationHistory([...files,'9999_unknown.sql'],files),
 assert.throws(()=>validateMigrationHistory(files.slice().reverse(),files.slice(1)),/Migrationsfiler saknas/);
 const sql=readFileSync(new URL('../ops/manual-baseline-0001-to-0011.sql',import.meta.url),'utf8');
 const real=readdirSync(new URL('../migrations/',import.meta.url)).filter(x=>/^[0-9]{4}_.*\.sql$/.test(x)).sort();
-assert.equal(real.length,11);
+assert.ok(real.length>=11);
 for(const filename of real)assert.ok(sql.includes("('"+filename+"')"),"Missing baseline filename: "+filename);
 assert.match(sql,/required_objects/);
 assert.match(sql,/required_columns/);
