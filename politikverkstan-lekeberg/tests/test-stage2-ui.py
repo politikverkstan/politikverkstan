@@ -59,7 +59,7 @@ with sync_playwright() as p:
  page.locator('#case-form [name="risks"]').fill('Potentiell risk för ökade driftkostnader.')
  page.locator('#case-form button[type="submit"]').click()
  page.wait_for_function('window.testCases[0].revision===2')
- assert 'Potentiell risk' in page.locator('#case-print').text_content()
+ page.wait_for_function("document.querySelector('#case-print')?.textContent.includes('Potentiell risk')")
  page.locator('#case-delete').click()
  page.locator('.case-result').wait_for(state='detached')
  assert not errors,errors
