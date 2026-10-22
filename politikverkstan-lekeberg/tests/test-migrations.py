@@ -1,12 +1,12 @@
-"""Schema migration regression through 0.9.2, including legacy-note privacy."""
+"""Schema migration regression through 1.0, including legacy-note privacy."""
 from pathlib import Path
 import sqlite3
 
 root = Path(__file__).resolve().parents[1]
 sql_dir = root / "migrations"
 files = sorted(sql_dir.glob("*.sql"))
-assert len(files) == 10, f"Expected exactly ten versioned SQL files; found {files}"
-assert [p.name[:4] for p in files] == [f"{i:04d}" for i in range(1, 11)]
+assert len(files) == 11, f"Expected exactly eleven versioned SQL files; found {files}"
+assert [p.name[:4] for p in files] == [f"{i:04d}" for i in range(1, 12)]
 
 connection = sqlite3.connect(":memory:")
 connection.execute("PRAGMA foreign_keys=ON")
@@ -84,4 +84,4 @@ assert connection.execute(
 ).fetchone() == (0, 1), "New personal tasks must default to open"
 assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
 assert not connection.execute("PRAGMA foreign_key_check").fetchall()
-print("PASS: migrations 0001–0010, legacy notes, private defaults, referential integrity and cascades")
+print("PASS: migrations 0001–0011, legacy notes, private defaults, referential integrity and cascades")
