@@ -61,4 +61,22 @@ assert.ok(!searchMember.some(r=>r.title==='hemlig-fil.pdf'));
 assert.equal((await call('member','cases/'+a+'/meetings')).status,404);
 const count=db.prepare('SELECT count(*) as n FROM work_case_events WHERE case_id=?').get(b).n;
 assert.ok(count>=5,'edits, followups and positions are audited');
+// A failed asynchronous D1 operation must be caught by its own workflow endpoint,
+// not by handlePrivate's generic fallback. Healthy endpoints must remain usable.
+const failingDB={
+ prepare(sql){
+  if(sql.startsWith('SELECT * FROM work_case_positions WHERE case_id=')) {
+   return {bind(){return this;}, async first(){throw Error('Simulated D1 failure');}};
+  }
+  return wrap.prepare(sql);
+ }
+};
+const failed=await handleWorkflow(new Request('https://app.test/api/private/workflow/cases/'+b+'/position'),{DB:failingDB},users.owner);
+assert.equal(failed.status,503,'Failed asynchronous workflow query must return a controlled response');
+const failedData=await data(failed);
+assert.match(failedData.error,/ställningstagandet/);
+assert.equal(failedData.code,'WORKFLOW_UNAVAILABLE');
+const healthy=await handleWorkflow(new Request('https://app.test/api/private/workflow/cases/'+b+'/history'),{DB:failingDB},users.owner);
+assert.equal(healthy.status,200,'Other workflow resources must remain reachable');
+assert.ok((await data(healthy)).events.length>0);
 console.log('PASS v1.0 workflow: history, privacy, position approval, follow-ups, CAS and search permissions');
