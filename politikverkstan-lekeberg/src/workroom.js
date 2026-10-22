@@ -167,6 +167,7 @@ function casesPage(){
     </button>`).join(''):'<p class="empty">Inga ärenden motsvarar urvalet. Skapa ett nytt ärende för att börja.</p>'}</div>
    </div>
    <div class="case-editor-pane">${selected?`
+    ${selected.id?caseStageOverview(selected):''}
     <form id="case-form" class="card case-editor">
      <div class="case-edit-head"><div><span class="eyebrow">${selected.scope==='team'?'GEMENSAMT ARBETSMATERIAL':'PRIVAT ARBETSMATERIAL'}</span><h2>${selected.id?'Ärende':'Nytt ärende'}</h2></div>
       <span class="chip">${selected.id?'Version '+selected.revision:'Ej sparat'}</span></div>
