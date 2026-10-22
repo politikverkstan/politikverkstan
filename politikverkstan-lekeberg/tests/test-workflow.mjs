@@ -59,6 +59,19 @@ assert.ok(searchMember.some(r=>r.id===b));
 assert.ok(!searchMember.some(r=>r.id===a));
 assert.ok(!searchMember.some(r=>r.title==='hemlig-fil.pdf'));
 assert.equal((await call('member','cases/'+a+'/meetings')).status,404);
+const sharedMeeting='dddddddd-dddd-4ddd-8ddd-dddddddddddd';
+const privateMeeting='eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee';
+for(const [mid,scope] of [[sharedMeeting,'team'],[privateMeeting,'mine']]){
+ db.prepare("INSERT INTO work_meetings(id,owner_email,title,committee,meeting_date,scope,created_at,updated_at) VALUES(?,'owner@test.se','Nämndsammanträde','Kommunfullmäktige','2026-11-12',?,'2026-10-22','2026-10-22')").run(mid,scope);
+ db.prepare("INSERT INTO work_meeting_items(id,meeting_id,position,title,case_id,created_at,updated_at) VALUES(?,?,0,'Uppföljning',?,'2026-10-22','2026-10-22')").run(crypto.randomUUID(),mid,b);
+}
+const memberMeetings=(await data(await call('member','cases/'+b+'/meetings'))).meetings;
+assert.equal(memberMeetings.length,1,'Only readable meetings may appear in a shared case');
+assert.equal(memberMeetings[0].id,sharedMeeting);
+assert.equal((await data(await call('owner','cases/'+b+'/meetings'))).meetings.length,2);
+assert.equal((await call('member','cases/'+b+'/followups')).status,200);
+assert.equal((await call('member','cases/'+b+'/position')).status,200);
+
 const count=db.prepare('SELECT count(*) as n FROM work_case_events WHERE case_id=?').get(b).n;
 assert.ok(count>=5,'edits, followups and positions are audited');
 // A failed asynchronous D1 operation must be caught by its own workflow endpoint,
