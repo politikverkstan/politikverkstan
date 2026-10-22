@@ -6,7 +6,7 @@ with sync_playwright() as p:
     c=b.new_context(viewport={'width':1440,'height':900})
     pg=c.new_page();errors=[];pg.on('pageerror',lambda err:errors.append(str(err)))
     pg.set_content(proj.joinpath('dist/index.html').read_text(encoding='utf-8'),wait_until='domcontentloaded')
-    pg.locator('[data-page="candidates"]').click()
+    pg.locator('.sidebar [data-page="candidates"]').click()
     assert pg.get_by_text('Kandidatval & valsedlar').count()==1
     pg.locator('#cand-example').click()
     assert pg.locator('.ballot-card').count()==3
@@ -37,7 +37,7 @@ with sync_playwright() as p:
     pg.locator('#cand-member-prop').check()
     pg.locator('#cand-run').click()
     assert pg.locator('.candidate-results').count()==1
-    pg.locator('[data-page=registry]').click()
+    pg.locator('.sidebar [data-page=registry]').click()
     it=pg.locator('.registry-row').filter(has_text='Sydnärkes IT-nämnd')
     assert '1 + 1' in it.text_content()
     assert not errors,errors
