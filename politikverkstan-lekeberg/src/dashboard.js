@@ -37,14 +37,15 @@ function dashboardPage(){
  const overdue=open.filter(t=>t.due_date&&t.due_date<now);
  const followups=state.dashboardFollowups||[];
  const followupsError=state.dashboardErrors?.some(e=>e.name==='followups');
+ const tasksError=state.dashboardErrors?.some(e=>e.name==='tasks');
  const followupsTotal=state.dashboardFollowupsTotal??0;
  const drafts=(state.motions||[]).filter(m=>['ide','utkast','granskning'].includes(m.status));
  const errors=state.dashboardErrors||[];
  const stats=[
   {count:meetings.length,label:'Kommande sammanträden',note:'Möten du har åtkomst till',tab:'meetings'},
   {count:activeCases.length,label:'Ärenden att hantera',note:'Dina och dina tilldelade',tab:'cases'},
-  {count:followupsError?'–':open.length+followupsTotal,label:'Att följa upp',
-   note:followupsError?'Uppföljningar ej tillgängliga':open.length+' egna uppgifter · '+followupsTotal+' ärendeuppföljningar',
+  {count:followupsError||tasksError?'–':open.length+followupsTotal,label:'Att följa upp',
+   note:followupsError||tasksError?'Uppföljningarna är inte fullständiga':open.length+' egna uppgifter · '+followupsTotal+' '+(followupsTotal===1?'ärendeuppföljning':'ärendeuppföljningar'),
    jump:'followups'},
   {count:drafts.length,label:'Motionsutkast',note:'Mina pågående motioner',tab:'motions'}
  ];
