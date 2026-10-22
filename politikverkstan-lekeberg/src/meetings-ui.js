@@ -35,3 +35,83 @@ function meetingItemFields(item){
  <label class="field"><span>Att göra och uppföljning</span><textarea name="follow_up" maxlength="3500" rows="2">${h(item.follow_up||'')}</textarea></label>
  `;
 }
+
+
+// Official MeetingPlus meetings are read-only and live outside work_meetings.
+async function loadOfficialCalendar(){
+ try{
+  const data=await api('/api/private/official-meetings');
+  state.officialCalendarMeetings=data.meetings||[];
+  state.officialCalendarSources=data.sources||[];
+  state.officialCalendarCommittees=data.committees||[];
+  state.officialCalendarAdmin=!!data.can_sync;
+  state.officialCalendarError='';
+ }catch(e){
+  state.officialCalendarError='Kommunens sammanträdeskalender kunde inte läsas. Dina egna sammanträden fungerar fortfarande.';
+ }
+}
+function officialCalendarMonth(){
+ if(state.officialCalendarMonth)return state.officialCalendarMonth;
+ const d=new Date(),sv=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Stockholm',year:'numeric',month:'2-digit'}).format(d);
+ return sv.slice(0,7);
+}
+function changeOfficialMonth(offset){
+ const [year,month]=officialCalendarMonth().split('-').map(Number);
+ const d=new Date(Date.UTC(year,month-1+offset,1));
+ state.officialCalendarMonth=d.toISOString().slice(0,7);
+ render();
+}
+function officialCalendarView(){
+ const meetings=state.officialCalendarMeetings||[];
+ const sources=state.officialCalendarSources||[];
+ const month=officialCalendarMonth();
+ const [year,mon]=month.split('-').map(Number);
+ const first=new Date(Date.UTC(year,mon-1,1));
+ const count=new Date(Date.UTC(year,mon,0)).getUTCDate();
+ const offset=(first.getUTCDay()+6)%7;
+ const cells=Array.from({length:Math.ceil((offset+count)/7)*7},(_,i)=>{
+  const day=i-offset+1;
+  if(day<1||day>count)return '<div class="official-day outside" aria-hidden="true"></div>';
+  const date=month+'-'+String(day).padStart(2,'0');
+  const events=meetings.filter(m=>m.meeting_date===date);
+  return `<div class="official-day"><span class="official-day-number">${day}</span>
+    ${events.map(m=>`<a class="official-event" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer" title="${h(m.committee+' '+(m.start_time||'')+' '+(m.location||''))}"><b>${h({kf:'KF',bun:'BUN',sn:'SN',ks:'KS'}[m.committee_key]||m.committee)}</b> ${h(m.start_time||'')}${m.end_time?'–'+h(m.end_time):''}</a>`).join('')}</div>`;
+ });
+ const synced=sources.filter(s=>s.last_success_at).sort((a,b)=>b.last_success_at.localeCompare(a.last_success_at));
+ const last=synced[0]?.last_success_at||'';
+ const failures=sources.filter(s=>s.last_error);
+ return `<section class="card official-calendar" aria-labelledby="official-calendar-title">
+  <div class="official-calendar-header"><div><span class="eyebrow">OFFENTLIG SAMMANTRÄDESKALENDER</span><h2 id="official-calendar-title">Lekebergs kommun</h2>
+   <p>Automatiskt hämtade mötestider från MeetingPlus. Öppna ett möte för officiell information. Dina privata sammanträden nedan påverkas inte.</p></div>
+   <div class="official-calendar-buttons"><button class="btn btn-sm" type="button" id="official-calendar-refresh">Uppdatera vy</button>
+   ${state.officialCalendarAdmin?'<button class="btn btn-sm" type="button" id="official-calendar-sync">Hämta från kommunen</button>':''}</div></div>
+  ${state.officialCalendarError?`<p class="db-alert" role="status">${h(state.officialCalendarError)}</p>`:''}
+  <div class="official-calendar-status"><span>${last?'Senast lyckade hämtning: '+h(last.replace('T',' ').slice(0,16))+' (UTC)':'Ännu ingen bekräftad hämtning'}</span>
+   ${failures.length?'<span class="official-warning">Vissa källor kunde inte uppdateras. Senast kända uppgifter visas.</span>':''}</div>
+  <div class="official-month"><button class="btn btn-sm" type="button" data-official-month="-1" aria-label="Föregående månad">←</button>
+  <h3>${h(new Intl.DateTimeFormat('sv-SE',{month:'long',year:'numeric',timeZone:'UTC'}).format(first))}</h3>
+  <button class="btn btn-sm" type="button" data-official-month="1" aria-label="Nästa månad">→</button></div>
+  <div class="official-calendar-grid" role="group" aria-label="Offentliga möten">
+   ${['Mån','Tis','Ons','Tor','Fre','Lör','Sön'].map(x=>`<div class="official-weekday">${x}</div>`).join('')}
+   ${cells.join('')}
+  </div>
+  <div class="official-calendar-footer">
+   ${(state.officialCalendarCommittees||[]).map(c=>`<a href="${h(c.url)}" target="_blank" rel="noopener noreferrer">${h(c.name)} ↗</a>`).join('')}
+  </div>
+  ${!meetings.length?'<p class="db-empty">Inga inlästa sammanträden. En automatisk hämtning sker varje dygn. Administratören kan starta den direkt.</p>':''}
+  <p class="case-hint">Uppgifterna kommer från extern publicering och kan ändras. Kalendern är inte en kallelse eller ett protokoll.</p>
+ </section>`;
+}
+function attachOfficialCalendarActions(){
+ document.querySelectorAll('[data-official-month]').forEach(b=>b.addEventListener('click',()=>changeOfficialMonth(Number(b.dataset.officialMonth))));
+ $('official-calendar-refresh')?.addEventListener('click',async()=>{
+  await loadOfficialCalendar();render();
+ });
+ $('official-calendar-sync')?.addEventListener('click',async e=>{
+  const b=e.currentTarget;b.disabled=true;
+  try{const result=await api('/api/private/official-meetings/sync','POST',{});
+   await loadOfficialCalendar();render();
+   toast(result.updated?'Kommunens mötestider hämtades.':'Inga källor kunde uppdateras. Kontrollera synkroniseringsstatus.',!result.updated);
+  }catch(err){b.disabled=false;toast('Synkroniseringen kunde inte startas: '+err.message,true);}
+ });
+}
