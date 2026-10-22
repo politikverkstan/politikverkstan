@@ -36,7 +36,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Fetch and validate four public MeetingPlus calendars
-        run: MEETINGPLUS_DEBUG=1 node ops/refresh-official-calendar.mjs
+        run: node ops/refresh-official-calendar.mjs
       - name: Run core regressions before publishing snapshot
         run: npm test
       - name: Commit public calendar snapshot only
