@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {readFileSync,readdirSync} from 'node:fs';
 import {validateMigrationHistory} from '../ops/deploy-with-d1-check.mjs';
 
 const files=Array.from({length:11},(_,i)=>String(i+1).padStart(4,'0')+'_legacy.sql');
@@ -10,4 +11,11 @@ assert.throws(()=>validateMigrationHistory(files.slice(0,10),files),/Baslinjen Ã
 assert.throws(()=>validateMigrationHistory([...files,files[0]],files),/Dubblerade poster/);
 assert.throws(()=>validateMigrationHistory([...files,'9999_unknown.sql'],files),/okÃ¤nda migrationsnamn/);
 assert.throws(()=>validateMigrationHistory(files.slice().reverse(),files.slice(1)),/Migrationsfiler saknas/);
+const sql=readFileSync(new URL('../ops/manual-baseline-0001-to-0011.sql',import.meta.url),'utf8');
+const real=readdirSync(new URL('../migrations/',import.meta.url)).filter(x=>/^[0-9]{4}_.*\\.sql$/.test(x)).sort();
+assert.equal(real.length,11);
+for(const filename of real)assert.ok(sql.includes("('"+filename+"')"),"Missing baseline filename: "+filename);
+assert.match(sql,/required_objects/);
+assert.match(sql,/required_columns/);
+assert.doesNotMatch(sql,/\\b(DROP TABLE|DELETE FROM|UPDATE work_)\\b/i);
 console.log('PASS D1 deployment guard: baseline required, duplicates and unknown migrations refused');
