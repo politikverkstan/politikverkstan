@@ -25,6 +25,7 @@ Arbetsytans gemensamma innehåll är för närvarande avsett för **en enda godk
 - \`src/workroom.js\`, \`src/meetings-*.js\`, \`src/workroom.css\`: skyddad Arbetsyta. \`src/workroom-pdf.js\` ger dokument- och utskriftsstöd.
 - \`worker/private.mjs\`, \`worker/collaboration.mjs\`, \`worker/cases.mjs\`, \`worker/meetings.mjs\`, \`worker/official-meetings.mjs\`, \`worker/files.mjs\`: skyddade API:er med Cloudflare Access/JWT och D1-åtkomstkontroller.
 - \`worker/index.mjs\`: Worker-routning, publik portal och frivillig telemetri.
+- `worker/official-meetings-cache.mjs`, `ops/refresh-official-calendar.mjs` och `.github/workflows/meetingplus-calendar.yml`: GitHub hämtar offentliga MeetingPlus-uppgifter två gånger dagligen och lägger in dem i Worker-bundlen, utan utgående Cloudflare-anrop eller nya databasändringar.
 - \`migrations/0001_*.sql\` till \`0012_*.sql\`: D1-migreringar. **1.0.2 kräver 0012_official_meetings.sql efter 0011.**
 - \`build.py\`: genererar \`dist/index.html\`, rotens \`index.html\`, kopierar statiska tillgångar och bygger \`worker/workroom-page.mjs\`. Skyddad data ingår aldrig i den publika HTML-filen.
 - \`.github/workflows/politikverkstan-ci.yml\`: automatiska bygg-, migrations-, Node- och webbläsartester. CI-aktivering och godkänt resultat måste kontrolleras på GitHub.
