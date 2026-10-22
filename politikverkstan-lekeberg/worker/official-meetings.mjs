@@ -62,7 +62,13 @@ export function parseOfficialMeetings(html,source,today=localDate()){
    if(part)location=plain(part[1]);
   }
   if(/^\d{4}|^(?:Datum|Plats|Kommande|Tidigare)/i.test(location))location='';
-  found.set(url,{source_url:url,committee_key:source.key,committee:source.name,meeting_date:match[1],start_time:start,end_time:end,location:location.slice(0,160)});
+  const next={source_url:url,committee_key:source.key,committee:source.name,meeting_date:match[1],start_time:start,end_time:end,location:location.slice(0,160)};
+  const earlier=found.get(url);
+  // MeetingPlus can repeat a meeting URL in several navigation elements.
+  // Keep the record with the most public metadata rather than allowing
+  // a later bare link to erase an earlier time and location.
+  const richness=x=>Number(!!x.start_time)+Number(!!x.end_time)+Number(!!x.location);
+  if(!earlier||richness(next)>richness(earlier))found.set(url,next);
  }
  return [...found.values()].sort((a,b)=>a.meeting_date.localeCompare(b.meeting_date)||a.source_url.localeCompare(b.source_url));
 }
