@@ -480,3 +480,13 @@ html[data-theme="dark"] .portal-login{color:#ffe2d1}
  .portal-login{flex-shrink:0}
  .pv-matrix-guide-actions{justify-content:flex-start;margin:0 0 15px}
 }
+
+/* v1.2: public source verification controls, independent from simulation state. */
+.registry-audit-controls{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin-top:10px}
+.registry-audit-controls .searchbar{min-width:160px;flex:1 1 210px}
+.registry-filter-label{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
+.registry-filter-label select{max-width:230px;min-height:38px;border:1px solid var(--line,#c5c9cc);border-radius:8px;padding:6px;background:var(--card,#fff);color:var(--ink,#111)}
+.registry-audit-controls .small-button{min-height:38px}
+.registry-audit-summary{font-size:12px;line-height:1.5;margin:6px 0 10px}
+.registry-row[hidden]{display:none!important}
+@media(max-width:700px){.registry-audit-controls{align-items:stretch;flex-direction:column}.registry-filter-label{justify-content:space-between}.registry-filter-label select{width:100%}}
