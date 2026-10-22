@@ -75,6 +75,6 @@ assert connection.execute(
 assert connection.execute(
     "SELECT COUNT(*) FROM work_cases WHERE id='old-case'"
 ).fetchone()[0] == 1, "Deleting meetings must not delete linked cases"
-assert not connection.execute("PRAGMA integrity_check").fetchone()[0] != "ok"
+assert connection.execute("PRAGMA integrity_check").fetchone()[0] == "ok"
 assert not connection.execute("PRAGMA foreign_key_check").fetchall()
 print("PASS: migrations 0001–0009, legacy notes, private defaults, referential integrity and cascades")
