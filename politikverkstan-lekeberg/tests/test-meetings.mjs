@@ -5,7 +5,7 @@ import {webcrypto} from 'node:crypto';
 import {handleMeetings,normalizeMeeting,normalizeAgenda} from '../worker/meetings.mjs';
 if(!globalThis.crypto)globalThis.crypto=webcrypto;
 const db=new DatabaseSync(':memory:');db.exec('PRAGMA foreign_keys=ON');
-for(const name of ['0002_workroom.sql','0003_collaboration.sql','0004_lifecycle.sql','0006_files.sql','0007_cases.sql','0008_shared_cases.sql','0009_meetings.sql']){
+for(const name of ['0002_workroom.sql','0003_collaboration.sql','0004_lifecycle.sql','0006_files.sql','0007_cases.sql','0008_shared_cases.sql','0009_meetings.sql','0013_official_meeting_source.sql']){
  db.exec(readFileSync(new URL('../migrations/'+name,import.meta.url),'utf8'));
 }
 for(const [email,role] of [['owner@lekeberg.test','user'],['member@lekeberg.test','user'],['admin@lekeberg.test','admin']]){
@@ -71,4 +71,26 @@ assert.equal((await request('owner','meetings/'+meetingId,'DELETE')).status,200)
 assert.equal(db.prepare('SELECT COUNT(*) AS n FROM work_meeting_notes').get().n,0,'Meeting deletion removes notes');
 assert.equal(db.prepare('SELECT COUNT(*) AS n FROM work_meeting_items').get().n,0,'Meeting deletion removes agenda');
 assert.equal(db.prepare('SELECT COUNT(*) AS n FROM work_cases').get().n,2,'Deleting meeting does not delete linked cases');
+const sourceUrl='https://meetings.lekeberg.se/committees/barn-och-utbildningsnamnden/mote-2026-11-02';
+assert.equal(normalizeMeeting({...meeting,official_source_url:sourceUrl}).official_source_url,sourceUrl);
+for(const bad of [
+ 'https://evil.example/committees/barn-och-utbildningsnamnden/mote-2026-11-02',
+ 'https://meetings.lekeberg.se/committees/kommunstyrelsen/mote-2026-11-02',
+ 'https://meetings.lekeberg.se/committees/barn-och-utbildningsnamnden/mote-2026-11-03',
+ sourceUrl+'?admin=true'
+]) assert.throws(()=>normalizeMeeting({...meeting,official_source_url:bad}),/Ogiltig officiell/);
+assert.equal((await request('owner','meetings','POST',{...meeting,official_source_url:sourceUrl})).status,201);
+const officialList=(await data(await request('owner','meetings'))).meetings;
+const prepared=officialList.find(x=>x.official_source_url===sourceUrl);
+assert.ok(prepared,'Official reference persisted');
+assert.equal(prepared.scope,'mine','Official template must be private by default');
+assert.equal((await data(await request('member','meetings'))).meetings.length,0);
+assert.equal((await request('admin','meetings/'+prepared.id)).status,404,'Admin cannot see private official prep');
+assert.equal((await request('owner','meetings/'+prepared.id,'PUT',{
+ ...meeting,official_source_url:sourceUrl,revision:prepared.revision,location:'Uppdaterad lokal'
+})).status,200);
+assert.equal((await data(await request('owner','meetings/'+prepared.id))).meeting.official_source_url,sourceUrl);
+assert.equal(db.prepare("SELECT COUNT(*) AS n FROM work_meeting_notes WHERE meeting_id=?").get(prepared.id).n,0,'Official sync must not invent notes');
+assert.equal((await request('owner','meetings/'+prepared.id,'DELETE')).status,200);
 console.log('PASS 0.9.0: private by default, shared meetings, inaccessible linked cases, agenda ordering, notes isolation, revocation');
+console.log('PASS 1.3 official source binding: explicit private draft, allowlist validation, owner ACL and no copied notes');
