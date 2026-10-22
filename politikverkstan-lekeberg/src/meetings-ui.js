@@ -90,9 +90,9 @@ function officialCalendarView(){
  }).join('');
  return `<section class="card official-calendar" aria-labelledby="official-calendar-title">
   <div class="official-calendar-header"><div><span class="eyebrow">OFFENTLIG SAMMANTRÄDESKALENDER</span><h2 id="official-calendar-title">Lekebergs kommun</h2>
-   <p>Automatiskt hämtade mötestider från MeetingPlus. Öppna ett möte för officiell information. Dina privata sammanträden nedan påverkas inte.</p></div>
+   <p>Mötestider från MeetingPlus, inlästa automatiskt via GitHub två gånger per dygn. Klicka på mötet för att kontrollera kommunens originaluppgifter. Dina privata sammanträden påverkas inte.</p></div>
    <div class="official-calendar-buttons"><button class="btn btn-sm" type="button" id="official-calendar-refresh">Uppdatera vy</button>
-   ${state.officialCalendarAdmin?'<button class="btn btn-sm" type="button" id="official-calendar-sync">Hämta från kommunen</button>':''}</div></div>
+   </div></div>
   ${state.officialCalendarError?`<p class="db-alert" role="status">${h(state.officialCalendarError)}</p>`:''}
   <div class="official-calendar-status"><span>${last?'Senast lyckade hämtning: '+h(last.replace('T',' ').slice(0,16))+' (UTC)':'Ännu ingen bekräftad hämtning'}</span>
    ${failures.length?`<span class="official-warning">Misslyckade källor: ${h(failures.map(x=>sourceNames[x.committee_key]||x.committee_key).join(', '))}. Tidigare uppgifter visas där de finns.</span>`:''}</div>
@@ -108,7 +108,7 @@ function officialCalendarView(){
   <div class="official-calendar-footer">
    ${(state.officialCalendarCommittees||[]).map(c=>`<a href="${h(c.url)}" target="_blank" rel="noopener noreferrer">${h(c.name)} ↗</a>`).join('')}
   </div>
-  ${!meetings.length?'<p class="db-empty">Inga inlästa sammanträden. En automatisk hämtning sker varje dygn. Administratören kan starta den direkt.</p>':''}
+  ${!meetings.length?'<p class="db-empty">Ännu inga publicerade sammanträden inlästa. GitHub kontrollerar kommunens sidor automatiskt morgon och kväll.</p>':''}
   <p class="case-hint">Uppgifterna kommer från extern publicering och kan ändras. Kalendern är inte en kallelse eller ett protokoll.</p>
  </section>`;
 }
@@ -117,15 +117,5 @@ function attachOfficialCalendarActions(){
  $('official-calendar-refresh')?.addEventListener('click',async()=>{
   await loadOfficialCalendar();render();
  });
- $('official-calendar-sync')?.addEventListener('click',async e=>{
-  const b=e.currentTarget;b.disabled=true;
-  try{const result=await api('/api/private/official-meetings/sync','POST',{});
-   await loadOfficialCalendar();render();
-   const failed=(result.status||[]).filter(x=>!x.ok);
-   const ok=(result.status||[]).filter(x=>x.ok);
-   const info=failed.length?'Misslyckade källor: '+failed.map(x=>x.committee+(x.error?' ('+x.error+')':'')).join(', '):
-    ok.length?'Alla fyra sammanträdeskällor är uppdaterade.':'Ingen sammanträdeskälla kunde uppdateras.';
-   toast(info,failed.length>0);
-  }catch(err){b.disabled=false;toast('Synkroniseringen kunde inte startas: '+err.message,true);}
- });
+
 }
