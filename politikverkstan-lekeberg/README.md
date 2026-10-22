@@ -25,7 +25,7 @@ Arbetsytans gemensamma innehåll är för närvarande avsett för **en enda godk
 - \`src/workroom.js\`, \`src/meetings-*.js\`, \`src/workroom.css\`: skyddad Arbetsyta. \`src/workroom-pdf.js\` ger dokument- och utskriftsstöd.
 - \`worker/private.mjs\`, \`worker/collaboration.mjs\`, \`worker/cases.mjs\`, \`worker/meetings.mjs\`, \`worker/files.mjs\`: skyddade API:er med Cloudflare Access/JWT och D1-åtkomstkontroller.
 - \`worker/index.mjs\`: Worker-routning, publik portal och frivillig telemetri.
-- \`migrations/0001_*.sql\` till \`0009_*.sql\`: D1-migreringar. **1.0.0 kräver 0011_traceability.sql efter 0010.**
+- \`migrations/0001_*.sql\` till \`0011_*.sql\`: D1-migreringar. **1.0.0 kräver 0011_traceability.sql efter 0010.**
 - \`build.py\`: genererar \`dist/index.html\`, rotens \`index.html\`, kopierar statiska tillgångar och bygger \`worker/workroom-page.mjs\`. Skyddad data ingår aldrig i den publika HTML-filen.
 - \`.github/workflows/politikverkstan-ci.yml\`: automatiska bygg-, migrations-, Node- och webbläsartester. CI-aktivering och godkänt resultat måste kontrolleras på GitHub.
 
@@ -42,7 +42,7 @@ python build.py --check
 
 \`--check\` gör inga ändringar; den misslyckas om de fem genererade artefakterna inte motsvarar källfilerna. Node 22 och Python 3.12+ rekommenderas; webbläsarsviten kräver Playwright, Chromium och PyMuPDF. CI installeras separat och innehåller ingen produktionsdatabasåtkomst.
 
-**Viktigt:** GitHub Actions ger testresultat i en isolerad utvecklingsmiljö. Den verifierar inte Cloudflare Access-policy, aktiva D1-data, publik DNS, säkerhetskopiering eller verkliga användarkonton. Se [0.9.1-driftguiden](UPPGRADERING_0.9.1_CLOUDFLARE.md) för produktionskontroller.
+**Viktigt:** GitHub Actions ger testresultat i en isolerad utvecklingsmiljö. Den verifierar inte Cloudflare Access-policy, aktiva D1-data, publik DNS, säkerhetskopiering eller verkliga användarkonton. Se [1.0-driftguiden](UPPGRADERING_1.0_CLOUDFLARE.md) för produktionskontroller.
 
 ## Integritet och tillförlitlighet
 
