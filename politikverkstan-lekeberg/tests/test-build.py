@@ -54,4 +54,28 @@ with tempfile.TemporaryDirectory(prefix="politikverkstan-build-") as tmp:
     assert result.returncode != 0, "Private API references in public build must fail"
     assert "private workroom" in result.stderr, result.stderr
 
+# User-visible copy must describe the product rather than internal development.
+# Keep separate operational details in the repository documentation.
+public_html = (root / "dist/index.html").read_text(encoding="utf-8")
+workroom = (root / "worker/workroom-page.mjs").read_text(encoding="utf-8")
+for internal in (
+    "Ändringar loggas i databasen",
+    "Historik från tiden före migrering 0011",
+    "Kontrollera om D1-migrering 0010",
+    "API och migrering 0010",
+    "Kontrollera migrering 0009",
+    "utan AI-API",
+    "Inga AI-genererade fakta",
+    "ärenderevision ",
+    "Personliga uppgifter i översikten påverkas inte",
+    "Version 1.0.0 · motor",
+    "Öppna verkstaden i en egen vy",
+):
+    assert internal not in public_html + workroom, f"Internal copy visible: {internal}"
+
+# Keep information required for safe use of shared material.
+assert "Personliga anteckningar delas aldrig" in workroom
+assert "Förslag blir inte automatiskt förankrade" in workroom
+assert "Delningslänkar är synliga för alla som får länken" in public_html
+
 print("PASS: build artifacts, read-only verification, missing markers and public/private separation")
