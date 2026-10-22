@@ -60,10 +60,10 @@ with sync_playwright() as playwright:
  page.locator('#db-task-form [name=title]').fill('Kontrollera prognosen')
  page.locator('#db-task-form [name=due_date]').fill('2026-11-01')
  page.locator('#db-task-form [name=priority]').select_option('high')
- page.locator('#db-task-form [name=case_id]').select_option(caseId)
+ page.locator('#db-task-form [name=case_id]').select_option('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb')
  page.locator('#db-task-form button[type=submit]').click()
  page.locator('.db-task-row').first.get_by_text('Kontrollera prognosen').wait_for()
- assert page.evaluate('window.dbTasks[0].case_id')==caseId
+ assert page.evaluate('window.dbTasks[0].case_id')=='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
  assert 'Hög' in page.locator('.db-task-row').first.inner_text()
  page.locator('[data-db-task-toggle]').first.check()
  page.wait_for_function('window.dbTasks[0].done===true')
