@@ -40,6 +40,9 @@ async function restoreWorkHistory(event){
  if(!caseSafeToLeave()||!meetingSafeToLeave()){history.forward();return;}
  state.caseDirty=false;state.caseNoteDirty=false;
  state.meetingDirty=false;state.meetingNoteDirty=false;state.meetingItemDirty=false;
+ // A history entry for a list must discard a currently open detail in that tab.
+ if(target.tab==='cases'){state.caseCurrent=null;state.caseComments=[];}
+ if(target.tab==='meetings'){state.meetingCurrent=null;state.meetingAgenda=[];state.meetingNote='';state.meetingItemEdit=null;}
  try{
   await openTab(target.tab,true);
   if(state.tab!==target.tab)return;
