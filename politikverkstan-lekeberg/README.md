@@ -1,6 +1,6 @@
-# Politikverkstan Lekeberg – 1.0.0
+# Politikverkstan Lekeberg – 1.0.1
 
-**Status:** Kodbas för den publika mandatportalen och den inloggningsskyddade Arbetsytan. Version 1.0.0 bygger vidare på 0.9.2 och samlar ärendehistorik, möteskopplingar, uppföljningar, sökning och spårbart förankrade ställningstaganden. Den publika startsidan har en separat Scenarioverkstad och mer särskiljande navigationsikoner. Den uppgraderar **inte** produktionsdatabasen och publicerar **inte** automatiskt till Cloudflare. [Drift- och releasechecklista för 1.0](UPPGRADERING_1.0_CLOUDFLARE.md).
+**Status:** Kodbas för den publika mandatportalen och den inloggningsskyddade Arbetsytan. Version 1.0.1 stabiliserar 1.0 med en behörighetsstyrd översikt över ärendeuppföljningar, säkrare totalsiffror vid fel och utökade tester. Version 1.0 införde ärendehistorik, möteskopplingar, uppföljningar, sökning och spårbart förankrade ställningstaganden. Den publika startsidan har en separat Scenarioverkstad och mer särskiljande navigationsikoner. Den uppgraderar **inte** produktionsdatabasen och publicerar **inte** automatiskt till Cloudflare. [Drift- och releasechecklista för 1.0.1](UPPGRADERING_1.0.1_CLOUDFLARE.md).
 
 ## Funktioner
 
@@ -10,7 +10,7 @@
 | Arbetsyta – motioner | Privata och uttryckligen delade utkast, kommentarer, versionshistorik, export | Inloggad, behörighetsstyrd |
 | Arbetsyta – dokument | Privata och gemensamma mappar/filer, filnamnssökning, privata kopplingar | Inloggad, behörighetsstyrd |
 | Arbetsyta – ärenden | Privata/gemensamma ärenden, ansvar, diskussion, risker, ekonomi, versionsspårning, kopplade möten och uppföljningar | Inloggad, behörighetsstyrd |
-| Arbetsyta – arbetsöversikt | Kommande sammanträden, egna/tilldelade ärenden, personliga uppgifter, prioritering och uppföljning | Inloggad, uppgifter är privata även för admin |
+| Arbetsyta – arbetsöversikt | Kommande sammanträden, egna/tilldelade ärenden, personliga uppgifter och öppna uppföljningar på ägda eller tilldelade gemensamma ärenden | Inloggad, uppgifter är privata även för admin |
 | Arbetsyta – sökning och förankring | Gemensam behörighetsstyrd sökning, skiljer arbetsförslag från explicit internt förankrat ställningstagande | Inloggad, behörighetsstyrd |
 | Arbetsyta – sammanträden | Privat/gemensam agenda, ärendekoppling, mötesförberedelser, uppföljning | Inloggad, behörighetsstyrd |
 | Arbetsyta – privata anteckningar | Personliga ärende- och mötesanteckningar | Enbart anteckningens ägare |
@@ -55,7 +55,7 @@ python build.py --check
 
 ## Driftguider och historik
 
-**Gällande:** [1.0.0 – spårbarhet och sammanhängande arbetsflöde](UPPGRADERING_1.0_CLOUDFLARE.md). Tidigare: [0.9.2 – arbetsöversikt och privata uppgifter](UPPGRADERING_0.9.2_CLOUDFLARE.md). Tidigare: [0.9.1 – kvalitetssäkring och Cloudflare](UPPGRADERING_0.9.1_CLOUDFLARE.md).
+**Gällande:** [1.0.1 – stabilisering och arbetsöversikt](UPPGRADERING_1.0.1_CLOUDFLARE.md). Tidigare: [1.0.0 – spårbarhet och sammanhängande arbetsflöde](UPPGRADERING_1.0_CLOUDFLARE.md). Tidigare: [0.9.2 – arbetsöversikt och privata uppgifter](UPPGRADERING_0.9.2_CLOUDFLARE.md). Tidigare: [0.9.1 – kvalitetssäkring och Cloudflare](UPPGRADERING_0.9.1_CLOUDFLARE.md).
 
 **Senaste funktionsutgåvor:** [0.9.0 – Sammanträdesverkstad](UPPGRADERING_0.9.0_CLOUDFLARE.md), [0.8.0 – gemensamma ärenden](UPPGRADERING_0.8.0_CLOUDFLARE.md), [0.7.0 – privata ärenden](UPPGRADERING_0.7.0_CLOUDFLARE.md).
 
