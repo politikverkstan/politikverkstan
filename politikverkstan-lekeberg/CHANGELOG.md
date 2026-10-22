@@ -1,5 +1,12 @@
 # Ändringslogg – Politikverkstan Lekeberg
 
+## Förbättring efter 0.9.2 – Navigering
+
+- Diskret tillbaka-knapp i sidhuvudet i både publik portal och skyddad Arbetsyta.
+- Webbläsarens tillbaka-/framåtknappar och musens motsvarande knappar navigerar mellan portalens vyer utan att lämna sidan.
+- Arbetsytans navigationshistorik omfattar öppnade ärenden, sammanträden och motioner; osparade ändringar skyddas av befintliga bekräftelser.
+- Nytt Chromium-test för intern navigering, inklusive detaljvyer och framåt/tillbaka. Ingen D1-migrering behövs.
+
 ## 0.9.2 – Min arbetsöversikt
 
 - Ny inloggad arbetsöversikt med kommande möten, tilldelade ärenden, uppföljningar och motionsutkast.
