@@ -47,6 +47,10 @@ with sync_playwright() as p:
  page.locator('.official-calendar').wait_for()
  assert page.locator('.official-calendar-grid .official-day').count()>=28
  assert page.locator('.official-event').count()==1
+ assert page.locator('.official-source-diagnostics summary').count()==1
+ page.locator('.official-source-diagnostics summary').click()
+ assert 'Kommunfullmäktige' in page.locator('.official-source-diagnostics').inner_text()
+ assert 'Senast inlästa möten' in page.locator('.official-source-diagnostics').inner_text()
  assert page.locator('.official-event').first.get_attribute('href')==source
  assert page.locator('.official-event').first.get_attribute('rel')=='noopener noreferrer'
  assert not page.locator('#official-calendar-sync').count(), 'Non-admin cannot trigger poll'
