@@ -26,11 +26,22 @@ export function normalizeMeeting(v){
  const title=textField(v,'title',160,true),committee=textField(v,'committee',120,true);
  const meeting_date=textField(v,'meeting_date',10,true),start_time=textField(v,'start_time',5);
  const location=textField(v,'location',160),status=textField(v,'status',20,true);
+ const official_source_url=v.official_source_url===undefined?'':textField(v,'official_source_url',250);
  if(!committees.has(committee))throw Error('Ogiltig instans');
  if(!dateOK(meeting_date))throw Error('Ogiltigt mötesdatum');
  if(start_time&&!/^([01]\d|2[0-3]):[0-5]\d$/.test(start_time))throw Error('Ogiltigt klockslag');
  if(!meetingStatuses.has(status))throw Error('Ogiltig mötesstatus');
- return {title,committee,meeting_date,start_time,location,status};
+ if(official_source_url){
+  const sources={
+   'Kommunfullmäktige':'kommunfullmaktige',
+   'Barn- och utbildningsnämnden':'barn-och-utbildningsnamnden',
+   'Socialnämnden':'socialnamnden',
+   'Kommunstyrelsen':'kommunstyrelsen'
+  };
+  if(official_source_url!=='https://meetings.lekeberg.se/committees/'+(sources[committee]||'')+'/mote-'+meeting_date)
+   throw Error('Ogiltig officiell sammanträdeskälla');
+ }
+ return {title,committee,meeting_date,start_time,location,status,official_source_url};
 }
 export function normalizeAgenda(v){
  if(!v||typeof v!=='object'||Array.isArray(v))throw Error('Ogiltig dagordningspunkt');
@@ -49,6 +60,7 @@ async function meetingRow(env,user,id){
 function meetingOutput(row,user){
  return {id:row.id,owner_email:row.owner_email,title:row.title,committee:row.committee,
   meeting_date:row.meeting_date,start_time:row.start_time,location:row.location,status:row.status,
+  official_source_url:row.official_source_url||'',
   scope:row.scope,revision:row.revision,created_at:row.created_at,updated_at:row.updated_at,
   is_owner:owns(row,user),agenda_count:Number(row.agenda_count||0)};
 }
@@ -93,7 +105,7 @@ export async function handleMeetings(req,env,user){
    if(method==='POST'){
     const v=normalizeMeeting(await readBody(req)),id=crypto.randomUUID(),now=new Date().toISOString();
     // Private regardless of any scope supplied in the request.
-    await env.DB.prepare("INSERT INTO work_meetings(id,owner_email,title,committee,meeting_date,start_time,location,status,scope,revision,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,'mine',1,?,?)").bind(id,user.email,v.title,v.committee,v.meeting_date,v.start_time,v.location,v.status,now,now).run();
+    await env.DB.prepare("INSERT INTO work_meetings(id,owner_email,title,committee,meeting_date,start_time,location,status,official_source_url,scope,revision,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,'mine',1,?,?)").bind(id,user.email,v.title,v.committee,v.meeting_date,v.start_time,v.location,v.status,v.official_source_url,now,now).run();
     return json({id,revision:1},201);
    }
    return error(405,'Metod tillåts inte');
@@ -175,7 +187,7 @@ export async function handleMeetings(req,env,user){
    const v=await readBody(req);
    if(!Number.isSafeInteger(v.revision)||v.revision!==row.revision)return error(409,'Sammanträdet har ändrats. Ladda om.');
    const data=normalizeMeeting(v),now=new Date().toISOString();
-   const result=await env.DB.prepare('UPDATE work_meetings SET title=?,committee=?,meeting_date=?,start_time=?,location=?,status=?,revision=revision+1,updated_at=? WHERE id=? AND owner_email=? AND revision=?').bind(data.title,data.committee,data.meeting_date,data.start_time,data.location,data.status,now,id,user.email,row.revision).run();
+   const result=await env.DB.prepare('UPDATE work_meetings SET title=?,committee=?,meeting_date=?,start_time=?,location=?,status=?,official_source_url=?,revision=revision+1,updated_at=? WHERE id=? AND owner_email=? AND revision=?').bind(data.title,data.committee,data.meeting_date,data.start_time,data.location,data.status,data.official_source_url,now,id,user.email,row.revision).run();
    return result.meta?.changes===1?json({ok:true,revision:row.revision+1}):error(409,'Sammanträdet har ändrats.');
   }
   return error(405,'Metod tillåts inte');
