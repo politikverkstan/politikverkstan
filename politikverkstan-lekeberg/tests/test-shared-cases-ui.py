@@ -63,7 +63,7 @@ with sync_playwright() as p:
  page.locator('#case-sharing-form button[type="submit"]').click()
  page.wait_for_function("window.demoCases[0].scope==='team'")
  assert page.evaluate("window.demoCases[0].assignee_email")=='member@test.se'
- assert page.locator('.case-scope-label').get_by_text('Gemensamt ärende',exact=False).count()==1
+ page.locator('.case-scope-label').get_by_text('Gemensamt ärende',exact=False).wait_for(timeout=8000)
  page.locator('#case-comment-form textarea').fill('Fråga till förvaltningen: hur ser prognosen ut?')
  page.locator('#case-comment-form button[type="submit"]').click()
  page.get_by_text('Fråga till förvaltningen: hur ser prognosen ut?').wait_for()
