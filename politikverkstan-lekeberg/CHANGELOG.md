@@ -1,5 +1,14 @@
 # Ändringslogg – Politikverkstan Lekeberg
 
+## 1.3.0 – Offentlig möteskälla till privat förberedelse
+
+- Användaren kan välja **Förbered** på ett offentligt sammanträde och få ett osparat, privat mötesutkast med datum, tid, plats, instans och originalkälla förifyllda.
+- Inget skapas i databasen förrän användaren själv sparar. Inget delas automatiskt. Privata personliga anteckningar och egna dagordningar påverkas inte av senare kommunala ändringar.
+- Framåtriktad D1-migrering `0013_official_meeting_source.sql` lägger enbart till en valfri käll-URL på användarnas mötesposter; befintliga möten får tom sträng. Servern accepterar endast de fyra definierade MeetingPlus-organen med exakt samma datum.
+- Läsrättigheter, revisionskontroll, radering och delning följer det befintliga `work_meetings`-API:t. Inga PDF-handlingar, privata uppgifter eller officiella beslutsstatusar importeras.
+- Någon separat ursprunglig funktionsspecifikation för 1.3 har inte återfunnits; detta är en avgränsad fortsättning på de faktiskt beställda kalenderfunktionerna och ska inte förväxlas med en verifierad äldre roadmap.
+
+
 ## 1.2.0 – Källgranskning av organisationer och uppdrag
 
 - Organisationernas befintliga källstatusar kan filtreras efter aktuell verifiering, historiskt dokumenterade uppgifter, saknad aktuell verifiering och valda organ utan aktuell verifiering.
