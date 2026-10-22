@@ -1,5 +1,14 @@
 # Ändringslogg – Politikverkstan Lekeberg
 
+## 1.0.1 – Stabilisering och arbetsöversikt
+
+- Arbetsöversikten räknar och listar nu öppna strukturerade ärendeuppföljningar utöver den personliga uppgiftslistan, utan att dubbelräkna enbart ärendestatus.
+- Ny behörighetsstyrd läsning för uppföljningar på ägda ärenden och tilldelade uppföljningar i delade ärenden; återkallad delning ska inte läcka privata ärenden.
+- Separat felhantering för ärendeuppföljningar: övrig information fortsätter visas vid ett partiellt API-fel och missvisande totalsiffror undviks.
+- Utökade enhets- och webbläsartester för datasekretess, status, uppföljningsantal och återhämtning.
+- Ingen ny databasstruktur och ingen migrering 0012. Baslinjen 0001–0011 och det kontrollerade Cloudflare-publiceringsflödet behålls.
+- [Driftchecklista 1.0.1](UPPGRADERING_1.0.1_CLOUDFLARE.md).
+
 ## Navigering – förbättring efter 1.0.0
 
 - En diskret **Tillbaka**-knapp har lagts i sidhuvudet på både den öppna portalen och den skyddade Arbetsytan.
