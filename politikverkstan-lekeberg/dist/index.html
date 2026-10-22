@@ -398,6 +398,37 @@ html[data-theme="dark"] .guide-steps span.done{color:#e7f1f2}
 .pv-nav-back:focus-visible{outline:3px solid #cf8565;outline-offset:2px}
 html[data-theme="dark"] .pv-nav-back{background:var(--card,#19222b);color:var(--ink,#eee)}
 @media(max-width:950px){.pv-nav-back span{display:none}.pv-nav-back{padding:8px}}
+
+/* Responsive spacing audit: public cards */
+.pv-workshop-entry{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;
+  gap:22px;padding:27px 30px 29px;
+}
+.pv-workshop-entry>div{min-width:0}
+.pv-workshop-entry h2{
+  font-size:21px;line-height:1.35;letter-spacing:-.4px;
+  margin:10px 0 0;color:var(--ink);
+}
+.pv-workshop-entry p{
+  margin:10px 0 0;max-width:700px;
+  color:var(--muted);font-size:13px;line-height:1.65;
+}
+.pv-workshop-entry .primary-button{
+  max-width:100%;white-space:normal;text-align:center;line-height:1.4;
+}
+@media(max-width:780px){
+  .pv-workshop-entry{grid-template-columns:minmax(0,1fr);gap:18px;padding:24px}
+}
+@media(max-width:530px){
+  .pv-workshop-entry{gap:16px;padding:20px 18px 22px}
+  .pv-workshop-entry h2{font-size:19px}
+  .pv-workshop-entry p{font-size:12px}
+  .pv-workshop-entry .primary-button{width:100%;min-width:0}
+  .pv-feature{gap:12px}
+  .pv-feature-icon{width:40px;height:40px}
+  .pv-protected{padding:20px 18px}
+  .pv-home-section{gap:16px;margin-bottom:22px}
+}
 </style></head><body><div id="root"></div><input type="file" id="file-import" accept="application/json,.json" hidden><script type="application/json" id="org-data">[
   {
     "id": "org01",
