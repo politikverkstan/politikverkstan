@@ -1,5 +1,4 @@
 import {handlePrivate} from './private.mjs';
-import {syncOfficialMeetings} from './official-meetings.mjs';
 /* Cloudflare Worker: privacy-minimized optional aggregate telemetry; fail-closed private administration.
  * Not part of the public HTML bundle. No visitor IP is read on telemetry endpoint. */
 const JSON_HEADERS={'content-type':'application/json; charset=utf-8','cache-control':'no-store','x-content-type-options':'nosniff'};
@@ -110,6 +109,6 @@ export default {
   if(env.ASSETS)return env.ASSETS.fetch(req);
   return responseError(503,'Statiska filer saknas');
  },
- async scheduled(event,env){if(!env.DB)return;try{await syncOfficialMeetings(env);}catch(e){console.error('Official meeting sync did not finish',String(e.message).slice(0,100));}try{await env.DB.prepare("DELETE FROM security_events WHERE stamp < strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-7 days')").run();}catch{console.error('Security retention cleanup failed');}try{await env.DB.prepare("DELETE FROM coalition_counts WHERE day < date('now','-90 days')").run();}catch{console.error('Aggregate retention cleanup failed');}}
+ async scheduled(event,env){if(!env.DB)return;try{await env.DB.prepare("DELETE FROM security_events WHERE stamp < strftime('%Y-%m-%dT%H:%M:%fZ', 'now', '-7 days')").run();}catch{console.error('Security retention cleanup failed');}try{await env.DB.prepare("DELETE FROM coalition_counts WHERE day < date('now','-90 days')").run();}catch{console.error('Aggregate retention cleanup failed');}}
 };
 export {normalizeGroups,authorize};
