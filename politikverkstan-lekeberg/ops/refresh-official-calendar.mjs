@@ -25,6 +25,10 @@ for(const source of OFFICIAL_SOURCES){
   if(!response.ok)throw Error('HTTP '+response.status);
   if(!(response.headers.get('content-type')||'').toLowerCase().includes('text/html'))throw Error('Fel innehållsformat');
   const html=await response.text();
+  if(process.env.MEETINGPLUS_DEBUG==='1'&&source.key==='kf'){
+   const pos=html.indexOf('/mote-2026-11-30');
+   if(pos>=0)console.log('HTML context (public KF listing):',JSON.stringify(html.slice(Math.max(0,pos-280),pos+1100)));
+  }
   const matches=parseOfficialMeetings(html,source,today);
   if(!matches.length)throw Error('Ingen igenkänd möteslänk');
   item.meetings=matches;
