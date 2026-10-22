@@ -37,6 +37,10 @@ with sync_playwright() as p:
  page.set_content(public,wait_until='domcontentloaded')
  assert page.locator('.pv-hero').is_visible()
  assert page.locator('.pv-protected').count()==1
+ assert page.locator('.pv-scenario-panel').count()==1
+ assert page.locator('.pv-home-analyses .pv-feature').count()==4
+ assert page.locator('.pv-home-extra .pv-feature[data-page="candidates"]').count()==1
+ assert 'Alla partier separat' in page.locator('.pv-scenario-panel').inner_text()
  assert page.locator('.aw-motion-card').count()==0
  assert page.locator('.coalition-card').count()==0
  page.locator('.pv-feature[data-page="builder"]').click()

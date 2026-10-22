@@ -28,7 +28,14 @@ with sync_playwright() as p:
     assert page.locator('#guide-org').input_value()=='org07'
     page.locator('#guide-next').click()
     page.locator('#guide-next').click()
+    assert 'uppdateras även de övriga' in page.locator('.guide-effect').inner_text()
     page.locator('#guide-apply').click()
+    assert '3 valtekniska grupper' in page.locator('.pv-scenario-context').inner_text()
+    page.locator('.pv-scenario-context [data-page="builder"]').click()
+    assert page.locator('.coalition-card').count()==3
+    page.locator('.sidebar [data-page="workspace"]').click()
+    assert '3 valtekniska grupper' in page.locator('.pv-scenario-panel').inner_text()
+    page.locator('.sidebar [data-page="matrix"]').click()
     assert page.locator('.guide-panel').count()==0
     assert page.locator('.results-table tbody tr').count()==1
     assert 'Barn- och utbildningsnämnden' in page.locator('.results-table').inner_text()
