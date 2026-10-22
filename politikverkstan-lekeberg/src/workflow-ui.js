@@ -71,11 +71,34 @@ function wfSectionError(key){
  const msg=workflowState.errors[key];
  return msg?'<div class="wf-section-error" role="alert"><p>'+h(msg)+'</p><button type="button" class="btn btn-sm" data-wf-retry="'+h(key)+'">Försök igen</button></div>':'';
 }
+// v1.1: one case-centric overview, backed only by the same ACL-filtered
+// case/workflow endpoints already used in the detail panels.
+function caseStageOverview(c){
+ const ready=workflowState.caseId===c.id;
+ const count=(key,items,predicate)=>!ready?'Laddar':workflowState.errors[key]?'Okänt':String(items.filter(predicate).length);
+ const meetings=count('meetings',workflowState.links,()=>true);
+ const open=count('followups',workflowState.followups,f=>f.status==='open');
+ const stance=!ready?'Laddar':workflowState.errors.position?'Okänt':workflowState.position?
+  ({discussion:'Arbetsdiskussion',personal:'Personligt',proposed:'Föreslaget gemensamt',endorsed:'Internt förankrat'}[workflowState.position.status]||'Registrerat'):'Inte registrerat';
+ const history=count('history',workflowState.events,()=>true);
+ const cards=[
+  ['case-form','Underlag',c.summary?.trim()?'Sammanfattning finns':'Behöver kompletteras'],
+  ['wf-case-meetings','Sammanträden',meetings==='Okänt'||meetings==='Laddar'?meetings:meetings+' kopplingar'],
+  ['wf-case-followups','Öppna uppföljningar',open==='Okänt'||open==='Laddar'?open:open+' öppna'],
+  ['wf-case-position','Ställningstagande',stance],
+  ['wf-case-history','Ändringshistorik',history==='Okänt'||history==='Laddar'?history:history+' händelser']
+ ];
+ return '<nav class="card case-stage-overview" aria-label="Ärendets arbetsflöde">'+
+  '<h3>Ärendets arbetsflöde</h3><p class="case-hint">En sammanhållen ingång från underlag till uppföljning. Status avser internt arbetsmaterial, inte kommunalt beslut.</p>'+
+  '<div class="case-stage-list">'+cards.map(([id,title,info])=>
+   '<button type="button" data-case-jump="'+h(id)+'"><strong>'+h(title)+'</strong><small>'+h(info)+'</small></button>').join('')+
+  '</div></nav>';
+}
 function workflowCaseSections(c){
  if(workflowState.caseId!==c.id)return '<section class="card wf-panel"><p class="case-hint">Laddar spårbarhet och uppföljning…</p></section>';
  const editable=c.can_edit,own=c.is_owner,p=workflowState.position;
  const edit=workflowState.followupEdit;
- return '<section class="card wf-panel"><div class="split-line"><h2>Ärendets sammanträden</h2><span class="chip">'+(workflowState.errors.meetings?'Ej tillgängligt':workflowState.links.length+' punkter')+'</span></div>'+
+ return '<section id="wf-case-meetings" class="card wf-panel"><div class="split-line"><h2>Ärendets sammanträden</h2><span class="chip">'+(workflowState.errors.meetings?'Ej tillgängligt':workflowState.links.length+' punkter')+'</span></div>'+
   '<p class="case-hint">Sammanträden där ärendet finns på dagordningen.</p>'+
   (workflowState.errors.meetings?wfSectionError('meetings'):workflowState.links.length?workflowState.links.map(m=>'<div class="wf-row"><div><strong>'+h(m.title)+'</strong><small>'+
    h(m.committee)+' · '+h(m.meeting_date)+' · '+h(m.agenda_title)+'</small>'+
@@ -83,7 +106,7 @@ function workflowCaseSections(c){
    (m.follow_up?'<p><strong>Antecknad uppföljning:</strong> '+h(m.follow_up)+'</p>':'')+
    '</div><button class="btn btn-sm" type="button" data-wf-meeting="'+h(m.id)+'">Öppna</button></div>').join(''):
    '<p class="case-hint">Inga åtkomliga sammanträden är kopplade till ärendet.</p>')+'</section>'+
-  '<section class="card wf-panel"><div class="split-line"><h2>Uppföljningar</h2>'+
+  '<section id="wf-case-followups" class="card wf-panel"><div class="split-line"><h2>Uppföljningar</h2>'+
    (editable&&!workflowState.errors.followups?'<button type="button" class="btn btn-sm" id="wf-new-followup">+ Ny uppföljning</button>':'')+'</div>'+
    '<p class="case-hint">Registrera vad som ska göras, vem som ansvarar och när det ska vara klart.</p>'+
    (workflowState.errors.followups?wfSectionError('followups'):workflowState.followups.length?workflowState.followups.map(f=>'<div class="wf-row"><div><strong>'+h(f.title)+'</strong><small>'+
@@ -107,7 +130,7 @@ function workflowCaseSections(c){
      '</select></label><div class="toolbar"><button class="btn btn-primary" type="submit">Spara uppföljning</button>'+
      '<button type="button" class="btn" id="wf-cancel-followup">Avbryt</button></div></form>':'')+
     '</section>'+
-   '<section class="card wf-panel"><h2>Ställningstagande och förankring</h2>'+
+   '<section id="wf-case-position" class="card wf-panel"><h2>Ställningstagande och förankring</h2>'+
     '<p class="case-hint">Markera som förankrat först när ställningstagandet har bekräftats. Ange datum och källa.</p>'+
     (workflowState.errors.position?wfSectionError('position'):own?'<form id="wf-position-form" class="wf-form">'+
      '<label class="field"><span>Ställningstagande</span><textarea name="body" maxlength="3500" rows="3" required>'+h(p?.body||'')+'</textarea></label>'+
@@ -121,7 +144,7 @@ function workflowCaseSections(c){
      '</strong><p>'+h(p.body)+'</p>'+(p.source?'<small>Källa: '+h(p.source)+'</small>':'')+
      (p.anchored_on?'<small> · '+h(p.anchored_on)+'</small>':'')+'</div></div>':
      '<p class="case-hint">Inget delat ställningstagande registrerat.</p>')+'</section>'+
-   '<section class="card wf-panel"><div class="split-line"><h2>Ändringshistorik</h2><span class="chip">'+(workflowState.errors.history?'Ej tillgängligt':workflowState.events.length+' inlästa')+'</span></div>'+
+   '<section id="wf-case-history" class="card wf-panel"><div class="split-line"><h2>Ändringshistorik</h2><span class="chip">'+(workflowState.errors.history?'Ej tillgängligt':workflowState.events.length+' inlästa')+'</span></div>'+
     (workflowState.errors.history?wfSectionError('history'):workflowState.events.length?workflowState.events.map(wfEvent).join(''):'<p class="case-hint">Ännu inga historikhändelser.</p>')+
     (workflowState.nextOffset!==null&&!workflowState.errors.history?'<button type="button" class="btn" id="wf-more-history">Visa äldre händelser</button>':'')+
    '</section>';
@@ -140,6 +163,10 @@ function workflowSearchPage(){
    }).join(''):'<p class="case-hint">Ange en sökfras och välj Sök.</p>')+'</div></section>';
 }
 function attachWorkflowActions(){
+ document.querySelectorAll('[data-case-jump]').forEach(button=>button.addEventListener('click',()=>{
+  const target=document.getElementById(button.dataset.caseJump);target?.scrollIntoView({block:'start',behavior:'smooth'});
+  target?.focus?.({preventScroll:true});
+ }));
  const id=state.caseCurrent?.id;
  document.querySelectorAll('[data-wf-retry]').forEach(b=>b.addEventListener('click',async()=>{await loadCaseWorkflow(id);render();}));
  $('wf-new-followup')?.addEventListener('click',()=>{workflowState.followupEdit={status:'open',details:'',due_date:'',assignee_email:'',meeting_id:''};render();});
