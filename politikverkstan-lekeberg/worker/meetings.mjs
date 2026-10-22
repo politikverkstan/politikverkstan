@@ -78,7 +78,7 @@ async function meetingPage(env,user,row){
 function handleError(e){
  if(e instanceof SyntaxError||/^(För stor|Ogiltig|Obligatoriskt)/.test(e.message))return error(400,e.message);
  console.error('Meetings error',e.message);
- return error(503,'Sammanträdesverkstaden är inte tillgänglig. Kontrollera migrering 0009.');
+ return error(503,'Sammanträden kunde inte hämtas just nu. Försök igen eller kontakta administratören.');
 }
 export async function handleMeetings(req,env,user){
  const path=new URL(req.url).pathname;
