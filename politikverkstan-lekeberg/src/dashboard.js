@@ -108,12 +108,12 @@ async function dashboardOpenCase(id){
  if(!found){toast('Ärendet är inte längre tillgängligt för dig.',true);return;}
  state.caseCurrent={...found,labels:[...(found.labels||[])]};
  try{await loadCaseComments(id);}catch{state.caseComments=[];}
- render();
+ recordWorkView();render();
 }
 async function dashboardOpenMeeting(id){
  await openTab('meetings');
  if(state.tab!=='meetings')return;
- try{await openMeeting(id);render();}catch(e){toast('Sammanträdet är inte tillgängligt: '+e.message,true);}
+ try{await openMeeting(id);recordWorkView();render();}catch(e){toast('Sammanträdet är inte tillgängligt: '+e.message,true);}
 }
 function attachDashboard(){
  $('db-refresh')?.addEventListener('click',async()=>{
