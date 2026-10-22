@@ -58,6 +58,9 @@ def build_workroom() -> str:
     work = replace_once(read("src/workroom.template.html"), "/*WORKCSS*/",
                         read("src/workroom.css").replace("</style", r"<\/style"), "Workroom")
     work_js = read("src/workroom.js")
+    work_js = replace_once(work_js, "function overviewPage(){",
+                           read("src/dashboard.js") + "\nfunction overviewPage(){",
+                           "Dashboard injection")
     addons = "\n".join(read("src/" + name) for name in
                        ("meetings-ui.js", "meetings-page.js", "meetings-actions.js"))
     work_js = replace_once(work_js, "function casesPage(){",
