@@ -1,6 +1,6 @@
 /* Version 1.0 - UI helpers injected inside the protected workroom IIFE. */
 const workflowState={caseId:null,events:[],nextOffset:null,links:[],followups:[],position:null,
- loading:false,error:'',followupEdit:null,search:'',searchResults:[],searchLoading:false};
+ loading:false,errors:{},followupEdit:null,search:'',searchResults:[],searchLoading:false};
 const wfRoot='/api/private/workflow/';
 const wfCase=id=>wfRoot+'cases/'+encodeURIComponent(id)+'/';
 function wfDate(date){return h(String(date||'').slice(0,16).replace('T',' '));}
@@ -40,47 +40,60 @@ function wfEvent(event){
    '<p class="case-hint">'+h(change.action||change.title||'Händelsen registrerades')+'</p>')+'</div>';
 }
 async function loadCaseWorkflow(id){
- if(!id){workflowState.caseId=null;workflowState.events=[];workflowState.links=[];workflowState.followups=[];workflowState.position=null;return;}
- workflowState.loading=true;workflowState.error='';
+ if(!id){
+  workflowState.caseId=null;workflowState.events=[];workflowState.nextOffset=null;
+  workflowState.links=[];workflowState.followups=[];workflowState.position=null;workflowState.errors={};return;
+ }
+ workflowState.loading=true;
  try{
-  const root=wfCase(id);
-  const results=await Promise.all([
-   api(root+'history'),api(root+'meetings'),api(root+'followups'),api(root+'position')
-  ]);
+  const root=wfCase(id),keys=['history','meetings','followups','position'];
+  const settled=await Promise.allSettled(keys.map(key=>api(root+key)));
   if(state.caseCurrent?.id!==id)return;
-  workflowState.caseId=id;workflowState.events=results[0].events||[];
-  workflowState.nextOffset=results[0].next_offset;
-  workflowState.links=results[1].meetings||[];
-  workflowState.followups=results[2].followups||[];
-  workflowState.position=results[3].position||null;
+  workflowState.caseId=id;workflowState.errors={};
+  const read=(key,index)=>{
+   if(settled[index].status==='fulfilled')return settled[index].value;
+   workflowState.errors[key]=settled[index].reason?.message||'Förfrågan misslyckades';
+   return null;
+  };
+  const history=read('history',0),meetings=read('meetings',1);
+  const followups=read('followups',2),position=read('position',3);
+  workflowState.events=history?.events||[];workflowState.nextOffset=history?.next_offset??null;
+  workflowState.links=meetings?.meetings||[];
+  workflowState.followups=followups?.followups||[];workflowState.position=position?.position||null;
  }catch(error){
-  workflowState.error=error.message;workflowState.caseId=id;
+  if(state.caseCurrent?.id===id){
+   workflowState.caseId=id;
+   workflowState.errors={history:error.message,meetings:error.message,followups:error.message,position:error.message};
+  }
  }finally{workflowState.loading=false;}
+}
+function wfSectionError(key){
+ const msg=workflowState.errors[key];
+ return msg?'<div class="wf-section-error" role="alert"><p>'+h(msg)+'</p><button type="button" class="btn btn-sm" data-wf-retry="'+h(key)+'">Försök igen</button></div>':'';
 }
 function workflowCaseSections(c){
  if(workflowState.caseId!==c.id)return '<section class="card wf-panel"><p class="case-hint">Laddar spårbarhet och uppföljning…</p></section>';
- if(workflowState.error)return '<section class="card wf-panel"><h2>Spårbarhet och uppföljning</h2><p role="alert">'+h(workflowState.error)+'</p><button type="button" class="btn" id="wf-retry">Försök igen</button></section>';
  const editable=c.can_edit,own=c.is_owner,p=workflowState.position;
  const edit=workflowState.followupEdit;
- return '<section class="card wf-panel"><div class="split-line"><h2>Ärendets sammanträden</h2><span class="chip">'+workflowState.links.length+' punkter</span></div>'+
+ return '<section class="card wf-panel"><div class="split-line"><h2>Ärendets sammanträden</h2><span class="chip">'+(workflowState.errors.meetings?'Ej tillgängligt':workflowState.links.length+' punkter')+'</span></div>'+
   '<p class="case-hint">Sammanträden och dagordningspunkter där ärendet är kopplat. Bara möten du får läsa visas.</p>'+
-  (workflowState.links.length?workflowState.links.map(m=>'<div class="wf-row"><div><strong>'+h(m.title)+'</strong><small>'+
+  (workflowState.errors.meetings?wfSectionError('meetings'):workflowState.links.length?workflowState.links.map(m=>'<div class="wf-row"><div><strong>'+h(m.title)+'</strong><small>'+
    h(m.committee)+' · '+h(m.meeting_date)+' · '+h(m.agenda_title)+'</small>'+
    (m.outcome?'<p><strong>Antecknat utfall:</strong> '+h(m.outcome)+'</p>':'')+
    (m.follow_up?'<p><strong>Antecknad uppföljning:</strong> '+h(m.follow_up)+'</p>':'')+
    '</div><button class="btn btn-sm" type="button" data-wf-meeting="'+h(m.id)+'">Öppna</button></div>').join(''):
    '<p class="case-hint">Inga åtkomliga sammanträden är kopplade till ärendet.</p>')+'</section>'+
   '<section class="card wf-panel"><div class="split-line"><h2>Uppföljningar</h2>'+
-   (editable?'<button type="button" class="btn btn-sm" id="wf-new-followup">+ Ny uppföljning</button>':'')+'</div>'+
+   (editable&&!workflowState.errors.followups?'<button type="button" class="btn btn-sm" id="wf-new-followup">+ Ny uppföljning</button>':'')+'</div>'+
    '<p class="case-hint">Separata uppgifter med ansvarig, tidsfrist och avslutsstatus. Personliga uppgifter i översikten påverkas inte.</p>'+
-   (workflowState.followups.length?workflowState.followups.map(f=>'<div class="wf-row"><div><strong>'+h(f.title)+'</strong><small>'+
+   (workflowState.errors.followups?wfSectionError('followups'):workflowState.followups.length?workflowState.followups.map(f=>'<div class="wf-row"><div><strong>'+h(f.title)+'</strong><small>'+
     (f.status==='done'?'Avslutad':'Öppen')+(f.due_date?' · Senast '+h(f.due_date):'')+
     (f.assignee_email?' · '+h(f.assignee_email):'')+'</small>'+
     (f.details?'<p>'+h(f.details)+'</p>':'')+
     (f.meeting_title?'<small>Sammanträde: '+h(f.meeting_title)+'</small>':'')+'</div>'+
     (editable?'<button type="button" class="btn btn-sm" data-wf-followup="'+h(f.id)+'">Ändra</button>':'')+'</div>').join(''):
     '<p class="case-hint">Inga uppföljningar registrerade.</p>')+
-    (editable&&edit!==null?'<form id="wf-followup-form" class="wf-form"><h3>'+
+    (editable&&!workflowState.errors.followups&&edit!==null?'<form id="wf-followup-form" class="wf-form"><h3>'+
      (edit.id?'Ändra uppföljning':'Ny uppföljning')+'</h3>'+
      '<label class="field"><span>Uppgift</span><input name="title" required maxlength="160" value="'+h(edit.title||'')+'"></label>'+
      '<label class="field"><span>Beskrivning</span><textarea name="details" maxlength="3000" rows="2">'+h(edit.details||'')+'</textarea></label>'+
@@ -96,7 +109,7 @@ function workflowCaseSections(c){
     '</section>'+
    '<section class="card wf-panel"><h2>Ställningstagande och förankring</h2>'+
     '<p class="case-hint">Ett internt förslag är inte ett beslut. Status ”Förankrat” kräver att ägaren anger både datum och källa för förankringen.</p>'+
-    (own?'<form id="wf-position-form" class="wf-form">'+
+    (workflowState.errors.position?wfSectionError('position'):own?'<form id="wf-position-form" class="wf-form">'+
      '<label class="field"><span>Ställningstagande</span><textarea name="body" maxlength="3500" rows="3" required>'+h(p?.body||'')+'</textarea></label>'+
      '<label class="field"><span>Status</span><select name="status">'+
      [['discussion','Arbetsdiskussion'],['personal','Personligt'],['proposed','Föreslaget gemensamt'],['endorsed','Förankrat gemensamt']].map(x=>
@@ -108,10 +121,10 @@ function workflowCaseSections(c){
      '</strong><p>'+h(p.body)+'</p>'+(p.source?'<small>Källa: '+h(p.source)+'</small>':'')+
      (p.anchored_on?'<small> · '+h(p.anchored_on)+'</small>':'')+'</div></div>':
      '<p class="case-hint">Inget delat ställningstagande registrerat.</p>')+'</section>'+
-   '<section class="card wf-panel"><div class="split-line"><h2>Ändringshistorik</h2><span class="chip">'+workflowState.events.length+' inlästa</span></div>'+
+   '<section class="card wf-panel"><div class="split-line"><h2>Ändringshistorik</h2><span class="chip">'+(workflowState.errors.history?'Ej tillgängligt':workflowState.events.length+' inlästa')+'</span></div>'+
     '<p class="case-hint">Ändringar loggas i databasen. Historik från tiden före migrering 0011 kan inte återskapas i efterhand. Personliga anteckningar och privata dokument-ID:n ingår inte.</p>'+
-    (workflowState.events.length?workflowState.events.map(wfEvent).join(''):'<p class="case-hint">Ännu inga historikhändelser.</p>')+
-    (workflowState.nextOffset!==null?'<button type="button" class="btn" id="wf-more-history">Visa äldre händelser</button>':'')+
+    (workflowState.errors.history?wfSectionError('history'):workflowState.events.length?workflowState.events.map(wfEvent).join(''):'<p class="case-hint">Ännu inga historikhändelser.</p>')+
+    (workflowState.nextOffset!==null&&!workflowState.errors.history?'<button type="button" class="btn" id="wf-more-history">Visa äldre händelser</button>':'')+
    '</section>';
 }
 function workflowSearchPage(){
@@ -129,7 +142,7 @@ function workflowSearchPage(){
 }
 function attachWorkflowActions(){
  const id=state.caseCurrent?.id;
- $('wf-retry')?.addEventListener('click',async()=>{await loadCaseWorkflow(id);render();});
+ document.querySelectorAll('[data-wf-retry]').forEach(b=>b.addEventListener('click',async()=>{await loadCaseWorkflow(id);render();}));
  $('wf-new-followup')?.addEventListener('click',()=>{workflowState.followupEdit={status:'open',details:'',due_date:'',assignee_email:'',meeting_id:''};render();});
  document.querySelectorAll('[data-wf-followup]').forEach(b=>b.addEventListener('click',()=>{
   workflowState.followupEdit={...workflowState.followups.find(x=>x.id===b.dataset.wfFollowup)};
