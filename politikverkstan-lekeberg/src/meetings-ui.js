@@ -61,6 +61,18 @@ function changeOfficialMonth(offset){
  state.officialCalendarMonth=d.toISOString().slice(0,7);
  render();
 }
+function officialAgendaDetails(m){
+ const agenda=Array.isArray(m.agenda)?m.agenda:[],docs=Array.isArray(m.documents)?m.documents:[];
+ const current=state.meetingCurrent;
+ const canImport=current?.id&&current?.is_owner!==false&&current.official_source_url===m.source_url;
+ return `<div class="official-agenda-panel">
+ <p class="case-hint">Offentlig publicering. Kontrollera alltid originalets kallelse, bilagor och eventuellt justerat protokoll. Inga dokument hämtas automatiskt till din arbetsyta.</p>
+ ${m.agenda_error?'<p class="official-warning">'+h(m.agenda_error)+' – äldre identifierade uppgifter kan visas.</p>':''}
+ ${m.agenda_changed_at?'<p class="case-hint">Senast identifierad ändring: '+h(m.agenda_changed_at.slice(0,16).replace('T',' '))+' UTC</p>':''}
+ ${agenda.length?'<h4>Identifierade dagordningspunkter</h4><ol class="official-agenda-list">'+agenda.map((a,i)=>'<li><strong>'+h(a.number+'. '+a.title)+'</strong><button class="btn btn-sm" type="button" data-official-point="'+h(m.source_url)+'" data-official-index="'+i+'">'+(canImport?'Lägg till i mitt möte':'Förbered denna punkt')+'</button></li>').join('')+'</ol>':'<p class="case-hint">Inga dagordningsrubriker kunde identifieras säkert. Kontrollera kommunens kallelse manuellt.</p>'}
+ ${docs.length?'<h4>Offentligt länkade handlingar</h4><ul class="official-document-list">'+docs.map(d=>'<li><a href="'+h(d.url)+'" target="_blank" rel="noopener noreferrer">'+h(d.title)+' ↗</a></li>').join('')+'</ul>':''}
+ <a class="btn btn-sm" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer">Öppna original i MeetingPlus ↗</a></div>`;
+}
 function officialCalendarView(){
  const meetings=state.officialCalendarMeetings||[];
  const sources=state.officialCalendarSources||[];
@@ -77,7 +89,7 @@ function officialCalendarView(){
   const events=meetings.filter(m=>m.meeting_date===date);
   const isToday=date===today;
   return `<div class="official-day${isToday?' is-today':''}"><span class="official-day-number"${isToday?' aria-current="date"':''}>${day}</span>${isToday?'<span class="official-today-label">Idag</span>':''}
-    ${events.map(m=>`<div class="official-event-wrap"><a class="official-event" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer" title="${h(m.committee+' '+(m.start_time||'')+' '+(m.location||''))}"><b>${h({kf:'KF',bun:'BUN',sn:'SN',ks:'KS'}[m.committee_key]||m.committee)}</b> ${h(m.start_time||'')}${m.end_time?'–'+h(m.end_time):''}</a><button type="button" class="official-prepare" data-official-prepare="${h(m.source_url)}" aria-label="Förbered ${h(m.committee)} ${h(m.meeting_date)}">Förbered</button></div>`).join('')}</div>`;
+    ${events.map(m=>`<div class="official-event-wrap"><a class="official-event" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer" title="${h(m.committee+' '+(m.start_time||'')+' '+(m.location||''))}"><b>${h({kf:'KF',bun:'BUN',sn:'SN',ks:'KS'}[m.committee_key]||m.committee)}</b> ${h(m.start_time||'')}${m.end_time?'–'+h(m.end_time):''}</a><button type="button" class="official-prepare" data-official-agenda="${h(m.source_url)}" aria-expanded="${state.officialSelectedUrl===m.source_url}">Dagordning</button><button type="button" class="official-prepare" data-official-prepare="${h(m.source_url)}" aria-label="Förbered ${h(m.committee)} ${h(m.meeting_date)}">Förbered</button>${state.officialSelectedUrl===m.source_url?officialAgendaDetails(m):''}</div>`).join('')}</div>`;
  });
  const synced=sources.filter(s=>s.last_success_at).sort((a,b)=>b.last_success_at.localeCompare(a.last_success_at));
  const last=synced[0]?.last_success_at||'';
@@ -115,6 +127,30 @@ function officialCalendarView(){
  </section>`;
 }
 function attachOfficialCalendarActions(){
+ document.querySelectorAll('[data-official-agenda]').forEach(b=>b.addEventListener('click',()=>{
+  state.officialSelectedUrl=state.officialSelectedUrl===b.dataset.officialAgenda?'':b.dataset.officialAgenda;render();
+ }));
+ document.querySelectorAll('[data-official-point]').forEach(b=>b.addEventListener('click',async()=>{
+  const m=state.officialCalendarMeetings.find(x=>x.source_url===b.dataset.officialPoint);
+  const a=m?.agenda?.[Number(b.dataset.officialIndex)];if(!a)return;
+  const preparation='Offentlig källa: '+m.source_url+'\nDagordningspunkt '+a.number+'. Kontrollera bilagor och uppdateringar i MeetingPlus.';
+  const current=state.meetingCurrent;
+  if(current?.id&&current.is_owner!==false&&current.official_source_url===m.source_url){
+   if(!meetingSafeToLeave())return;
+   try{
+    await api('/api/private/meetings/'+current.id+'/items','POST',{title:a.title,case_id:null,preparation,outcome:'',follow_up:''});
+    await openMeeting(current.id);render();toast('Den valda offentliga punkten har lagts till i ditt sammanträde.');
+   }catch(e){toast(e.message,true);}
+   return;
+  }
+  if(!meetingSafeToLeave())return;
+  state.meetingCurrent={...meetingEmpty(),title:m.committee+' – mötesförberedelser',committee:m.committee,
+   meeting_date:m.meeting_date,start_time:m.start_time||'',location:m.location||'',official_source_url:m.source_url};
+  state.meetingAgenda=[];state.meetingNote='';state.meetingItemEdit=null;state.meetingDirty=false;
+  state.meetingNoteDirty=false;state.meetingItemDirty=false;state.officialPendingPoint={title:a.title,preparation};
+  render();toast('Offentlig punkt vald. Spara ditt privata sammanträde för att lägga till punkten.');
+ }));
+
  document.querySelectorAll('[data-official-prepare]').forEach(button=>button.addEventListener('click',()=>{
   if(!meetingSafeToLeave())return;
   const meeting=state.officialCalendarMeetings.find(m=>m.source_url===button.dataset.officialPrepare);
@@ -125,7 +161,7 @@ function attachOfficialCalendarActions(){
    start_time:meeting.start_time||'',location:meeting.location||'',
    official_source_url:meeting.source_url
   };
-  state.meetingAgenda=[];state.meetingNote='';state.meetingItemEdit=null;
+  state.meetingAgenda=[];state.meetingNote='';state.meetingItemEdit=null;state.officialPendingPoint=null;
   state.meetingDirty=false;state.meetingNoteDirty=false;state.meetingItemDirty=false;
   render();
   document.getElementById('meeting-form')?.scrollIntoView({behavior:'smooth',block:'start'});

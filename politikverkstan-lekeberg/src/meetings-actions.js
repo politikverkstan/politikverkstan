@@ -5,7 +5,7 @@ function attachMeetingActions(){
  $('meeting-new')?.addEventListener('click',()=>{
   if(!meetingSafeToLeave())return;
   state.meetingCurrent=meetingEmpty();state.meetingAgenda=[];state.meetingNote='';
-  state.meetingItemEdit=null;state.meetingDirty=false;state.meetingNoteDirty=false;state.meetingItemDirty=false;render();
+  state.officialPendingPoint=null;state.meetingItemEdit=null;state.meetingDirty=false;state.meetingNoteDirty=false;state.meetingItemDirty=false;render();
  });
  document.querySelectorAll('[data-meeting-open]').forEach(b=>b.addEventListener('click',async()=>{
   if(!meetingSafeToLeave())return;
@@ -34,7 +34,12 @@ function attachMeetingActions(){
   try{
    const url=m.id?'/api/private/meetings/'+m.id:'/api/private/meetings';
    const answer=await api(url,m.id?'PUT':'POST',{title:m.title,committee:m.committee,meeting_date:m.meeting_date,start_time:m.start_time||'',location:m.location||'',status:m.status,official_source_url:m.official_source_url||'',revision:m.revision});
-   state.meetingDirty=false;await reload(m.id||answer.id);toast('Sammanträdet sparades.');
+   const selected=state.officialPendingPoint;state.meetingDirty=false;state.officialPendingPoint=null;
+   if(!m.id&&selected){
+    try{await api('/api/private/meetings/'+answer.id+'/items','POST',{...selected,case_id:null,outcome:'',follow_up:''});}
+    catch(error){toast('Sammanträdet sparades, men punkten kunde inte läggas till: '+error.message,true);}
+   }
+   await reload(m.id||answer.id);toast('Sammanträdet sparades.');
   }catch(error){button.disabled=false;toast(error.message,true);}
  });
  $('meeting-sharing-form')?.addEventListener('submit',async e=>{

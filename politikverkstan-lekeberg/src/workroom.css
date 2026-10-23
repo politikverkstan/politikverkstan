@@ -613,3 +613,11 @@ html[data-theme="dark"] .official-today-label{color:#a3e8dd}
 .official-prepare{display:block;width:100%;box-sizing:border-box;border:1px solid var(--border);border-radius:5px;background:var(--card);color:var(--ink);font:inherit;font-size:10px;line-height:1.3;font-weight:700;padding:4px 2px;cursor:pointer;overflow-wrap:anywhere}
 .official-prepare:hover,.official-prepare:focus-visible{outline:2px solid #ba6f58;outline-offset:1px}
 @media(max-width:700px){.official-prepare{font-size:9px;padding:4px 1px}}
+
+/* 1.5: source-linked agenda details */
+.official-agenda-panel{margin:8px 0 12px;padding:12px;border:1px solid var(--border);border-radius:10px;min-width:0}
+.official-agenda-panel h4{font-size:13px;margin:12px 0 6px}
+.official-agenda-list,.official-document-list{margin:6px 0;padding-left:20px;overflow-wrap:anywhere}
+.official-agenda-list li,.official-document-list li{padding:5px 0;line-height:1.4}
+.official-agenda-list .btn{margin-left:8px}
+@media(max-width:690px){.official-agenda-panel{padding:8px}.official-agenda-list .btn{display:block;margin:5px 0}}

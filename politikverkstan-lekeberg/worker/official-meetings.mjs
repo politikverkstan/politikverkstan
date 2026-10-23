@@ -96,7 +96,16 @@ export function normalizeCachedCalendar(snapshot,today=localDate()){
     source_url:canonical,
     committee_key:source.key,committee:source.name,meeting_date:date,
     start_time:m.start_time||'',end_time:m.end_time||'',
-    location:typeof m.location==='string'?m.location.slice(0,160):''
+    location:typeof m.location==='string'?m.location.slice(0,160):'',
+    agenda_status:m.agenda_status==='identified'?'identified':'not_identified',
+    agenda:Array.isArray(m.agenda)?m.agenda.slice(0,70).filter(a=>Number.isInteger(a?.number)&&a.number>0&&a.number<=250&&typeof a.title==='string'&&a.title.length<=160).map(a=>({number:a.number,title:a.title,source_url:canonical})):[],
+    documents:Array.isArray(m.documents)?m.documents.slice(0,80).filter(d=>{
+     if(typeof d?.title!=='string'||d.title.length>175||typeof d.url!=='string')return false;
+     try{const u=new URL(d.url);return u.origin===origin&&!u.hash&&u.pathname.includes('/mote-'+date+'/')&&/\/(agenda|protocol|protokoll)\//i.test(u.pathname)&&(!u.search||/^\?downloadMode=(open|download)$/.test(u.search));}catch{return false;}
+    }).map(d=>({title:d.title,url:d.url})):[],
+    agenda_checked_at:typeof m.agenda_checked_at==='string'?m.agenda_checked_at:'',
+    agenda_changed_at:typeof m.agenda_changed_at==='string'?m.agenda_changed_at:'',
+    agenda_error:typeof m.agenda_error==='string'?m.agenda_error.slice(0,100):''
    });accepted++;
   }
   sources.push({
