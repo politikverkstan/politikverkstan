@@ -13,29 +13,37 @@ function measure(s,size,bold=false,serif=false){const c=measure.c||(measure.c=do
 function lines(s,w,size,bold=false,serif=true){const result=[];for(const para of String(s||'').replace(/\r/g,'').split('\n')){if(!para.trim()){result.push('');continue;}let line='';for(let word of para.split(/\s+/)){if(!word)continue;if(!line){line=word;continue;}if(measure(line+' '+word,size,bold,serif)>w){result.push(line);line=word;}else line+=' '+word;}if(line)result.push(line);}return result;}
 async function jpegFromDataUrl(url){if(!url||!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(url)||url.length>520000)return null;return new Promise(resolve=>{const im=new Image();im.onload=()=>{try{const max=640,ratio=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.naturalWidth*ratio));c.height=Math.max(1,Math.round(im.naturalHeight*ratio));const ctx=c.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(im,0,0,c.width,c.height);const jpg=c.toDataURL('image/jpeg',0.88).split(',')[1];const bin=atob(jpg);const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);resolve({data:bytes,width:c.width,height:c.height});}catch{resolve(null)}};im.onerror=()=>resolve(null);im.src=url;});}
 async function createPdf(doc,variant='sd',logoDataUrl=''){
+ const docType=String(doc?.doc_type||'motion');
+ const name=({motion:'Motion',interpellation:'Interpellation',fraga:'Enkel fråga',andring:'Ändringsyrkande',
+ reservation:'Reservation',sarskilt:'Särskilt yttrande',namndinitiativ:'Nämndinitiativ'})[docType]||'Motion';
+ const question=docType==='interpellation'||docType==='fraga';
+ const hasClauses=!['reservation','sarskilt'].includes(docType);
+ const forum=String(doc?.forum||'').trim();
  const sd=variant==='sd',logo=sd?await jpegFromDataUrl(logoDataUrl):null;
  const navy=sd?'0.09 0.15 0.39':'0.24 0.28 0.34',gold='0.93 0.74 0.19',dark='0.17 0.21 0.27',muted='0.39 0.43 0.51';
  const pages=[];let cmds=[],y=0;let pageNumber=0;
  const draw=(s,x,yy,size=11,font='F1',color=dark)=>{if(!s)return;cmds.push(`BT ${color} rg /${font} ${size} Tf 1 0 0 1 ${x.toFixed(2)} ${yy.toFixed(2)} Tm ${escapeText(s)} Tj ET`);};
  const line=(x1,y1,x2,y2,color=navy,weight=0.8)=>cmds.push(`${color} RG ${weight} w ${x1} ${y1} m ${x2} ${y2} l S`);
  function start(){pageNumber++;cmds=[];
-   if(sd){if(logo){const ratio=logo.width/logo.height,w=Math.min(42,42*ratio),h=Math.min(42,42/ratio);cmds.push(`q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${L} ${(H-89).toFixed(2)} cm /Logo Do Q`);}draw('Sverigedemokraterna',L+(logo?55:0),H-62,16,'F3',navy);draw('LEKEBERG',L+(logo?55:0),H-78,9,'F3',navy);line(L,H-105,W-R,H-105);cmds.push(`${gold} RG 3 w ${L} ${H-105} m ${L+43} ${H-105} l S`);}else{draw('MOTION TILL LEKEBERGS KOMMUNFULLMÄKTIGE',L,H-73,9,'F3',navy);line(L,H-94,W-R,H-94,'0.75 0.77 0.80',0.7);}
-   if(sd)draw('MOTION TILL LEKEBERGS KOMMUNFULLMÄKTIGE',L,H-127,8,'F3',muted);
+   if(sd){if(logo){const ratio=logo.width/logo.height,w=Math.min(42,42*ratio),h=Math.min(42,42/ratio);cmds.push(`q ${w.toFixed(2)} 0 0 ${h.toFixed(2)} ${L} ${(H-89).toFixed(2)} cm /Logo Do Q`);}draw('Sverigedemokraterna',L+(logo?55:0),H-62,16,'F3',navy);draw('LEKEBERG',L+(logo?55:0),H-78,9,'F3',navy);line(L,H-105,W-R,H-105);cmds.push(`${gold} RG 3 w ${L} ${H-105} m ${L+43} ${H-105} l S`);}else{draw(name.toUpperCase()+(forum?' · '+forum.toUpperCase():''),L,H-73,9,'F3',navy);line(L,H-94,W-R,H-94,'0.75 0.77 0.80',0.7);}
+   if(sd)draw(name.toUpperCase()+(forum?' · '+forum.toUpperCase():''),L,H-127,8,'F3',muted);
    y=H-(sd?157:123);
  }
  function finish(){line(L,61,W-R,61,'0.78 0.81 0.85',0.6);if(sd)draw('SVERIGEDEMOKRATERNA LEKEBERG',L,45,7.4,'F3',muted);draw('Sida '+pageNumber,W-R-40,45,8,'F2',muted);pages.push(cmds.join('\n')+'\n');}
  function ensure(height){if(y-height<87){finish();start();}}
  function paragraph(s,size=11.4,leading=17.2,extra=10,font='F1',col=dark,indent=0){for(const row of lines(s,WIDTH-indent,size,font==='F4',font==='F1'||font==='F4')){ensure(leading);if(row)draw(row,L+indent,y,size,font,col);y-=leading;}y-=extra;}
  function section(name){ensure(46);y-=9;draw(name,L,y,11,'F3',navy);y-=19;}
- start();let title=String(doc?.title||'Motion utan rubrik');for(const row of lines(title,WIDTH,20,true,false)){ensure(27);draw(row,L,y,20,'F3',navy);y-=26;}y-=13;
+ start();let title=String(doc?.title||name+' utan rubrik');for(const row of lines(title,WIDTH,20,true,false)){ensure(27);draw(row,L,y,20,'F3',navy);y-=26;}y-=13;
  // Formal municipal motions benefit from continuous prose; never generate empty section headings.
  if(doc?.problem)paragraph(doc.problem);
  if(doc?.motivation)paragraph(doc.motivation);
  if(doc?.proposal)paragraph(doc.proposal);
- section('Förslag till beslut');
+ if(doc?.recipient)paragraph('Riktad till: '+doc.recipient,10,15,6);
+ if(doc?.reference)paragraph('Ärende: '+doc.reference,10,15,6);
+ if(hasClauses)section(question?'Frågor':docType==='andring'?'Ändringsförslag':'Förslag till beslut');
  const clauses=Array.isArray(doc?.clauses)?doc.clauses.map(x=>String(x).trim()).filter(Boolean):[];
- for(const [i,c] of (clauses.length?clauses:['[Beslutsförslag saknas]']).entries()){
-  const body=/^att\s/i.test(c)?c:'att '+c;const rows=lines(body,WIDTH-34,11.5,false,true);const block=rows.length*17.5+10;ensure(Math.min(block,150));draw((i+1)+'.',L,y,10.5,'F3',navy);
+ for(const [i,c] of (hasClauses?(clauses.length?clauses:[question?'[Fråga saknas]':'[Beslutsförslag saknas]']):[]).entries()){
+  const body=question?c:/^att\s/i.test(c)?c:'att '+c;const rows=lines(body,WIDTH-34,11.5,false,true);const block=rows.length*17.5+10;ensure(Math.min(block,150));draw((i+1)+'.',L,y,10.5,'F3',navy);
   for(const row of rows){ensure(17.5);draw(row,L+27,y,11.5,'F1');y-=17.5;}y-=10;
  }
  y-=18;ensure(85);let date=String(doc?.date||'').trim();if(/^\d{4}-\d{2}-\d{2}$/.test(date)){const [a,b,c]=date.split('-');date=`${c}/${b} ${a}`;}if(date){draw('Lekeberg, '+date,L,y,10.5,'F1',muted);y-=30;}

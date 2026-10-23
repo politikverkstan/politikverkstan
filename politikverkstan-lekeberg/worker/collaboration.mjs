@@ -8,6 +8,7 @@ const email=e=>clean(e,254).toLowerCase();
 const emailOk=e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 const cats=new Set(['Skola och utbildning','Omsorg och socialtjänst','Ekonomi och styrning','Trafik och infrastruktur','Trygghet','Miljö och samhällsbyggnad','Kommunal service','Annat']);
 const statuses=new Set(['ide','utkast','granskning','godkand','inlamnad','besvarad']);
+const formalTypes=new Set(['motion','interpellation','fraga','andring','reservation','sarskilt','namndinitiativ']);
 const ideastatuses=new Set(['ny','diskussion','underlag','redo','motion','avslutad']);
 const perms=['none','read','comment','edit'];
 const uuid='[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
@@ -15,7 +16,7 @@ const now=()=>new Date().toISOString();
 function strength(p){return perms.indexOf(p||'none');}
 async function parse(req){if(Number(req.headers.get('content-length')||0)>50000)throw Error('För stor begäran');const t=await req.text();if(t.length>50000)throw Error('För stor begäran');const v=JSON.parse(t);if(!v||typeof v!=='object'||Array.isArray(v))throw Error('Ogiltigt objekt');return v;}
 function normalize(v){const clauses=Array.isArray(v.clauses)?v.clauses.slice(0,12).map(x=>clean(x,600)).filter(Boolean):[];
- return {title:clean(v.title,160),category:cats.has(v.category)?v.category:'Annat',problem:clean(v.problem,6000),motivation:clean(v.motivation,8500),proposal:clean(v.proposal,1500),clauses,signer:clean(v.signer,130),party:clean(v.party,90),date:/^\d{4}-\d{2}-\d{2}$/.test(v.date)?v.date:now().slice(0,10),status:statuses.has(v.status)?v.status:'utkast',reference:clean(v.reference,140),notes:clean(v.notes,2000)};
+ return {doc_type:formalTypes.has(v.doc_type)?v.doc_type:'motion',recipient:clean(v.recipient,160),forum:clean(v.forum,160),title:clean(v.title,160),category:cats.has(v.category)?v.category:'Annat',problem:clean(v.problem,6000),motivation:clean(v.motivation,8500),proposal:clean(v.proposal,1500),clauses,signer:clean(v.signer,130),party:clean(v.party,90),date:/^\d{4}-\d{2}-\d{2}$/.test(v.date)?v.date:now().slice(0,10),status:statuses.has(v.status)?v.status:'utkast',reference:clean(v.reference,140),notes:clean(v.notes,2000)};
 }
 async function getDoc(db,user,id){const row=await db.prepare(`SELECT m.*,u.display_name AS owner_name, (SELECT s.permission FROM work_motion_shares s WHERE s.motion_id=m.id AND s.email=?) AS direct_permission FROM work_motions m LEFT JOIN work_users u ON u.email=m.owner_email WHERE m.id=?`).bind(user.email,id).first();
  if(!row|| (row.trashed_at&&row.owner_email!==user.email))return null;const permission=row.owner_email===user.email?'owner':strength(row.team_permission)>=strength(row.direct_permission)?row.team_permission:row.direct_permission;
@@ -24,7 +25,7 @@ async function getDoc(db,user,id){const row=await db.prepare(`SELECT m.*,u.displ
 const can=(row,p)=>row?.permission==='owner'||strength(row?.permission)>=strength(p);
 function docResponse(row){return {id:row.id,owner_email:row.owner_email,owner_name:row.owner_name,team_permission:row.team_permission,permission:row.permission,origin_idea_id:row.origin_idea_id,archived_at:row.archived_at,trashed_at:row.trashed_at,revision:row.revision,created_at:row.created_at,updated_at:row.updated_at,...JSON.parse(row.content_json)};}
 async function listDocs(db,user,scope,lifecycle='active'){
- const rows=(await db.prepare(`SELECT m.id,m.owner_email,u.display_name AS owner_name,m.title,m.status,m.category,m.revision,m.created_at,m.updated_at,m.team_permission,m.origin_idea_id,m.archived_at,m.trashed_at,
+ const rows=(await db.prepare(`SELECT m.id,m.owner_email,u.display_name AS owner_name,m.title,m.status,m.category,m.content_json,m.revision,m.created_at,m.updated_at,m.team_permission,m.origin_idea_id,m.archived_at,m.trashed_at,
  (SELECT s.permission FROM work_motion_shares s WHERE s.motion_id=m.id AND s.email=?) AS direct_permission,
  (SELECT COUNT(*) FROM work_motion_comments c WHERE c.motion_id=m.id AND c.status='open') AS open_comments,
  (SELECT COUNT(*) FROM work_motion_shares s2 WHERE s2.motion_id=m.id) AS share_count
@@ -40,7 +41,7 @@ async function listDocs(db,user,scope,lifecycle='active'){
   if(scope==='direct')return r.owner_email!==user.email&&!!r.direct_permission;
   if(scope==='shared')return r.team_permission!=='none'||(r.owner_email!==user.email&&!!r.direct_permission);
   return true;
- }).map(r=>({...r,permission:r.owner_email===user.email?'owner':strength(r.team_permission)>=strength(r.direct_permission)?r.team_permission:r.direct_permission,directly_shared:!!r.direct_permission,direct_permission:undefined}));
+ }).map(r=>{const {content_json,...safe}=r;let type='motion';try{const v=JSON.parse(content_json||'{}');if(formalTypes.has(v.doc_type))type=v.doc_type;}catch{}return {...safe,doc_type:type,permission:r.owner_email===user.email?'owner':strength(r.team_permission)>=strength(r.direct_permission)?r.team_permission:r.direct_permission,directly_shared:!!r.direct_permission,direct_permission:undefined};});
 }
 async function listComments(db,table,col,id){return (await db.prepare(`SELECT c.id,c.author_email,u.display_name AS author_name,c.body,${table==='work_motion_comments'?'c.status,':''}c.created_at FROM ${table} c LEFT JOIN work_users u ON u.email=c.author_email WHERE c.${col}=? ORDER BY c.created_at ASC LIMIT 150`).bind(id).all()).results||[];}
 function match(path,suffix=''){return path.match(new RegExp(`^/api/private/motions/(${uuid})${suffix}$`));}

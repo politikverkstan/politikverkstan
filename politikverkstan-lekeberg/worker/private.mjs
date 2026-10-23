@@ -17,6 +17,7 @@ const normEmail=e=>String(e||'').trim().toLowerCase();
 const validEmail=e=>e.length<=254&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 const clean=(v,max=500)=>String(v??'').trim().slice(0,max);
 const validStatus=new Set(['ide','utkast','granskning','godkand','inlamnad','besvarad']);
+const formalTypes=new Set(['motion','interpellation','fraga','andring','reservation','sarskilt','namndinitiativ']);
 const allowedCategory=new Set(['Skola och utbildning','Omsorg och socialtjänst','Ekonomi och styrning','Trafik och infrastruktur','Trygghet','Miljö och samhällsbyggnad','Kommunal service','Annat']);
 const base64=s=>Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-s.length%4)%4)),c=>c.charCodeAt(0));
 const b64json=s=>JSON.parse(new TextDecoder().decode(base64(s)));
@@ -26,7 +27,7 @@ export function normalizeMotion(raw){
  if(!raw||typeof raw!=='object'||Array.isArray(raw))throw Error('Ogiltigt dokument');
  const clauses=Array.isArray(raw.clauses)?raw.clauses.map(x=>clean(x,600)).filter(Boolean).slice(0,12):[];
  const name=clean(raw.signer,130),party=clean(raw.party,90);
- return {title:clean(raw.title,160),category:allowedCategory.has(raw.category)?raw.category:'Annat',problem:clean(raw.problem,6000),motivation:clean(raw.motivation,8500),proposal:clean(raw.proposal,1500),clauses,signer:name,party,date:/^\d{4}-\d{2}-\d{2}$/.test(raw.date)?raw.date:new Date().toISOString().slice(0,10),status:validStatus.has(raw.status)?raw.status:'utkast',reference:clean(raw.reference,140),notes:clean(raw.notes,2000)};
+ return {doc_type:formalTypes.has(raw.doc_type)?raw.doc_type:'motion',recipient:clean(raw.recipient,160),forum:clean(raw.forum,160),title:clean(raw.title,160),category:allowedCategory.has(raw.category)?raw.category:'Annat',problem:clean(raw.problem,6000),motivation:clean(raw.motivation,8500),proposal:clean(raw.proposal,1500),clauses,signer:name,party,date:/^\d{4}-\d{2}-\d{2}$/.test(raw.date)?raw.date:new Date().toISOString().slice(0,10),status:validStatus.has(raw.status)?raw.status:'utkast',reference:clean(raw.reference,140),notes:clean(raw.notes,2000)};
 }
 let certCache={domain:'',expiry:0,keys:null};
 export async function verifyPrivateAccess(req,env){

@@ -57,9 +57,9 @@ with sync_playwright() as p:
  assert page.get_by_text('Ställningstagande och förankring',exact=True).is_visible()
  assert page.locator('#wf-position-form').is_visible()
  assert page.get_by_text('Tidigare titel').count()>0
- assert page.locator('.wf-panel').count()==4
+ assert page.locator('.wf-panel').count()==6
  assert page.locator('.case-stage-overview').count()==1
- assert page.locator('[data-case-jump]').count()==5
+ assert page.locator('[data-case-jump]').count()==7
  assert 'Okänt' in page.locator('.case-stage-overview').inner_text(), 'Unreachable meeting endpoint must not appear as zero'
  assert 'Laddar' not in page.locator('.case-stage-overview').inner_text()
  page.locator('[data-case-jump="wf-case-history"]').click()

@@ -1,3 +1,10 @@
+## 1.7.0 – 2026-10-23 (omfattar 1.5–1.7)
+
+- **1.5:** Hämtning av offentliga MeetingPlus-handlingar och konservativ avläsning av dagordningsrubriker. Endast källstyrkta punkter får föreslås för privata mötesförberedelser. Ändringsindikering och varning om källfel.
+- **1.6:** Valbar, privat ärendekoppling från en egen mötesdagordningspunkt. Separat källöversikt och verifieringsvarning för antecknade kommunala beslut.
+- **1.7:** Sju dokumenttyper i befintlig behörighetsstyrd dokumentlagring; typstyrd redigering, formell kontrolltext och PDF-export. Äldre motioner tolkas fortfarande som motioner.
+- Ingen ändring av privata ACL eller D1-schema. Säkerhetstestning och fullständig browserregression krävs innan arbetsflödet befordras till `production`.
+
 ## 1.4.0 (inklusive 1.3.1) – 2026-10-23
 
 - Delvis källverifierade fält skiljs från fullständigt verifierad sammansättning. Kommunfullmäktiges 35 mandat är källförda; okänt antal ersättare visas inte som ett känt tal.

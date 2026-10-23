@@ -2,7 +2,7 @@ name: Promote tested Politikverkstan release
 
 on:
   workflow_run:
-    workflows: ["Politikverkstan 1.4 quality"]
+    workflows: ["Politikverkstan 1.7 quality"]
     types: [completed]
 
 permissions:
