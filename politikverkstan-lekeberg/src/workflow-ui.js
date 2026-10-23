@@ -83,6 +83,9 @@ function caseStageOverview(c){
  const history=count('history',workflowState.events,()=>true);
  const cards=[
   ['case-form','Underlag',c.summary?.trim()?'Sammanfattning finns':'Behöver kompletteras'],
+  ['wf-case-evidence','Källor',c.sources?.trim()?'Referenser finns – kontrollera dem':'Källor saknas'],
+  ['wf-case-decision','Beslutsverifiering',c.decision?.trim()?(c.sources?.trim()?'Beslut antecknat – granska protokoll':'Beslut antecknat, källhänvisning saknas'):
+    ['beslutat','uppfoljning','avslutat'].includes(c.status)?'Beslutsuppgift saknas':'Inte dokumenterat'],
   ['wf-case-meetings','Sammanträden',meetings==='Okänt'||meetings==='Laddar'?meetings:meetings+' kopplingar'],
   ['wf-case-followups','Öppna uppföljningar',open==='Okänt'||open==='Laddar'?open:open+' öppna'],
   ['wf-case-position','Ställningstagande',stance],
@@ -98,7 +101,20 @@ function workflowCaseSections(c){
  if(workflowState.caseId!==c.id)return '<section class="card wf-panel"><p class="case-hint">Laddar spårbarhet och uppföljning…</p></section>';
  const editable=c.can_edit,own=c.is_owner,p=workflowState.position;
  const edit=workflowState.followupEdit;
- return '<section id="wf-case-meetings" class="card wf-panel"><div class="split-line"><h2>Ärendets sammanträden</h2><span class="chip">'+(workflowState.errors.meetings?'Ej tillgängligt':workflowState.links.length+' punkter')+'</span></div>'+
+ const sourceLines=String(c.sources||'').split(/\r?\n/).map(s=>s.trim()).filter(Boolean).slice(0,30);
+ const sourceItems=sourceLines.map(s=>{
+  const safe=/^https:\/\/[^\s<>"']{1,1024}$/.test(s);
+  return safe?'<a href="'+h(s)+'" target="_blank" rel="noopener noreferrer">'+h(s)+' ↗</a>':h(s);
+ });
+ return '<section id="wf-case-evidence" class="card wf-panel"><h2>Källor och underlag</h2>'+
+  '<p class="case-hint">Referenser är arbetsuppgifter tills de har kontrollerats mot original, datum och relevanta sidor.</p>'+
+  (sourceItems.length?'<ul>'+sourceItems.map(x=>'<li>'+x+'</li>').join('')+'</ul>':'<p class="official-warning">Ingen källa angiven. Komplettera fältet Källor och dokumentreferenser.</p>')+'</section>'+
+  '<section id="wf-case-decision" class="card wf-panel"><h2>Beslut och verifiering</h2>'+
+  (c.decision?.trim()?'<p>'+h(c.decision)+'</p>':'<p class="case-hint">Inget faktiskt beslut dokumenterat.</p>')+
+  (c.decision?.trim()&&!c.sources?.trim()?'<p class="official-warning">Beslutsanteckning finns, men källhänvisning saknas. Kontrollera justerat protokoll.</p>':'')+
+  (['beslutat','uppfoljning','avslutat'].includes(c.status)&&!c.decision?.trim()?'<p class="official-warning">Ärendestatus antyder beslut, men faktiskt beslut och källa saknas.</p>':'')+
+  '<p class="case-hint">Ärendestatus är intern uppföljning, inte ett kommunalt protokollsbeslut.</p></section>'+
+  '<section id="wf-case-meetings" class="card wf-panel"><div class="split-line"><h2>Ärendets sammanträden</h2><span class="chip">'+(workflowState.errors.meetings?'Ej tillgängligt':workflowState.links.length+' punkter')+'</span></div>'+
   '<p class="case-hint">Sammanträden där ärendet finns på dagordningen.</p>'+
   (workflowState.errors.meetings?wfSectionError('meetings'):workflowState.links.length?workflowState.links.map(m=>'<div class="wf-row"><div><strong>'+h(m.title)+'</strong><small>'+
    h(m.committee)+' · '+h(m.meeting_date)+' · '+h(m.agenda_title)+'</small>'+

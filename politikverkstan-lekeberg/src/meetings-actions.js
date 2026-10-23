@@ -133,6 +133,29 @@ function attachMeetingActions(){
   await loadCaseWorkflow(caseId);recordWorkView();
   render();
  }));
+ // 1.6: no sharing escalation. Only an owner of a private meeting can link a new private case.
+ document.querySelectorAll('[data-meeting-create-case]').forEach(button=>button.addEventListener('click',async()=>{
+  const m=state.meetingCurrent,item=state.meetingAgenda.find(a=>a.id===button.dataset.meetingCreateCase);
+  if(!m?.id||m.scope!=='mine'||m.is_owner===false||!item||item.case_id)return;
+  if(!meetingSafeToLeave()||!caseSafeToLeave())return;
+  if(!confirm('Skapa ett privat ärende av denna punkt och koppla till sammanträdet? Det är inte ett kommunalt beslut eller ett förankrat ställningstagande.'))return;
+  button.disabled=true;
+  try{
+   const refs=m.official_source_url?m.official_source_url+'\nOffentlig dagordningspunkt: '+item.title:
+    'Egen dagordningspunkt: '+m.committee+' '+m.meeting_date+' – '+item.title;
+   const data={...caseEmpty(),title:item.title,committee:m.committee,meeting_date:m.meeting_date,sources:refs,
+    summary:'Förberedelse från mötesdagordning. Kontrollera handlingar och originalkällor.'};
+   const created=await api('/api/private/cases','POST',data);
+   let linked=true;
+   try{await api('/api/private/meetings/'+m.id+'/items/'+item.id,'PUT',{
+    title:item.title,case_id:created.id,preparation:item.preparation||'',outcome:item.outcome||'',follow_up:item.follow_up||''
+   });}catch(error){linked=false;toast('Ärendet skapades privat men möteskopplingen misslyckades: '+error.message,true);}
+   await openTab('cases');await loadCases();
+   const row=state.caseItems.find(c=>c.id===created.id);
+   if(row){state.caseCurrent={...row,labels:[...(row.labels||[])]};await loadCaseWorkflow(row.id);recordWorkView();}
+   render();if(linked)toast('Privat ärende skapat och kopplat till mötespunkten.');
+  }catch(error){button.disabled=false;toast('Ärendet kunde inte skapas: '+error.message,true);}
+ }));
  $('meeting-print-button')?.addEventListener('click',()=>{
   if(!meetingSafeToLeave())return;
   window.print();

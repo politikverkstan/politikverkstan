@@ -38,6 +38,7 @@ function meetingAgendaRow(item,i,m){
   </div>
   <div class="meeting-agenda-actions">
    ${item.case_id?`<button type="button" class="btn btn-sm" data-meeting-case="${h(item.case_id)}">Öppna ärende</button>`:''}
+   ${m.is_owner!==false&&m.scope==='mine'&&!item.case_id?`<button type="button" class="btn btn-sm" data-meeting-create-case="${h(item.id)}">Skapa privat ärende</button>`:''}
    ${m.is_owner!==false?`<button type="button" class="btn btn-sm" data-meeting-item-edit="${h(item.id)}">Redigera</button>`:''}
    ${m.is_owner!==false?`<button type="button" class="btn btn-sm" data-meeting-move="${h(item.id)}" data-direction="-1" ${i===0?'disabled':''} aria-label="Flytta upp ${h(item.title)}">↑</button>`:''}
    ${m.is_owner!==false?`<button type="button" class="btn btn-sm" data-meeting-move="${h(item.id)}" data-direction="1" ${i===state.meetingAgenda.length-1?'disabled':''} aria-label="Flytta ned ${h(item.title)}">↓</button>`:''}

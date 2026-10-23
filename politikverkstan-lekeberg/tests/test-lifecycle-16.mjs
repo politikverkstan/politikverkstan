@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+const page=read('src/meetings-page.js'),actions=read('src/meetings-actions.js'),flow=read('src/workflow-ui.js');
+assert(page.includes('data-meeting-create-case')&&page.includes("m.scope==='mine'"));
+assert(actions.includes("await api('/api/private/cases','POST',data)"));
+assert(actions.includes("caseEmpty()")&&actions.includes("m.official_source_url"));
+assert(actions.includes("await api('/api/private/meetings/'+m.id+'/items/'+item.id,'PUT'"));
+assert(flow.includes('wf-case-evidence')&&flow.includes('wf-case-decision'));
+assert(flow.includes('justerat protokoll'));
+assert(read('worker/workroom-page.mjs').includes('data-meeting-create-case'));
+assert(!read('index.html').includes('data-meeting-create-case'));
+console.log('PASS 1.6: owner-only private case link, decision provenance and source warnings');
