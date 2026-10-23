@@ -23,6 +23,7 @@ async function loadDashboard(){
  }
  state.dashboardErrors=errors;
  state.dashboardLoaded=true;
+ await loadOfficialCalendar();
 }
 function dashboardPage(){
  const now=dashboardToday();
@@ -50,11 +51,20 @@ function dashboardPage(){
   {count:drafts.length,label:'Motionsutkast',note:'Mina pågående motioner',tab:'motions'}
  ];
  const edit=state.dashboardTaskEdit||taskBlank();
+ const next=prepOptions()[0]||null;
  return `
  <section class="db-root" aria-label="Min arbetsöversikt">
   <div class="db-head"><div><span class="eyebrow">MITT POLITISKA ARBETE</span><h2>Min arbetsöversikt</h2><p>Kommande sammanträden, tilldelade ärenden och mina egna uppgifter. Innehållet är bara synligt för behöriga användare.</p></div>
    <button type="button" class="btn btn-sm" id="db-refresh" aria-label="Uppdatera arbetsöversikten">Uppdatera</button></div>
   ${errors.length?`<div class="db-alert" role="status">Vissa uppgifter kunde inte hämtas: ${errors.map(x=>x.name==='tasks'?'Mina uppgifter':x.name==='cases'?'Ärenden':x.name==='followups'?'Ärendeuppföljningar':'Sammanträden').join(', ')}. Värdena nedan kan vara ofullständiga.</div>`:''}
+  <section class="card prep-next-card" aria-label="Min nästa sammanträdesförberedelse">
+   <div><span class="eyebrow">MIN NÄSTA SAMMANTRÄDESFÖRBEREDELSE</span>
+    <h3>${next?h(next.title):'Inget kommande sammanträde'}</h3>
+    <p>${next?h(next.date)+(next.time?' · kl. '+h(next.time):''):'Ingen publicerad kallelse eller åtkomligt eget möte är inläst.'}</p>
+    <p class="case-hint">Öppna dagordningen, kontrollera originalhandlingar och fortsätt med egna underlag. Ingen automatisk import av privata uppgifter.</p>
+   </div>
+   <button type="button" class="btn btn-primary" data-tab="prepare">Öppna förberedelsen</button>
+  </section>
   <div class="db-kpis">${stats.map(x=>`<button type="button" class="db-kpi" ${x.jump?'data-db-followups-jump="1"':'data-tab="'+x.tab+'"'}><strong>${h(x.count)}</strong><span>${h(x.label)}</span><small>${h(x.note)}</small></button>`).join('')}</div>
   <div class="db-columns">
    <section class="card db-panel" aria-labelledby="db-meetings-heading">

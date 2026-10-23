@@ -1,3 +1,12 @@
+## 1.8.0 – 2026-10-24
+
+- Ny, inloggningsskyddad vy `Mitt nästa sammanträde` med kommande möten från MeetingPlus och egna åtkomliga möten.
+- Samlad dagordning med originalhandlingar, status för faktiskt sparade egna förberedelser, procentuell täckning och möjlighet att fortsätta arbetet vid ett senare tillfälle.
+- Ett eget privat sammanträde skapas endast efter uttrycklig bekräftelse. Enskilda offentliga punkter läggs endast till när användaren själv väljer dem. Ett befintligt privat möte återanvänds.
+- Egen förberedelse och uppföljning kan redigeras direkt i vyn med befintliga behörighetsstyrda endpoints, utan nya D1-tabeller eller automatisk delning.
+- Befintlig navigationshistorik, källvarningar och mobilanpassning används. Progressindikatorn mäter **sparad text**, inte om ett ärende juridiskt eller politiskt är färdigbehandlat.
+- Nya Node- och Chromium-regressionstester för återupptaget sammanträde och dubblettskydd.
+
 ## 1.7.1 – 2026-10-24
 
 - Kalenderhämtning som uppdaterar `main` med `GITHUB_TOKEN` utlöser nu explicit hela CI-flödet via `workflow_dispatch`. Dispatch-körningar kan befordras direkt efter gröna tester; vanliga pushar använder `workflow_run`. Båda vägarna kräver godkänd **aktuell** `main`-commit och fast-forward.

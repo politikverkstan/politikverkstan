@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import vm from 'node:vm';
+const root=new URL('../',import.meta.url);
+const read=p=>readFileSync(new URL(p,root),'utf8');
+const src=read('src/meeting-prep.js');
+const pure=src.slice(0,src.indexOf('async function prepSelect('))+src.slice(src.indexOf('function prepItems('),src.indexOf('function meetingPreparationPage('));
+const mockDate=new Date(Date.now()+21*86400_000).toISOString().slice(0,10);
+const officialUrl='https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-'+mockDate;
+const state={officialCalendarMeetings:[
+ {source_url:officialUrl,committee:'Kommunfullmäktige',meeting_date:mockDate,start_time:'18:00',agenda:[{number:1,title:'En dagordningspunkt'}]}
+ ],dashboardMeetings:[],meetingList:[],prepSelectedKey:''};
+const context={state,Date,Intl,console};vm.runInNewContext(pure+
+ '\nglobalThis.exportsForTest={prepToday,prepOptions,prepSelected,prepLinkedMeeting,prepHasWork,prepItems};',context);
+const e=context.exportsForTest;
+assert.equal(e.prepOptions().length,1);
+assert.equal(e.prepSelected().key,officialUrl);
+assert.equal(e.prepLinkedMeeting(e.prepSelected()),null);
+state.dashboardMeetings=[{id:'private-1',title:'Privat möte',meeting_date:mockDate,scope:'mine',status:'planned'}];
+assert.equal(e.prepOptions().length,2,'Dashboard fallback exposes personal meetings before meetings tab loaded');
+state.meetingList=[{id:'private-1',title:'Privat möte',meeting_date:mockDate,scope:'mine',status:'planned'}];
+assert.equal(e.prepOptions().length,2,'Do not double-count dashboard and fetched private meetings');
+const linked={id:'mine',official_source_url:officialUrl,is_owner:true,scope:'mine'};
+state.meetingList.push(linked);
+assert.equal(e.prepLinkedMeeting(e.prepSelected()).id,'mine','An existing personal preparation must be reused');
+assert.equal(e.prepOptions().length,2,'Original source and linked private meeting must not show twice');
+assert.equal(e.prepHasWork({preparation:''}),false);
+assert.equal(e.prepHasWork({preparation:'Offentlig källa: '+officialUrl+'\nDagordningspunkt 1. Kontrollera bilagor och uppdateringar i MeetingPlus.'}),false);
+assert.equal(e.prepHasWork({preparation:'Kontrollera kommunens budgetprognos och fråga om lokalkostnader.'}),true);
+state.meetingCurrent={id:'mine'};
+state.meetingAgenda=[{id:'p1',title:'En dagordningspunkt',preparation:'Kontrollera budgeten',case_id:null}];
+let items=e.prepItems(e.prepSelected(),linked);
+assert.equal(items.rows.length,1);
+assert.equal(items.rows[0].privateItem.id,'p1');
+state.meetingAgenda.push({id:'p2',title:'Min extra punkt',preparation:'',case_id:null});
+items=e.prepItems(e.prepSelected(),linked);
+assert.equal(items.rows.length,2,'Private-only agenda items must remain visible');
+const {WORKROOM_HTML}=await import('../worker/workroom-page.mjs');
+assert(WORKROOM_HTML.includes('Mitt nästa sammanträde'));
+assert(WORKROOM_HTML.includes('data-prep-edit'));
+assert(!read('index.html').includes('data-prep-edit'),'Private preparation code must not leak to the public portal');
+console.log('PASS 1.8: next meeting selection, no duplicates, sourced progress and privacy guard');

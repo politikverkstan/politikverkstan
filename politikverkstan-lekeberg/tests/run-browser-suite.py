@@ -25,6 +25,7 @@ tests = [
     "test-meetings-ui.py",
     "test-official-calendar-ui.py",
     "test-dashboard-ui.py",
+    "test-preparation-ui.py",
     "test-navigation-history.py",
     "test-navigation-ui.py",
 ]

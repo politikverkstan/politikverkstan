@@ -2,13 +2,14 @@
  * Only a view identifier is kept in history state. NEVER store actual document
  * content, personal notes or sensitive case text in browser history. */
 const WORK_HISTORY_KEY='politikverkstanWorkroom';
-const workTabs=new Set(['overview','search','meetings','cases','motions','shared','files','editor','ideas','users']);
+const workTabs=new Set(['overview','search','prepare','meetings','cases','motions','shared','files','editor','ideas','users']);
 function workSnapshot(){
  return {
   tab:state.tab,
   caseId:state.tab==='cases'?(state.caseCurrent?.id||null):null,
   meetingId:state.tab==='meetings'?(state.meetingCurrent?.id||null):null,
   officialUrl:state.tab==='meetings'?(state.officialSelectedUrl||null):null,
+  prepKey:state.tab==='prepare'?(state.prepSelectedKey||null):null,
   motionId:state.tab==='editor'?(state.motion?.id||null):null
  };
 }
@@ -21,6 +22,7 @@ function sameWorkView(a,b){
   (a.caseId||null)===(b.caseId||null)&&
   (a.meetingId||null)===(b.meetingId||null)&&
   (a.officialUrl||null)===(b.officialUrl||null)&&
+  (a.prepKey||null)===(b.prepKey||null)&&
   (a.motionId||null)===(b.motionId||null);
 }
 function recordWorkView(){
@@ -46,9 +48,11 @@ async function restoreWorkHistory(event){
  if(target.tab==='cases'){state.caseCurrent=null;state.caseComments=[];}
  if(target.tab==='meetings'){state.meetingCurrent=null;state.meetingAgenda=[];state.meetingNote='';state.meetingItemEdit=null;}
  state.officialSelectedUrl=target.tab==='meetings'?(target.officialUrl||''):'';
+ if(target.tab==='prepare')state.prepSelectedKey=target.prepKey||'';
  try{
   await openTab(target.tab,true);
   if(state.tab!==target.tab)return;
+  if(target.tab==='prepare'){await prepSelect(target.prepKey||'',false);}
   if(target.tab==='cases'&&!target.caseId){
    state.caseCurrent=null;state.caseComments=[];state.caseDirty=false;state.caseNoteDirty=false;render();
   }else if(target.tab==='meetings'&&!target.meetingId){
