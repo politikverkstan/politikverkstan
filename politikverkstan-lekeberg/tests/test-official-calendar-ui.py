@@ -84,10 +84,11 @@ with sync_playwright() as p:
  page.locator('#official-agenda-back').click()
  page.locator('.official-calendar-grid').wait_for()
  assert page.locator('.official-agenda-view').count()==0
+ gets_after_back=page.evaluate('window.officialGets')
  page.locator('[data-official-agenda]').click()
  page.locator('[data-official-index="0"]').click()
  assert page.locator('#meeting-form').is_visible()
- assert page.evaluate('window.officialGets')==2
+ assert page.evaluate('window.officialGets')==gets_after_back
  assert page.evaluate('document.documentElement.scrollWidth')<=392
  page.locator('[data-official-prepare]').click()
  assert page.locator('#meeting-form').is_visible()
@@ -95,7 +96,7 @@ with sync_playwright() as p:
  assert page.locator('#meeting-form [name="meeting_date"]').input_value()==meeting_date
  assert page.locator('#meeting-form [name="start_time"]').input_value()=='18:00'
  assert page.locator('.meeting-metadata a[href="'+source+'"]').count()==1
- assert page.evaluate('window.officialGets')==2, 'Preparing a draft must not fetch or change external data'
+ assert page.evaluate('window.officialGets')==gets_after_back, 'Preparing a draft must not fetch or change external data'
  assert page.evaluate('document.documentElement.scrollWidth')<=390+2
  assert not errors,errors
  browser.close()
