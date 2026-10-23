@@ -65,6 +65,7 @@ function officialCalendarView(){
  const meetings=state.officialCalendarMeetings||[];
  const sources=state.officialCalendarSources||[];
  const month=officialCalendarMonth();
+ const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Stockholm',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  const [year,mon]=month.split('-').map(Number);
  const first=new Date(Date.UTC(year,mon-1,1));
  const count=new Date(Date.UTC(year,mon,0)).getUTCDate();
@@ -74,7 +75,8 @@ function officialCalendarView(){
   if(day<1||day>count)return '<div class="official-day outside" aria-hidden="true"></div>';
   const date=month+'-'+String(day).padStart(2,'0');
   const events=meetings.filter(m=>m.meeting_date===date);
-  return `<div class="official-day"><span class="official-day-number">${day}</span>
+  const isToday=date===today;
+  return `<div class="official-day${isToday?' is-today':''}"><span class="official-day-number"${isToday?' aria-current="date"':''}>${day}</span>${isToday?'<span class="official-today-label">Idag</span>':''}
     ${events.map(m=>`<div class="official-event-wrap"><a class="official-event" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer" title="${h(m.committee+' '+(m.start_time||'')+' '+(m.location||''))}"><b>${h({kf:'KF',bun:'BUN',sn:'SN',ks:'KS'}[m.committee_key]||m.committee)}</b> ${h(m.start_time||'')}${m.end_time?'–'+h(m.end_time):''}</a><button type="button" class="official-prepare" data-official-prepare="${h(m.source_url)}" aria-label="Förbered ${h(m.committee)} ${h(m.meeting_date)}">Förbered</button></div>`).join('')}</div>`;
  });
  const synced=sources.filter(s=>s.last_success_at).sort((a,b)=>b.last_success_at.localeCompare(a.last_success_at));

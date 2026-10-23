@@ -564,6 +564,12 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
 .official-day{border:1px solid var(--border);border-radius:7px;min-height:92px;padding:7px 6px;min-width:0;overflow-wrap:anywhere}
 .official-day.outside{opacity:.25;background:var(--bg)}
 .official-day-number{display:block;font-size:11px;font-weight:750;margin-bottom:6px}
+.official-day.is-today{border:2px solid #287d73;background:#e6f5f1;padding:6px 5px}
+.official-day.is-today .official-day-number{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#24656c;color:white;font-size:12px;margin-bottom:2px}
+.official-today-label{display:block;font-size:10px;font-weight:800;color:#185d58;margin-bottom:5px}
+html[data-theme="dark"] .official-day.is-today{border-color:#73cbbf;background:#203f43}
+html[data-theme="dark"] .official-day.is-today .official-day-number{background:#a3e8dd;color:#103334}
+html[data-theme="dark"] .official-today-label{color:#a3e8dd}
 .official-event{display:block;background:var(--bg);color:var(--ink);border-left:3px solid #ba6f58;border-radius:4px;margin:3px 0;padding:5px 4px;font-size:10px;line-height:1.45;text-decoration:none}
 .official-event:hover,.official-event:focus-visible{background:var(--card);outline:1px solid #ba6f58;text-decoration:underline}
 .official-event b{font-weight:850}
@@ -576,6 +582,9 @@ html[data-theme="dark"] .db-priority-high,html[data-theme="dark"] .db-overdue{co
  .official-day{min-height:65px;padding:4px 2px}
  .official-event{font-size:9px;padding:4px 2px}
  .official-day-number{font-size:10px}
+ .official-day.is-today{padding:3px 1px}
+ .official-day.is-today .official-day-number{width:21px;height:21px;font-size:10px}
+ .official-today-label{font-size:9px}
  .official-calendar-grid{gap:2px}
  .official-calendar-footer{gap:8px 13px}
 }

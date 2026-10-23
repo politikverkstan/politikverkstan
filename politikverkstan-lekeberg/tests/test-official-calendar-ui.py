@@ -46,6 +46,10 @@ with sync_playwright() as p:
  page.locator('[data-tab="meetings"]').first.click()
  page.locator('.official-calendar').wait_for()
  assert page.locator('.official-calendar-grid .official-day').count()>=28
+ today_cell=page.locator('.official-day.is-today')
+ assert today_cell.count()==1
+ assert today_cell.locator('[aria-current="date"]').inner_text()==str(now.day)
+ assert today_cell.get_by_text('Idag',exact=True).is_visible()
  assert page.locator('.official-event').count()==1
  assert page.locator('.official-source-diagnostics summary').count()==1
  page.locator('.official-source-diagnostics summary').click()
@@ -61,8 +65,10 @@ with sync_playwright() as p:
  assert page.locator('.official-event').count()==1
  page.locator('[data-official-month="1"]').click()
  assert page.locator('.official-event').count()==0
+ assert page.locator('.official-day.is-today').count()==0
  page.locator('[data-official-month="-1"]').click()
  assert page.locator('.official-event').count()==1
+ assert page.locator('.official-day.is-today').count()==1
  assert page.locator('[data-official-prepare]').count()==1
  page.locator('[data-official-prepare]').click()
  assert page.locator('#meeting-form').is_visible()
