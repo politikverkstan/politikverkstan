@@ -1,12 +1,12 @@
 // Public, automatically refreshed by .github/workflows/meetingplus-calendar.yml.
 export const OFFICIAL_MEETING_CACHE = {
   "version": 2,
-  "generated_at": "2026-10-23T11:56:08.201Z",
+  "generated_at": "2026-10-23T12:18:49.423Z",
   "sources": [
     {
       "committee_key": "kf",
-      "last_attempt_at": "2026-10-23T11:56:08.201Z",
-      "last_success_at": "2026-10-23T11:56:08.201Z",
+      "last_attempt_at": "2026-10-23T12:18:49.423Z",
+      "last_success_at": "2026-10-23T12:18:49.423Z",
       "last_count": 4,
       "last_error": "",
       "meetings": [
@@ -342,7 +342,7 @@ export const OFFICIAL_MEETING_CACHE = {
             }
           ],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         },
@@ -678,7 +678,7 @@ export const OFFICIAL_MEETING_CACHE = {
             }
           ],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         },
@@ -693,7 +693,7 @@ export const OFFICIAL_MEETING_CACHE = {
           "agenda": [],
           "documents": [],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         },
@@ -708,7 +708,7 @@ export const OFFICIAL_MEETING_CACHE = {
           "agenda": [],
           "documents": [],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         }
@@ -716,8 +716,8 @@ export const OFFICIAL_MEETING_CACHE = {
     },
     {
       "committee_key": "bun",
-      "last_attempt_at": "2026-10-23T11:56:08.201Z",
-      "last_success_at": "2026-10-23T11:56:08.201Z",
+      "last_attempt_at": "2026-10-23T12:18:49.423Z",
+      "last_success_at": "2026-10-23T12:18:49.423Z",
       "last_count": 3,
       "last_error": "",
       "meetings": [
@@ -989,7 +989,7 @@ export const OFFICIAL_MEETING_CACHE = {
             }
           ],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         },
@@ -1004,7 +1004,7 @@ export const OFFICIAL_MEETING_CACHE = {
           "agenda": [],
           "documents": [],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         },
@@ -1019,7 +1019,7 @@ export const OFFICIAL_MEETING_CACHE = {
           "agenda": [],
           "documents": [],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         }
@@ -1027,8 +1027,8 @@ export const OFFICIAL_MEETING_CACHE = {
     },
     {
       "committee_key": "sn",
-      "last_attempt_at": "2026-10-23T11:56:08.201Z",
-      "last_success_at": "2026-10-23T11:56:08.201Z",
+      "last_attempt_at": "2026-10-23T12:18:49.423Z",
+      "last_success_at": "2026-10-23T12:18:49.423Z",
       "last_count": 3,
       "last_error": "",
       "meetings": [
@@ -1364,7 +1364,7 @@ export const OFFICIAL_MEETING_CACHE = {
             }
           ],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         },
@@ -1379,7 +1379,7 @@ export const OFFICIAL_MEETING_CACHE = {
           "agenda": [],
           "documents": [],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         },
@@ -1394,7 +1394,7 @@ export const OFFICIAL_MEETING_CACHE = {
           "agenda": [],
           "documents": [],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         }
@@ -1402,8 +1402,8 @@ export const OFFICIAL_MEETING_CACHE = {
     },
     {
       "committee_key": "ks",
-      "last_attempt_at": "2026-10-23T11:56:08.201Z",
-      "last_success_at": "2026-10-23T11:56:08.201Z",
+      "last_attempt_at": "2026-10-23T12:18:49.423Z",
+      "last_success_at": "2026-10-23T12:18:49.423Z",
       "last_count": 3,
       "last_error": "",
       "meetings": [
@@ -1739,7 +1739,7 @@ export const OFFICIAL_MEETING_CACHE = {
             }
           ],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         },
@@ -1754,7 +1754,7 @@ export const OFFICIAL_MEETING_CACHE = {
           "agenda": [],
           "documents": [],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         },
@@ -1769,7 +1769,7 @@ export const OFFICIAL_MEETING_CACHE = {
           "agenda": [],
           "documents": [],
           "agenda_status": "not_identified",
-          "agenda_checked_at": "2026-10-23T11:56:08.201Z",
+          "agenda_checked_at": "2026-10-23T12:18:49.423Z",
           "agenda_changed_at": "2026-10-23T11:56:08.201Z",
           "agenda_error": ""
         }
