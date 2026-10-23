@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const root=new URL('../',import.meta.url);
+const conf=JSON.parse(readFileSync(new URL('wrangler.jsonc',root),'utf8'));
+assert.equal(conf.name,'politikverkstan');
+assert.equal(conf.d1_databases[0].database_name,'mandatportal-analytics');
+for(const route of ['/api/*','/arbetsrum','/admin'])assert(conf.assets.run_worker_first.includes(route));
+const script=readFileSync(new URL('ops/check-production-readonly.mjs',root),'utf8');
+assert(!/\b(migrations\s+apply|wrangler\s+deploy|DELETE\s+FROM|INSERT\s+INTO|ALTER\s+TABLE)\b/i.test(script));
+console.log('PASS read-only D1 checker and protected routes');

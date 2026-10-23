@@ -4,12 +4,20 @@
     "name": "Kommunfullmäktige",
     "seats": 35,
     "subs": 23,
-    "ruleStatus": "okänd",
-    "ruleSource": "Preliminär uppdragsförteckning 2026–2030 (arbetsunderlag; ej verifierat mot beslut)",
-    "selectionMethod": "okänd",
-    "lekebergSeats": null,
+    "ruleStatus": "delvis verifierad",
+    "ruleSource": "Slutligt resultat i kommunfullmäktigevalet 2026 enligt Valmyndigheten; 2026 års uppdragsförteckning fortfarande preliminär",
+    "selectionMethod": "direktval till kommunfullmäktige (inte simulering av nämndval)",
+    "lekebergSeats": 35,
     "lekebergSubs": null,
-    "validationNote": "Arbetsunderlag: varken mandatperiodens slutliga platstal eller tillsättningsregler är styrkta."
+    "validationNote": "Delvis verifierad: 35 ordinarie mandat 2026–2030. Uppgiften 23 ersättare från arbetsunderlaget är inte källverifierad.",
+    "ruleUrl": "https://www.val.se/valresultat-och-statistik/riksdags--region--och-kommunval/valresultat-2026",
+    "verifiedFacts": [
+      "seats"
+    ],
+    "sourceYear": 2026,
+    "reviewedOn": "2026-10-23",
+    "effectiveFrom": "2026-10-15",
+    "ruleNote": "35 ordinarie mandat verifierade. Antalet ersättare är inte verifierat."
   },
   {
     "id": "org02",
@@ -37,7 +45,10 @@
     "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
     "sourceYear": 2025,
     "reviewedOn": "2026-10-21",
-    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod.",
+    "latestEvidenceUrl": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-04-27",
+    "latestEvidenceStatus": "2026 års beredningshandling är inte ensam belägg för giltig sammansättning 2027–2030",
+    "latestEvidenceOn": "2026-04-27"
   },
   {
     "id": "org04",
@@ -66,7 +77,10 @@
     "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
     "sourceYear": 2025,
     "reviewedOn": "2026-10-21",
-    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod.",
+    "latestEvidenceUrl": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-04-27",
+    "latestEvidenceStatus": "2026 års beredningshandling är inte ensam belägg för giltig sammansättning 2027–2030",
+    "latestEvidenceOn": "2026-04-27"
   },
   {
     "id": "org06",
@@ -95,7 +109,10 @@
     "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
     "sourceYear": 2025,
     "reviewedOn": "2026-10-21",
-    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod.",
+    "latestEvidenceUrl": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-04-27",
+    "latestEvidenceStatus": "2026 års beredningshandling är inte ensam belägg för giltig sammansättning 2027–2030",
+    "latestEvidenceOn": "2026-04-27"
   },
   {
     "id": "org08",
@@ -122,7 +139,12 @@
     "lekebergSubs": 3,
     "ruleUrl": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-04-27",
     "ruleNote": "5 ledamöter + 3 ersättare föreslogs med ikraftträdande 2027-01-01. Beslutsstatus måste kontrolleras i fullmäktiges justerade protokoll.",
-    "validationNote": "Förslag/beredningsuppgift, inte verifierad som gällande organisation."
+    "validationNote": "KS 2026-04-07 §70 är beredning, inte slutligt KF-beslut. Föreslagen nämnd 5+3 från 2027-01-01.",
+    "latestEvidenceUrl": "https://meetings.lekeberg.se/committees/kommunstyrelsen/mote-2026-04-07",
+    "latestEvidenceStatus": "KS §70 föreslår 5+3; justerat slutligt KF-beslut måste kontrolleras",
+    "latestEvidenceOn": "2026-04-07",
+    "effectiveFrom": "2027-01-01",
+    "reviewedOn": "2026-10-23"
   },
   {
     "id": "org10",
@@ -138,7 +160,10 @@
     "ruleUrl": "https://lekeberg.se/kommunochpolitik/planerochstyrdokument.4.711bc06b14820d116bc1b58.html?folder=19.711bc06b14820d116bc4a28",
     "sourceYear": 2025,
     "reviewedOn": "2026-10-21",
-    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod."
+    "validationNote": "Kontrollerat mot publicerat reglemente från 2025; detta bekräftar inte ny mandatperiod.",
+    "latestEvidenceUrl": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-04-27",
+    "latestEvidenceStatus": "2026 års beredningshandling är inte ensam belägg för giltig sammansättning 2027–2030",
+    "latestEvidenceOn": "2026-04-27"
   },
   {
     "id": "org11",
