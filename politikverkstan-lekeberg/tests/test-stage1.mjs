@@ -5,7 +5,7 @@ const read=p=>readFileSync(new URL(p,base),'utf8');
 const orgs=JSON.parse(read('src/organizations.json'));
 const counts=orgs.reduce((out,o)=>(out[o.ruleStatus]=(out[o.ruleStatus]||0)+1,out),{});
 assert.equal(orgs.length,57);
-assert.deepEqual(counts,{okänd:40,historisk:10,preliminär:6,'förslag 2026':1});
+assert.deepEqual(counts,{'delvis verifierad':1,okänd:39,historisk:10,preliminär:6,'förslag 2026':1});
 const historic=orgs.filter(o=>o.ruleStatus==='historisk');
 for(const o of historic){
  assert.equal(o.sourceYear,2025,'Historical source must identify applicable year');
@@ -13,7 +13,9 @@ for(const o of historic){
  assert.match(o.validationNote,/bekräftar inte ny mandatperiod/);
  assert.ok(o.ruleUrl?.startsWith('https://lekeberg.se/'),'Use public official source link');
 }
-assert.equal(orgs.filter(o=>o.reviewedOn).length,historic.length,'Do not claim new-term verification for unknown records');
+assert.equal(orgs.filter(o=>o.reviewedOn).length,historic.length+2,'Only the reviewed historic records, scoped 2026 full council and 2026 environment-board proposal have review dates');
+assert.equal(orgs.find(x=>x.id==='org01').ruleStatus,'delvis verifierad');
+assert.equal(orgs.find(x=>x.id==='org09').ruleStatus,'förslag 2026');
 const app=read('src/app.js');
 const publicHtml=read('dist/index.html');
 const docs=['Underlag:','registry-source-summary','validationNote','function guidePage(){','id="pv-guide-open"','guide-apply','Från 2025 års reglemente'];
