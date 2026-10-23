@@ -1,12 +1,12 @@
 // Public, automatically refreshed by .github/workflows/meetingplus-calendar.yml.
 export const OFFICIAL_MEETING_CACHE = {
   "version": 1,
-  "generated_at": "2026-10-22T22:46:10.760Z",
+  "generated_at": "2026-10-23T06:04:30.399Z",
   "sources": [
     {
       "committee_key": "kf",
-      "last_attempt_at": "2026-10-22T22:46:10.760Z",
-      "last_success_at": "2026-10-22T22:46:10.760Z",
+      "last_attempt_at": "2026-10-23T06:04:30.399Z",
+      "last_success_at": "2026-10-23T06:04:30.399Z",
       "last_count": 4,
       "last_error": "",
       "meetings": [
@@ -15,43 +15,43 @@ export const OFFICIAL_MEETING_CACHE = {
           "committee_key": "kf",
           "committee": "Kommunfullmäktige",
           "meeting_date": "2026-09-28",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "18:00",
+          "end_time": "18:55",
+          "location": "Träffen"
         },
         {
           "source_url": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-10-19",
           "committee_key": "kf",
           "committee": "Kommunfullmäktige",
           "meeting_date": "2026-10-19",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "18:00",
+          "end_time": "18:40",
+          "location": "Träffen"
         },
         {
           "source_url": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-11-30",
           "committee_key": "kf",
           "committee": "Kommunfullmäktige",
           "meeting_date": "2026-11-30",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "18:00",
+          "end_time": "21:00",
+          "location": "Träffen"
         },
         {
           "source_url": "https://meetings.lekeberg.se/committees/kommunfullmaktige/mote-2026-12-21",
           "committee_key": "kf",
           "committee": "Kommunfullmäktige",
           "meeting_date": "2026-12-21",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "18:00",
+          "end_time": "21:00",
+          "location": "Träffen"
         }
       ]
     },
     {
       "committee_key": "bun",
-      "last_attempt_at": "2026-10-22T22:46:10.760Z",
-      "last_success_at": "2026-10-22T22:46:10.760Z",
+      "last_attempt_at": "2026-10-23T06:04:30.399Z",
+      "last_success_at": "2026-10-23T06:04:30.399Z",
       "last_count": 3,
       "last_error": "",
       "meetings": [
@@ -60,34 +60,34 @@ export const OFFICIAL_MEETING_CACHE = {
           "committee_key": "bun",
           "committee": "Barn- och utbildningsnämnden",
           "meeting_date": "2026-10-05",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "13:00",
+          "end_time": "13:42",
+          "location": "Kommunhuset Fjugesta - Sammanträdesrummet Multen"
         },
         {
           "source_url": "https://meetings.lekeberg.se/committees/barn-och-utbildningsnamnden/mote-2026-11-10",
           "committee_key": "bun",
           "committee": "Barn- och utbildningsnämnden",
           "meeting_date": "2026-11-10",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "13:00",
+          "end_time": "16:00",
+          "location": "Kommunhuset Fjugesta - Sammanträdesrummet Multen"
         },
         {
           "source_url": "https://meetings.lekeberg.se/committees/barn-och-utbildningsnamnden/mote-2026-12-08",
           "committee_key": "bun",
           "committee": "Barn- och utbildningsnämnden",
           "meeting_date": "2026-12-08",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "13:00",
+          "end_time": "16:00",
+          "location": "Kommunhuset Fjugesta - Sammanträdesrummet Multen"
         }
       ]
     },
     {
       "committee_key": "sn",
-      "last_attempt_at": "2026-10-22T22:46:10.760Z",
-      "last_success_at": "2026-10-22T22:46:10.760Z",
+      "last_attempt_at": "2026-10-23T06:04:30.399Z",
+      "last_success_at": "2026-10-23T06:04:30.399Z",
       "last_count": 3,
       "last_error": "",
       "meetings": [
@@ -96,34 +96,34 @@ export const OFFICIAL_MEETING_CACHE = {
           "committee_key": "sn",
           "committee": "Socialnämnden",
           "meeting_date": "2026-10-07",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "13:00",
+          "end_time": "15:22",
+          "location": "Multen, Kommunhuset, Bangatan 7 i Fjugesta"
         },
         {
           "source_url": "https://meetings.lekeberg.se/committees/socialnamnden/mote-2026-11-11",
           "committee_key": "sn",
           "committee": "Socialnämnden",
           "meeting_date": "2026-11-11",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "13:00",
+          "end_time": "18:00",
+          "location": "Multen, Kommunhuset, Bangatan 7 i Fjugesta"
         },
         {
           "source_url": "https://meetings.lekeberg.se/committees/socialnamnden/mote-2026-12-09",
           "committee_key": "sn",
           "committee": "Socialnämnden",
           "meeting_date": "2026-12-09",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "13:00",
+          "end_time": "18:00",
+          "location": "Multen, Kommunhuset, Bangatan 7 i Fjugesta"
         }
       ]
     },
     {
       "committee_key": "ks",
-      "last_attempt_at": "2026-10-22T22:46:10.760Z",
-      "last_success_at": "2026-10-22T22:46:10.760Z",
+      "last_attempt_at": "2026-10-23T06:04:30.399Z",
+      "last_success_at": "2026-10-23T06:04:30.399Z",
       "last_count": 3,
       "last_error": "",
       "meetings": [
@@ -132,27 +132,27 @@ export const OFFICIAL_MEETING_CACHE = {
           "committee_key": "ks",
           "committee": "Kommunstyrelsen",
           "meeting_date": "2026-10-06",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "09:00",
+          "end_time": "11:10",
+          "location": "Kommunhuset Fjugesta - Sammanträdesrummet Multen"
         },
         {
           "source_url": "https://meetings.lekeberg.se/committees/kommunstyrelsen/mote-2026-11-17",
           "committee_key": "ks",
           "committee": "Kommunstyrelsen",
           "meeting_date": "2026-11-17",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "09:00",
+          "end_time": "17:00",
+          "location": "Kommunhuset Fjugesta - Sammanträdesrummet Multen"
         },
         {
           "source_url": "https://meetings.lekeberg.se/committees/kommunstyrelsen/mote-2026-12-15",
           "committee_key": "ks",
           "committee": "Kommunstyrelsen",
           "meeting_date": "2026-12-15",
-          "start_time": "",
-          "end_time": "",
-          "location": ""
+          "start_time": "09:00",
+          "end_time": "17:00",
+          "location": "Kommunhuset Fjugesta - Sammanträdesrummet Multen"
         }
       ]
     }
