@@ -41,7 +41,8 @@ with sync_playwright() as p:
  page.get_by_role('button',name='Aktiva',exact=True).click();assert page.get_by_text('Gemensam skolmotion').count()==0
  page.get_by_role('button',name='Arkiverade').click();page.locator('details.actions-menu summary').click();page.get_by_role('button',name='Återaktivera').click()
  page.get_by_role('button',name='Våra idéer',exact=True).click();page.get_by_text('Lokal idé').wait_for(timeout=3000)
- page.locator('[data-idea-status]').select_option('avslutad');assert page.get_by_text('Lokal idé').count()==0
+ page.locator('[data-idea-status]').select_option('avslutad')
+ page.get_by_text('Lokal idé').wait_for(state='detached',timeout=3000)
  page.get_by_role('button',name='Avslutade idéer (1)').click();page.get_by_text('Lokal idé').wait_for(timeout=3000)
  assert not errors,errors
  pub=b.new_page(viewport={'width':1400,'height':900});pub.set_content((root/'dist/index.html').read_text(),wait_until='domcontentloaded');pub.get_by_role('button',name='Integritet').click()

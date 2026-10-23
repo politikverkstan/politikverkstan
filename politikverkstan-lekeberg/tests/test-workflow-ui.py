@@ -51,7 +51,7 @@ with sync_playwright() as p:
  page.locator('[data-case-open]').first.click()
  page.locator('[data-wf-retry="meetings"]').wait_for()
  assert page.locator('.wf-section-error').count()==1
- assert page.get_by_text('Ändringshistorik',exact=True).is_visible()
+ assert page.get_by_role('heading',name='Ändringshistorik',exact=True).is_visible()
  assert page.get_by_text('Budgetuppföljning',exact=False).count()>0
  assert page.get_by_text('Uppföljningar',exact=True).is_visible()
  assert page.get_by_text('Ställningstagande och förankring',exact=True).is_visible()
