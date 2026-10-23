@@ -59,9 +59,9 @@ with sync_playwright() as p:
  assert page.locator('.official-event').first.get_attribute('rel')=='noopener noreferrer'
  assert not page.locator('#official-calendar-sync').count(), 'Non-admin cannot trigger poll'
  assert page.locator('.meeting-list-pane').is_visible(), 'Private meetings must remain available'
- assert page.evaluate('window.officialGets')==1
+ assert page.evaluate('window.officialGets')==2, 'Dashboard and meetings each load the read-only calendar'
  page.locator('#official-calendar-refresh').click()
- page.wait_for_function('window.officialGets===2')
+ page.wait_for_function('window.officialGets===3')
  assert page.locator('.official-event').count()==1
  page.locator('[data-official-month="1"]').click()
  assert page.locator('.official-event').count()==0

@@ -62,7 +62,7 @@ with sync_playwright() as p:
  page.locator('.prep-root').wait_for()
  assert page.locator('.prep-item').count()==2
  assert '0 av 2' in page.locator('.prep-progress-head').inner_text()
- assert page.locator('.prep-docs').count()==0
+ assert not page.locator('.prep-docs').is_visible(), 'Documents must remain collapsed until requested'
  page.locator('.prep-side summary').click()
  assert page.locator('.prep-docs a').count()==1
  assert page.evaluate('document.documentElement.scrollWidth')<=400
