@@ -3,13 +3,13 @@
     "id": "org01",
     "name": "Kommunfullmäktige",
     "seats": 35,
-    "subs": 23,
+    "subs": null,
     "ruleStatus": "delvis verifierad",
     "ruleSource": "Slutligt resultat i kommunfullmäktigevalet 2026 enligt Valmyndigheten; 2026 års uppdragsförteckning fortfarande preliminär",
     "selectionMethod": "direktval till kommunfullmäktige (inte simulering av nämndval)",
     "lekebergSeats": 35,
     "lekebergSubs": null,
-    "validationNote": "Delvis verifierad: 35 ordinarie mandat 2026–2030. Uppgiften 23 ersättare från arbetsunderlaget är inte källverifierad.",
+    "validationNote": "Delvis verifierad: 35 ordinarie mandat 2026–2030. Antalet ersättare i arbetsunderlaget är inte verifierat och visas därför inte som säkert platstal.",
     "ruleUrl": "https://www.val.se/valresultat-och-statistik/riksdags--region--och-kommunval/valresultat-2026",
     "verifiedFacts": [
       "seats"

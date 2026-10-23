@@ -18,6 +18,7 @@ for(const d of data){
 assert.equal(data.find(x=>x.id==='org01').ruleStatus,'delvis verifierad');
 assert.equal(data.find(x=>x.id==='org01').lekebergSeats,35);
 assert.equal(data.find(x=>x.id==='org01').lekebergSubs,null);
+assert.equal(data.find(x=>x.id==='org01').subs,null,'Do not present an unverified alternate count');
 assert.equal(data.find(x=>x.id==='org09').ruleStatus,'förslag 2026');
 assert.equal(data.find(x=>x.id==='org09').effectiveFrom,'2027-01-01');
 const js=readFileSync(new URL('src/app.js',root),'utf8');

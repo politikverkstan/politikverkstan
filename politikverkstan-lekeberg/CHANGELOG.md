@@ -1,3 +1,11 @@
+## 1.4.0 (inklusive 1.3.1) – 2026-10-23
+
+- Delvis källverifierade fält skiljs från fullständigt verifierad sammansättning. Kommunfullmäktiges 35 mandat är källförda; okänt antal ersättare visas inte som ett känt tal.
+- 57 uppdrag och organ finns kvar. Historiska reglementen och KS-beredning uppgraderas inte automatiskt till beslut för 2027–2030.
+- Filter för delvis verifierade poster, källuppföljning och varning vid ännu ej verifierade nämndberäkningar.
+- Läsande produktionstest av D1-migreringar 0001–0013 och integritet samt nya regressionstester.
+- Produktionen måste granskas separat: Access, tvåanvändarprov, backup/återställning och publiceringsgrind. Se `RELEASE_1.3.1_1.4.md`.
+
 # Ändringslogg – Politikverkstan Lekeberg
 
 ## 1.3.0 – Offentlig möteskälla till privat förberedelse
