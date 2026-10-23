@@ -27,11 +27,12 @@ assert(promotionScript.includes('if [ "$ACTUAL_MAIN" != "$PASSED_SHA" ]'),'Never
 assert(promotionScript.includes('git merge-base --is-ancestor'),'Require fast-forward history');
 assert(!promotionScript.includes('git push --force'),'Must not bypass release history');
 const pkg=JSON.parse(read('package.json'));
-assert.equal(pkg.version,'1.7.1');
+assert(/^\d+\.\d+\.\d+$/.test(pkg.version),'Valid current release version required');
+assert(pkg.version.localeCompare('1.7.1',undefined,{numeric:true})>=0,'This test also applies to versions after 1.7.1');
 const ui=read('src/meetings-ui.js'),shell=read('src/workroom.js'),generated=read('worker/workroom-page.mjs');
 assert(ui.includes("Date.now()-seen>48*60*60*1000"),'Stale source warning required');
 assert(ui.includes('Kalenderuppgifter saknar färsk bekräftelse'));
-assert(shell.includes('Version 1.7.1'));
-assert(generated.includes('Version 1.7.1'));
+assert(shell.includes('Version '+pkg.version));
+assert(generated.includes('Version '+pkg.version));
 assert(generated.includes('Kalenderuppgifter saknar färsk bekräftelse'));
 console.log('PASS 1.7.1: scheduled dispatch, tested-head promotion, stale-source warning and version label');
