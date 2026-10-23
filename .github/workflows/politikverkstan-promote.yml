@@ -1,0 +1,49 @@
+name: Promote tested Politikverkstan release
+
+on:
+  workflow_run:
+    workflows: ["Politikverkstan 1.4 quality"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: politikverkstan-promote-release
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    if: >-
+      ${{ github.repository == 'politikverkstan/politikverkstan' &&
+          github.event.workflow_run.event == 'push' &&
+          github.event.workflow_run.head_repository.full_name == 'politikverkstan/politikverkstan' &&
+          github.event.workflow_run.head_branch == 'main' &&
+          github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Advance release branch only for successful current main commit
+        shell: bash
+        env:
+          PASSED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          ACTUAL_MAIN="$(git rev-parse origin/main)"
+          if [ "$ACTUAL_MAIN" != "$PASSED_SHA" ]; then
+            echo "A newer main commit exists. Skip stale successful run."
+            exit 0
+          fi
+          if git ls-remote --exit-code --heads origin production >/dev/null; then
+            git fetch origin production
+            if ! git merge-base --is-ancestor origin/production "$PASSED_SHA"; then
+              echo "Production branch is not an ancestor of the tested commit. No force push."
+              exit 1
+            fi
+          fi
+          git push origin "$PASSED_SHA:refs/heads/production"
+          echo "Promoted tested $PASSED_SHA to production branch."

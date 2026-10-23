@@ -6,6 +6,7 @@ on:
     paths:
       - "politikverkstan-lekeberg/**"
       - ".github/workflows/politikverkstan-ci.yml"
+      - ".github/workflows/politikverkstan-promote.yml"
   pull_request:
     paths:
       - "politikverkstan-lekeberg/**"
