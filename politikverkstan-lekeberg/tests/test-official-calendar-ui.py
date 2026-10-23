@@ -26,7 +26,7 @@ window.fetch=async(path,options={})=>{
  else if(path==='/api/private/workflow/dashboard')data={followups:[],total_open:0};
  else if(path==='/api/private/official-meetings'){
   window.officialGets++;
-  data={meetings:[{source_url:'__SOURCE__',committee_key:'kf',committee:'Kommunfullmäktige',meeting_date:'__DATE__',start_time:'18:00',end_time:'21:00',location:'Träffen'}],
+  data={meetings:[{source_url:'__SOURCE__',committee_key:'kf',committee:'Kommunfullmäktige',meeting_date:'__DATE__',start_time:'18:00',end_time:'21:00',location:'Träffen',agenda:[{number:1,title:'Val av justerare'},{number:2,title:'Ekonomisk månadsrapport och uppföljning av budget'}],documents:[{title:'Kallelse till kommunfullmäktige',url:'__SOURCE__/agenda/kallelsepdf?downloadMode=open'}]}],
    sources:[{committee_key:'kf',last_attempt_at:'2026-10-22T10:00:00Z',last_success_at:'2026-10-22T10:00:00Z',last_error:''}],
    committees:[{key:'kf',name:'Kommunfullmäktige',url:'https://meetings.lekeberg.se/committees/kommunfullmaktige'}],can_sync:false};
  }
@@ -70,6 +70,25 @@ with sync_playwright() as p:
  assert page.locator('.official-event').count()==1
  assert page.locator('.official-day.is-today').count()==1
  assert page.locator('[data-official-prepare]').count()==1
+ # Long agendas must render outside the narrow calendar day, with clear mobile navigation.
+ page.locator('[data-official-agenda]').click()
+ assert page.locator('.official-agenda-view').is_visible()
+ assert page.locator('.official-calendar-grid').count()==0
+ assert page.locator('.official-agenda-entry').count()==2
+ assert page.locator('.official-agenda-list [data-official-point]').count()==2
+ assert page.locator('.official-agenda-entry-heading').first.inner_text().count('1.')==1
+ assert page.locator('.official-agenda-documents summary').is_visible()
+ page.locator('.official-agenda-documents summary').click()
+ assert page.get_by_role('link',name='Kallelse till kommunfullmäktige').count()==1
+ assert page.evaluate('document.documentElement.scrollWidth')<=392
+ page.locator('#official-agenda-back').click()
+ page.locator('.official-calendar-grid').wait_for()
+ assert page.locator('.official-agenda-view').count()==0
+ page.locator('[data-official-agenda]').click()
+ page.locator('[data-official-index="0"]').click()
+ assert page.locator('#meeting-form').is_visible()
+ assert page.evaluate('window.officialGets')==2
+ assert page.evaluate('document.documentElement.scrollWidth')<=392
  page.locator('[data-official-prepare]').click()
  assert page.locator('#meeting-form').is_visible()
  assert page.locator('#meeting-form [name="title"]').input_value()=='Kommunfullmäktige – mötesförberedelser'
@@ -80,4 +99,4 @@ with sync_playwright() as p:
  assert page.evaluate('document.documentElement.scrollWidth')<=390+2
  assert not errors,errors
  browser.close()
-print('PASS read-only public meeting calendar, month navigation, private meeting isolation and responsive layout')
+print('PASS public calendar, dedicated responsive agenda, browser back, source links and private preparation')

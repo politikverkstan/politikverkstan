@@ -64,14 +64,38 @@ function changeOfficialMonth(offset){
 function officialAgendaDetails(m){
  const agenda=Array.isArray(m.agenda)?m.agenda:[],docs=Array.isArray(m.documents)?m.documents:[];
  const current=state.meetingCurrent;
- const canImport=current?.id&&current?.is_owner!==false&&current.official_source_url===m.source_url;
- return `<div class="official-agenda-panel">
- <p class="case-hint">Offentlig publicering. Kontrollera alltid originalets kallelse, bilagor och eventuellt justerat protokoll. Inga dokument hämtas automatiskt till din arbetsyta.</p>
- ${m.agenda_error?'<p class="official-warning">'+h(m.agenda_error)+' – äldre identifierade uppgifter kan visas.</p>':''}
- ${m.agenda_changed_at?'<p class="case-hint">Senast identifierad ändring: '+h(m.agenda_changed_at.slice(0,16).replace('T',' '))+' UTC</p>':''}
- ${agenda.length?'<h4>Identifierade dagordningspunkter</h4><ol class="official-agenda-list">'+agenda.map((a,i)=>'<li><strong>'+h(a.number+'. '+a.title)+'</strong><button class="btn btn-sm" type="button" data-official-point="'+h(m.source_url)+'" data-official-index="'+i+'">'+(canImport?'Lägg till i mitt möte':'Förbered denna punkt')+'</button></li>').join('')+'</ol>':'<p class="case-hint">Inga dagordningsrubriker kunde identifieras säkert. Kontrollera kommunens kallelse manuellt.</p>'}
- ${docs.length?'<h4>Offentligt länkade handlingar</h4><ul class="official-document-list">'+docs.map(d=>'<li><a href="'+h(d.url)+'" target="_blank" rel="noopener noreferrer">'+h(d.title)+' ↗</a></li>').join('')+'</ul>':''}
- <a class="btn btn-sm" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer">Öppna original i MeetingPlus ↗</a></div>`;
+ const canImport=current?.id&&current.is_owner!==false&&current.official_source_url===m.source_url;
+ return `<section class="official-agenda-view" aria-labelledby="official-agenda-title">
+  <div class="official-agenda-heading">
+   <button class="btn btn-sm" type="button" id="official-agenda-back">← Till kalendern</button>
+   <span class="eyebrow">OFFENTLIG DAGORDNING · LEKEBERGS KOMMUN</span>
+   <h1 id="official-agenda-title">${h(m.committee)}</h1>
+   <p>${h(m.meeting_date)}${m.start_time?' · kl. '+h(m.start_time):''}${m.end_time?'–'+h(m.end_time):''}${m.location?' · '+h(m.location):''}</p>
+  </div>
+  <div class="official-agenda-layout">
+   <section class="card official-agenda-main" aria-labelledby="official-items-heading">
+    <h2 id="official-items-heading">Dagordningspunkter <small>(${agenda.length})</small></h2>
+    <p class="case-hint">Välj en punkt för att skapa en egen privat förberedelse. Inget hämtas automatiskt till Arbetsytans privata handlingar.</p>
+    ${m.agenda_error?'<p class="official-warning" role="status">'+h(m.agenda_error)+' – tidigare identifierade uppgifter kan visas.</p>':''}
+    ${agenda.length?'<ol class="official-agenda-list">'+agenda.map((a,i)=>`<li class="official-agenda-entry">
+     <div class="official-agenda-entry-heading"><span class="official-agenda-number">${h(a.number)}.</span><strong>${h(a.title)}</strong></div>
+     <button class="btn btn-sm" type="button" data-official-point="${h(m.source_url)}" data-official-index="${i}">${canImport?'Lägg till i mitt möte':'Förbered punkten'}</button>
+    </li>`).join('')+'</ol>':'<p class="case-hint">Ingen dagordning kunde identifieras säkert. Öppna kommunens originalkallelse för kontroll.</p>'}
+   </section>
+   <aside class="official-agenda-side">
+    <section class="card official-agenda-source">
+     <h2>Källa och publicering</h2>
+     <p>Uppgifterna kommer från MeetingPlus och kan ändras. Kontrollera alltid originalkallelsen, bilagorna och eventuellt justerat protokoll.</p>
+     ${m.agenda_changed_at?'<p class="case-hint">Senast identifierad ändring: '+h(m.agenda_changed_at.slice(0,16).replace('T',' '))+' UTC</p>':''}
+     <a class="btn btn-sm" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer">Öppna mötet i MeetingPlus ↗</a>
+    </section>
+    <section class="card official-agenda-documents">
+     <h2>Offentliga handlingar <small>(${docs.length})</small></h2>
+     ${docs.length?'<details><summary>Visa dokumentlänkar</summary><ul class="official-document-list">'+docs.map(d=>'<li><a href="'+h(d.url)+'" target="_blank" rel="noopener noreferrer">'+h(d.title)+' ↗</a></li>').join('')+'</ul></details>':'<p class="case-hint">Inga handlingar har identifierats i publiceringen. Kontrollera MeetingPlus.</p>'}
+    </section>
+   </aside>
+  </div>
+ </section>`;
 }
 function officialCalendarView(){
  const meetings=state.officialCalendarMeetings||[];
@@ -89,7 +113,7 @@ function officialCalendarView(){
   const events=meetings.filter(m=>m.meeting_date===date);
   const isToday=date===today;
   return `<div class="official-day${isToday?' is-today':''}"><span class="official-day-number"${isToday?' aria-current="date"':''}>${day}</span>${isToday?'<span class="official-today-label">Idag</span>':''}
-    ${events.map(m=>`<div class="official-event-wrap"><a class="official-event" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer" title="${h(m.committee+' '+(m.start_time||'')+' '+(m.location||''))}"><b>${h({kf:'KF',bun:'BUN',sn:'SN',ks:'KS'}[m.committee_key]||m.committee)}</b> ${h(m.start_time||'')}${m.end_time?'–'+h(m.end_time):''}</a><button type="button" class="official-prepare" data-official-agenda="${h(m.source_url)}" aria-expanded="${state.officialSelectedUrl===m.source_url}">Dagordning</button><button type="button" class="official-prepare" data-official-prepare="${h(m.source_url)}" aria-label="Förbered ${h(m.committee)} ${h(m.meeting_date)}">Förbered</button>${state.officialSelectedUrl===m.source_url?officialAgendaDetails(m):''}</div>`).join('')}</div>`;
+    ${events.map(m=>`<div class="official-event-wrap"><a class="official-event" href="${h(m.source_url)}" target="_blank" rel="noopener noreferrer" title="${h(m.committee+' '+(m.start_time||'')+' '+(m.location||''))}"><b>${h({kf:'KF',bun:'BUN',sn:'SN',ks:'KS'}[m.committee_key]||m.committee)}</b> ${h(m.start_time||'')}${m.end_time?'–'+h(m.end_time):''}</a><button type="button" class="official-prepare" data-official-agenda="${h(m.source_url)}" aria-label="Visa dagordning för ${h(m.committee)} ${h(m.meeting_date)}">Dagordning</button><button type="button" class="official-prepare" data-official-prepare="${h(m.source_url)}" aria-label="Förbered ${h(m.committee)} ${h(m.meeting_date)}">Förbered</button></div>`).join('')}</div>`;
  });
  const synced=sources.filter(s=>s.last_success_at).sort((a,b)=>b.last_success_at.localeCompare(a.last_success_at));
  const last=synced[0]?.last_success_at||'';
@@ -127,8 +151,12 @@ function officialCalendarView(){
  </section>`;
 }
 function attachOfficialCalendarActions(){
+ $('official-agenda-back')?.addEventListener('click',()=>{
+  if((workHistoryEntry()?.depth||0)>0)workGoBack();
+  else{state.officialSelectedUrl='';render();}
+ });
  document.querySelectorAll('[data-official-agenda]').forEach(b=>b.addEventListener('click',()=>{
-  state.officialSelectedUrl=state.officialSelectedUrl===b.dataset.officialAgenda?'':b.dataset.officialAgenda;render();
+  state.officialSelectedUrl=b.dataset.officialAgenda;recordWorkView();render();window.scrollTo(0,0);
  }));
  document.querySelectorAll('[data-official-point]').forEach(b=>b.addEventListener('click',async()=>{
   const m=state.officialCalendarMeetings.find(x=>x.source_url===b.dataset.officialPoint);
@@ -139,7 +167,9 @@ function attachOfficialCalendarActions(){
    if(!meetingSafeToLeave())return;
    try{
     await api('/api/private/meetings/'+current.id+'/items','POST',{title:a.title,case_id:null,preparation,outcome:'',follow_up:''});
-    await openMeeting(current.id);render();toast('Den valda offentliga punkten har lagts till i ditt sammanträde.');
+    await openMeeting(current.id);state.officialSelectedUrl='';recordWorkView();render();
+    document.getElementById('meeting-form')?.scrollIntoView({block:'start'});
+    toast('Den valda offentliga punkten har lagts till i ditt sammanträde.');
    }catch(e){toast(e.message,true);}
    return;
   }
@@ -148,7 +178,9 @@ function attachOfficialCalendarActions(){
    meeting_date:m.meeting_date,start_time:m.start_time||'',location:m.location||'',official_source_url:m.source_url};
   state.meetingAgenda=[];state.meetingNote='';state.meetingItemEdit=null;state.meetingDirty=false;
   state.meetingNoteDirty=false;state.meetingItemDirty=false;state.officialPendingPoint={title:a.title,preparation};
-  render();toast('Offentlig punkt vald. Spara ditt privata sammanträde för att lägga till punkten.');
+  state.officialSelectedUrl='';recordWorkView();render();
+  document.getElementById('meeting-form')?.scrollIntoView({block:'start'});
+  toast('Offentlig punkt vald. Spara ditt privata sammanträde för att lägga till punkten.');
  }));
 
  document.querySelectorAll('[data-official-prepare]').forEach(button=>button.addEventListener('click',()=>{

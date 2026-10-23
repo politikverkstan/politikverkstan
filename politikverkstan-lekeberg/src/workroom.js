@@ -269,7 +269,7 @@ function usersPage(){if(state.user?.role!=='admin')return '<p>Åtkomst nekad</p>
 async function openTab(tab,fromHistory=false){if(!fromHistory&&tab!=='cases'&&!caseSafeToLeave())return;
  if(!fromHistory&&tab!=='meetings'&&!meetingSafeToLeave())return;
  if(tab!=='cases'){state.caseDirty=false;state.caseNoteDirty=false;state.caseCurrent=null;state.caseComments=[];}
- if(tab!=='meetings'){state.meetingDirty=false;state.meetingNoteDirty=false;state.meetingCurrent=null;state.meetingAgenda=[];state.meetingItemEdit=null;}
+ if(tab!=='meetings'){state.meetingDirty=false;state.meetingNoteDirty=false;state.meetingCurrent=null;state.meetingAgenda=[];state.meetingItemEdit=null;state.officialSelectedUrl='';}
  if(state.dirty&&state.motion){try{await saveMotion(false);}catch(e){toast('Kunde inte spara dokumentet före navigering: '+e.message,true);return;}}
  state.tab=tab;if(tab==='overview'){await loadDashboard();}if(tab==='meetings'){try{await loadMeetings();await loadCases();}catch(e){state.tab='overview';render();toast('Sammanträden kunde inte öppnas. '+e.message,true);return;}}if(tab==='meetings')await loadOfficialCalendar();if(tab==='cases'){try{await loadCases();await loadCaseFiles();await loadCaseDirectory();}catch(e){state.tab='overview';render();toast('Ärendehanteringen kunde inte öppnas. '+e.message,true);return;}}if(tab==='ideas')await loadIdeas();if(tab==='shared')await loadShared();if(tab==='files')await loadFiles();if(tab==='users'&&state.user?.role==='admin')await loadUsers();if(!fromHistory)recordWorkView();render();window.scrollTo(0,0);
 }

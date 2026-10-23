@@ -8,6 +8,7 @@ function workSnapshot(){
   tab:state.tab,
   caseId:state.tab==='cases'?(state.caseCurrent?.id||null):null,
   meetingId:state.tab==='meetings'?(state.meetingCurrent?.id||null):null,
+  officialUrl:state.tab==='meetings'?(state.officialSelectedUrl||null):null,
   motionId:state.tab==='editor'?(state.motion?.id||null):null
  };
 }
@@ -19,6 +20,7 @@ function sameWorkView(a,b){
  return !!a&&!!b&&a.tab===b.tab&&
   (a.caseId||null)===(b.caseId||null)&&
   (a.meetingId||null)===(b.meetingId||null)&&
+  (a.officialUrl||null)===(b.officialUrl||null)&&
   (a.motionId||null)===(b.motionId||null);
 }
 function recordWorkView(){
@@ -43,6 +45,7 @@ async function restoreWorkHistory(event){
  // A history entry for a list must discard a currently open detail in that tab.
  if(target.tab==='cases'){state.caseCurrent=null;state.caseComments=[];}
  if(target.tab==='meetings'){state.meetingCurrent=null;state.meetingAgenda=[];state.meetingNote='';state.meetingItemEdit=null;}
+ state.officialSelectedUrl=target.tab==='meetings'?(target.officialUrl||''):'';
  try{
   await openTab(target.tab,true);
   if(state.tab!==target.tab)return;

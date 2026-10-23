@@ -614,10 +614,33 @@ html[data-theme="dark"] .official-today-label{color:#a3e8dd}
 .official-prepare:hover,.official-prepare:focus-visible{outline:2px solid #ba6f58;outline-offset:1px}
 @media(max-width:700px){.official-prepare{font-size:9px;padding:4px 1px}}
 
-/* 1.5: source-linked agenda details */
-.official-agenda-panel{margin:8px 0 12px;padding:12px;border:1px solid var(--border);border-radius:10px;min-width:0}
-.official-agenda-panel h4{font-size:13px;margin:12px 0 6px}
-.official-agenda-list,.official-document-list{margin:6px 0;padding-left:20px;overflow-wrap:anywhere}
-.official-agenda-list li,.official-document-list li{padding:5px 0;line-height:1.4}
-.official-agenda-list .btn{margin-left:8px}
-@media(max-width:690px){.official-agenda-panel{padding:8px}.official-agenda-list .btn{display:block;margin:5px 0}}
+/* Public MeetingPlus agenda: dedicated full-width page, outside the calendar grid */
+.official-agenda-view{width:100%;min-width:0}
+.official-agenda-heading{margin:0 0 22px}
+.official-agenda-heading #official-agenda-back{margin-bottom:23px}
+.official-agenda-heading .eyebrow{display:block}
+.official-agenda-heading h1{font-size:clamp(24px,3vw,33px);line-height:1.2;margin:9px 0 7px}
+.official-agenda-heading p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+.official-agenda-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(270px,.85fr);gap:18px;align-items:start;min-width:0}
+.official-agenda-main,.official-agenda-side{min-width:0}
+.official-agenda-main h2 small,.official-agenda-documents h2 small{font-weight:500;color:var(--muted)}
+.official-agenda-main>.case-hint{margin:0 0 17px}
+.official-agenda-list{list-style:none;display:grid;gap:9px;margin:0;padding:0}
+.official-agenda-entry{border:1px solid var(--border);border-radius:11px;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:0}
+.official-agenda-entry-heading{display:flex;gap:11px;align-items:baseline;min-width:0;overflow-wrap:anywhere;line-height:1.45}
+.official-agenda-entry-heading strong{font-size:14px;min-width:0}
+.official-agenda-number{flex:none;font-weight:850;color:var(--muted);font-size:13px}
+.official-agenda-entry .btn{flex:none;max-width:190px;white-space:normal;text-align:center}
+.official-agenda-source .btn{white-space:normal;text-align:center}
+.official-agenda-documents summary{font-size:13px;font-weight:750;cursor:pointer;padding:7px 0}
+.official-document-list{padding-left:18px;margin:10px 0 0;overflow-wrap:anywhere}
+.official-document-list li{padding:6px 0;line-height:1.5}
+.official-document-list a{overflow-wrap:anywhere}
+@media(max-width:1020px){.official-agenda-layout{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:690px){
+ .official-agenda-heading{margin-bottom:16px}
+ .official-agenda-heading #official-agenda-back{margin-bottom:17px}
+ .official-agenda-entry{display:block;padding:12px}
+ .official-agenda-entry .btn{margin:10px 0 0;max-width:none;width:100%}
+ .official-agenda-main,.official-agenda-side .card{padding:16px}
+}

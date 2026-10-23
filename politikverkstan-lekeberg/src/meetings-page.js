@@ -79,6 +79,8 @@ function meetingDetails(m){
  :'');
 }
 function meetingsPage(){
+ const officialSelected=(state.officialCalendarMeetings||[]).find(m=>m.source_url===state.officialSelectedUrl);
+ if(officialSelected)return officialAgendaDetails(officialSelected);
  const filtered=state.meetingList.filter(x=>(state.meetingVisibility==='all'||(state.meetingVisibility==='mine'?x.scope==='mine'&&x.is_owner:x.scope==='team'))&&(!state.meetingSearch||[x.title,x.committee,x.meeting_date,x.location].join(' ').toLocaleLowerCase('sv-SE').includes(state.meetingSearch.toLocaleLowerCase('sv-SE'))));
  return `
  ${officialCalendarView()}
