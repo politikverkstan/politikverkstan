@@ -1,3 +1,11 @@
+## 1.7.1 – 2026-10-24
+
+- Kalenderhämtning som uppdaterar `main` med `GITHUB_TOKEN` utlöser nu explicit hela CI-flödet via `workflow_dispatch`. Releasebefordran accepterar både push- och dispatchkörningar men endast godkänd testning av **aktuell** `main`-commit.
+- Versionsnummer visas i den skyddade Arbetsytan. Kalendern varnar om något organ saknar bekräftad uppdatering inom 48 timmar.
+- Release- och driftchecklista tydliggör gränsskydd, Cloudflare-inställningar, databassäkerhetskopior, verkliga åtkomstprov och integritet. Dessa externa steg redovisas som ej utförda tills de kontrollerats.
+- Ingen ny databasstruktur, ingen rättighetsutökning i applikationen och ingen automatisk export av personuppgifter.
+- Nytt regressionsskydd för releasekedjans kopplingar och källåldersvarning.
+
 ## 1.7.0 – 2026-10-23 (omfattar 1.5–1.7)
 
 - **1.5:** Hämtning av offentliga MeetingPlus-handlingar och konservativ avläsning av dagordningsrubriker. Endast källstyrkta punkter får föreslås för privata mötesförberedelser. Ändringsindikering och varning om källfel.

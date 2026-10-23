@@ -118,6 +118,11 @@ function officialCalendarView(){
  const synced=sources.filter(s=>s.last_success_at).sort((a,b)=>b.last_success_at.localeCompare(a.last_success_at));
  const last=synced[0]?.last_success_at||'';
  const failures=sources.filter(s=>s.last_error);
+ // Show stale or never-confirmed sources without suggesting that cached data is current.
+ const stale=sources.filter(s=>{
+  const seen=Date.parse(s.last_success_at||'');
+  return !Number.isFinite(seen)||Date.now()-seen>48*60*60*1000;
+ });
  const sourceNames=Object.fromEntries((state.officialCalendarCommittees||[]).map(c=>[c.key,c.name]));
  const sourceDetails=(state.officialCalendarCommittees||[]).map(c=>{
   const item=sources.find(s=>s.committee_key===c.key);
@@ -133,7 +138,8 @@ function officialCalendarView(){
    </div></div>
   ${state.officialCalendarError?`<p class="db-alert" role="status">${h(state.officialCalendarError)}</p>`:''}
   <div class="official-calendar-status"><span>${last?'Senast lyckade hämtning: '+h(last.replace('T',' ').slice(0,16))+' (UTC)':'Ännu ingen bekräftad hämtning'}</span>
-   ${failures.length?`<span class="official-warning">Misslyckade källor: ${h(failures.map(x=>sourceNames[x.committee_key]||x.committee_key).join(', '))}. Tidigare uppgifter visas där de finns.</span>`:''}</div>
+   ${failures.length?`<span class="official-warning">Misslyckade källor: ${h(failures.map(x=>sourceNames[x.committee_key]||x.committee_key).join(', '))}. Tidigare uppgifter visas där de finns.</span>`:''}
+   ${stale.length?`<span class="official-warning" role="status">Kalenderuppgifter saknar färsk bekräftelse (över 48 timmar): ${h(stale.map(s=>sourceNames[s.committee_key]||s.committee_key).join(', '))}. Kontrollera originalet i MeetingPlus.</span>`:''}</div>
   <details class="official-source-diagnostics" ${failures.length?'open':''}><summary>Visa hämtstatus per nämnd</summary>
    <ul>${sourceDetails}</ul></details>
   <div class="official-month"><button class="btn btn-sm" type="button" data-official-month="-1" aria-label="Föregående månad">←</button>

@@ -1,4 +1,4 @@
-name: Politikverkstan 1.7 quality
+name: Politikverkstan quality
 
 on:
   push:
@@ -7,6 +7,7 @@ on:
       - "politikverkstan-lekeberg/**"
       - ".github/workflows/politikverkstan-ci.yml"
       - ".github/workflows/politikverkstan-promote.yml"
+      - ".github/workflows/meetingplus-calendar.yml"
   pull_request:
     paths:
       - "politikverkstan-lekeberg/**"

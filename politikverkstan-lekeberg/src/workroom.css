@@ -644,3 +644,6 @@ html[data-theme="dark"] .official-today-label{color:#a3e8dd}
  .official-agenda-entry .btn{margin:10px 0 0;max-width:none;width:100%}
  .official-agenda-main,.official-agenda-side .card{padding:16px}
 }
+
+/* 1.7.1: small, visible release identifier; no private data in version text. */
+.work-version{display:block;font-size:11px;color:#bbc7e7;margin:0 0 9px}

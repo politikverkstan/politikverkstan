@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: lekeberg-official-calendar
@@ -40,6 +41,7 @@ jobs:
       - name: Run core regressions before publishing snapshot
         run: npm test
       - name: Commit public calendar snapshot only
+        id: snapshot
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
@@ -47,7 +49,21 @@ jobs:
           git add -- worker/official-meetings-cache.mjs
           if git diff --cached --quiet; then
             echo 'No changes to public calendar'
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m 'Update published Lekeberg committee meeting snapshot'
             git push origin HEAD:main
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+      # GITHUB_TOKEN pushes do NOT fire a push-triggered CI run.
+      # workflow_dispatch is an explicit GitHub-supported exception.
+      - name: Test updated calendar snapshot with full quality suite
+        if: steps.snapshot.outputs.changed == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh workflow run politikverkstan-ci.yml --ref main
+          echo "Full quality workflow dispatched for current main."

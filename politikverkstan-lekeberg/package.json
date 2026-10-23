@@ -1,6 +1,6 @@
 {
   "name": "politikverkstan-lekeberg",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "private": true,
   "scripts": {
     "build": "python build.py",
@@ -9,7 +9,7 @@
     "test:build": "python build.py --check && python tests/test-build.py",
     "test:migrations": "python tests/test-migrations.py && python tests/test-repair-0011.py && python tests/test-d1-baseline.py",
     "deploy:cloudflare": "npm run test:unit && node ops/deploy-with-d1-check.mjs",
-    "test:unit": "node tests/test-d1-deploy-guard.mjs && node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs && node tests/test-cases.mjs && node tests/test-cases-share.mjs && node tests/test-meetings.mjs && node tests/test-official-meetings.mjs && node tests/test-tasks.mjs && node tests/test-workflow.mjs && node tests/test-registry-14.mjs && node tests/test-production-safety-131.mjs && node tests/test-agenda-15.mjs && node tests/test-lifecycle-16.mjs && node tests/test-document-types-17.mjs",
+    "test:unit": "node tests/test-d1-deploy-guard.mjs && node tests/test-engine.js && node tests/test-candidates.js && node tests/test-worker.mjs && node tests/test-private.mjs && node tests/test-collaboration.mjs && node tests/test-files.mjs && node tests/test-public-registry.mjs && node tests/test-stage1.mjs && node tests/test-cases.mjs && node tests/test-cases-share.mjs && node tests/test-meetings.mjs && node tests/test-official-meetings.mjs && node tests/test-tasks.mjs && node tests/test-workflow.mjs && node tests/test-registry-14.mjs && node tests/test-production-safety-131.mjs && node tests/test-agenda-15.mjs && node tests/test-lifecycle-16.mjs && node tests/test-document-types-17.mjs && node tests/test-release-171.mjs",
     "check:production": "node ops/check-production-readonly.mjs"
   },
   "devDependencies": {

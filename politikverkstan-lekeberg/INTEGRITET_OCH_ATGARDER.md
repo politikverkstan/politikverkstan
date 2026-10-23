@@ -31,3 +31,11 @@ Den säkraste driftsättningen är att **inte slå på insamlingen** förrän en
 - Bekräfta D1-migrering på rätt databas.
 - Aktivera temporärt testläge med testdata och kontrollera att aggregation samt automatisk gallring fungerar i Cloudflare-miljö innan drift.
 - Använd rate limiting/WAF mot manipulation eller överbelastning av statistikendpointen om insamling aktiveras.
+
+## Checklista för skyddad Arbetsyta (tillägg 1.7.1)
+
+Arbetsytan lagrar också uppgifter om inloggade gruppmedlemmar, interna motioner och andra skrivelser, ärenden, kommentarer, sammanträdesförberedelser, uppföljningar, bifogade filer och personliga anteckningar. Personuppgifter och uppgifter som avslöjar politiska åsikter kan förekomma i detta material. Den befintliga tabellen ovan beskriver i första hand den publika portalens statistik och är **inte** en komplett förteckning över behandlingar i Arbetsytan.
+
+Innan gruppen använder funktionerna med faktiska uppgifter ska ansvarig dokumentera vem som är personuppgiftsansvarig, ändamål och rättslig grund för Arbetsytans datakategorier, åtkomst och delningsrutiner, lagring/gallring, incidenthantering, biträden samt eventuell konsekvensbedömning. Kontrollera dessa frågor med kompetent dataskyddsansvarig. Ingen policy kan anses fastställd genom en ändring i källkoden.
+
+Varken integration med en annan organisations databas, export av privata ärenden eller ändrade behörigheter ingår i 1.7.1.

@@ -2,7 +2,7 @@ name: Promote tested Politikverkstan release
 
 on:
   workflow_run:
-    workflows: ["Politikverkstan 1.7 quality"]
+    workflows: ["Politikverkstan quality"]
     types: [completed]
 
 permissions:
@@ -16,7 +16,7 @@ jobs:
   promote:
     if: >-
       ${{ github.repository == 'politikverkstan/politikverkstan' &&
-          github.event.workflow_run.event == 'push' &&
+          (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch') &&
           github.event.workflow_run.head_repository.full_name == 'politikverkstan/politikverkstan' &&
           github.event.workflow_run.head_branch == 'main' &&
           github.event.workflow_run.conclusion == 'success' }}
