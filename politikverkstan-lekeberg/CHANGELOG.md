@@ -1,6 +1,6 @@
 ## 1.7.1 – 2026-10-24
 
-- Kalenderhämtning som uppdaterar `main` med `GITHUB_TOKEN` utlöser nu explicit hela CI-flödet via `workflow_dispatch`. Releasebefordran accepterar både push- och dispatchkörningar men endast godkänd testning av **aktuell** `main`-commit.
+- Kalenderhämtning som uppdaterar `main` med `GITHUB_TOKEN` utlöser nu explicit hela CI-flödet via `workflow_dispatch`. Dispatch-körningar kan befordras direkt efter gröna tester; vanliga pushar använder `workflow_run`. Båda vägarna kräver godkänd **aktuell** `main`-commit och fast-forward.
 - Versionsnummer visas i den skyddade Arbetsytan. Kalendern varnar om något organ saknar bekräftad uppdatering inom 48 timmar.
 - Release- och driftchecklista tydliggör gränsskydd, Cloudflare-inställningar, databassäkerhetskopior, verkliga åtkomstprov och integritet. Dessa externa steg redovisas som ej utförda tills de kontrollerats.
 - Ingen ny databasstruktur, ingen rättighetsutökning i applikationen och ingen automatisk export av personuppgifter.

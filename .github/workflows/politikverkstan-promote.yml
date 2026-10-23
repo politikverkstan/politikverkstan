@@ -30,20 +30,4 @@ jobs:
         shell: bash
         env:
           PASSED_SHA: ${{ github.event.workflow_run.head_sha }}
-        run: |
-          set -euo pipefail
-          git fetch origin main
-          ACTUAL_MAIN="$(git rev-parse origin/main)"
-          if [ "$ACTUAL_MAIN" != "$PASSED_SHA" ]; then
-            echo "A newer main commit exists. Skip stale successful run."
-            exit 0
-          fi
-          if git ls-remote --exit-code --heads origin production >/dev/null; then
-            git fetch origin production
-            if ! git merge-base --is-ancestor origin/production "$PASSED_SHA"; then
-              echo "Production branch is not an ancestor of the tested commit. No force push."
-              exit 1
-            fi
-          fi
-          git push origin "$PASSED_SHA:refs/heads/production"
-          echo "Promoted tested $PASSED_SHA to production branch."
+        run: bash politikverkstan-lekeberg/ops/promote-tested-release.sh

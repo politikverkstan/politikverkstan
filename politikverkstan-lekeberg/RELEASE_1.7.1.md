@@ -3,7 +3,7 @@ Datum: 2026-10-24.
 
 ## Kodändringar
 1. GitHubs kalenderjobb committar fortfarande **endast offentligt material** till `main`, men när något ändrats skickar det uttryckligen `workflow_dispatch` till den ordinarie kvalitetsworkflowen. En GITHUB_TOKEN-push utlöser normalt inte push-workflows; workflow_dispatch är det dokumenterade undantaget.
-2. Kvalitetsflödet verifierar genererade filer, matematiska motorer, behörighets- och migrationskontrakt, Playwright Chromium och PDF. Först därefter får promoter-jobbet flytta aktuell godkänd SHA till `production` (utan force-push). Senare main-commits gör äldre testresultat inaktuella.
+2. Kvalitetsflödet verifierar genererade filer, matematiska motorer, behörighets- och migrationskontrakt, Playwright Chromium och PDF. En `workflow_dispatch`-startad körning befordras av **samma kvalitetsworkflow**, efter att båda testjobben godkänts. Vanliga `push`-körningar befordras genom separat `workflow_run`. Båda vägarna använder samma fast-forward-skript, kräver testad SHA = aktuell `main` och får inte skriva över nyare kod.
 3. Arbetsytan visar version 1.7.1; den offentliga kalendern varnar när en källa saknar bekräftad uppdatering de senaste 48 timmarna. Varningen innebär INTE att mötesuppgifterna är verifierade.
 4. Ingen D1-migrering, ingen automatisk databasexport, ingen ändring av användarroller eller delningsregler.
 

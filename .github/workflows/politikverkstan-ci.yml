@@ -74,3 +74,22 @@ jobs:
           /usr/bin/chromium --version
       - name: Run browser and PDF regressions
         run: npm run test:browser
+  
+  # GitHub may suppress follow-up workflow_run for GITHUB_TOKEN dispatches.
+  # Direct promotion runs ONLY after the full tested main commit has passed.
+  promote_dispatch:
+    name: Promote tested dispatch
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.repository == 'politikverkstan/politikverkstan'
+    needs: [quality, browser]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Fast-forward verified current main to production
+        env:
+          PASSED_SHA: ${{ github.sha }}
+        run: bash politikverkstan-lekeberg/ops/promote-tested-release.sh

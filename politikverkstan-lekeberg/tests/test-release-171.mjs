@@ -18,9 +18,14 @@ assert(promote.includes('workflows: ["Politikverkstan quality"]'),'Promoter and 
 assert(promote.includes("github.event.workflow_run.event == 'workflow_dispatch'"));
 assert(promote.includes("github.event.workflow_run.event == 'push'"));
 assert(promote.includes("github.event.workflow_run.conclusion == 'success'"));
-assert(promote.includes('if [ "$ACTUAL_MAIN" != "$PASSED_SHA" ]'),'Never promote stale CI');
-assert(promote.includes('git merge-base --is-ancestor'),'Require fast-forward history');
-assert(!promote.includes('git push --force'),'Must not bypass release history');
+const promotionScript=read('ops/promote-tested-release.sh');
+assert(ci.includes('promote_dispatch:')&&ci.includes('needs: [quality, browser]'),'Dispatch must promote after full suite');
+assert(ci.includes("github.event_name == 'workflow_dispatch'"));
+assert(ci.includes('run: bash politikverkstan-lekeberg/ops/promote-tested-release.sh'));
+assert(promote.includes('run: bash politikverkstan-lekeberg/ops/promote-tested-release.sh'));
+assert(promotionScript.includes('if [ "$ACTUAL_MAIN" != "$PASSED_SHA" ]'),'Never promote stale CI');
+assert(promotionScript.includes('git merge-base --is-ancestor'),'Require fast-forward history');
+assert(!promotionScript.includes('git push --force'),'Must not bypass release history');
 const pkg=JSON.parse(read('package.json'));
 assert.equal(pkg.version,'1.7.1');
 const ui=read('src/meetings-ui.js'),shell=read('src/workroom.js'),generated=read('worker/workroom-page.mjs');
