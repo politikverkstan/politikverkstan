@@ -22,6 +22,7 @@ state.meetingList=[{id:'private-1',title:'Privat möte',meeting_date:mockDate,sc
 assert.equal(e.prepOptions().length,2,'Do not double-count dashboard and fetched private meetings');
 const linked={id:'mine',official_source_url:officialUrl,is_owner:true,scope:'mine'};
 state.meetingList.push(linked);
+state.prepSelectedKey=officialUrl;
 assert.equal(e.prepLinkedMeeting(e.prepSelected()).id,'mine','An existing personal preparation must be reused');
 assert.equal(e.prepOptions().length,2,'Original source and linked private meeting must not show twice');
 assert.equal(e.prepHasWork({preparation:''}),false);
