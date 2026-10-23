@@ -39,15 +39,6 @@ for(const source of OFFICIAL_SOURCES){
     if(!response.ok)throw Error('HTTP '+response.status);
     if(!(response.headers.get('content-type')||'').toLowerCase().includes('text/html'))throw Error('Fel svarstyp');
     const publicHtml=await response.text();
-    if(source.key==='kf'&&meeting.meeting_date==='2026-10-19'){
-     const snippets=[];
-     for(const needle of ['Godkännande av dagordning','Justerare','Dagordning','Ärendelista','ärendelista','agenda-list']){
-      const pos=publicHtml.toLowerCase().indexOf(needle.toLowerCase());
-      if(pos>=0)snippets.push({needle,fragment:publicHtml.slice(Math.max(0,pos-120),pos+240).replace(/\\s+/g,' ').slice(0,360)});
-     }
-     const numberFragments=[...publicHtml.matchAll(/(?:^|>)\s*(?:§\s*)?\d{1,3}\.?\s*[^<]{5,100}(?=<)/g)].slice(0,6).map(x=>x[0].slice(0,130));
-     console.log('PUBLIC AGENDA PARSER DIAGNOSTIC',JSON.stringify({snippets,numberFragments,htmlBytes:publicHtml.length}));
-    }
     const detail=parseOfficialAgenda(publicHtml,meeting.source_url);
     const oldValue=JSON.stringify({agenda:previous?.agenda||[],documents:previous?.documents||[]});
     const changed=oldValue!==JSON.stringify({agenda:detail.agenda,documents:detail.documents});

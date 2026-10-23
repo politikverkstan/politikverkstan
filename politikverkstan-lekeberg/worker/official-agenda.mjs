@@ -27,11 +27,30 @@ export function parseOfficialAgenda(html,meetingUrl){
   const key=number+'|'+title.toLocaleLowerCase('sv-SE');if(seen.has(key))continue;seen.add(key);
   agenda.push({number,title,source_url:meetingUrl});if(agenda.length>=70)break;
  }
+ // Real MeetingPlus structure: <li class="meeting-item-row"> containing
+ // a numbered <span> followed by <p class="item-title">. Do not extract
+ // arbitrary text in the page or infer items from attachment filenames.
+ for(const row of html.matchAll(/<li\b[^>]*class\s*=\s*(["'])[^"']*\bmeeting-item-row\b[^"']*\1[^>]*>([\s\S]*?)<\/li>/gi)){
+  if(row[2].length>50000)continue;
+  const titleTag=row[2].match(/<p\b[^>]*class\s*=\s*(["'])[^"']*\bitem-title\b[^"']*\1[^>]*>([\s\S]*?)<\/p>/i);
+  if(!titleTag)continue;
+  const title=plain(titleTag[2]).slice(0,160);
+  if(title.length<4)continue;
+  const before=row[2].slice(0,titleTag.index);
+  const numeric=[...before.matchAll(/<span\b[^>]*>\s*(?:§\s*)?(\d{1,3})\s*<\/span>/gi)];
+  const number=Number(numeric.at(-1)?.[1]||0);
+  if(number<1||number>250)continue;
+  const key=number+'|'+title.toLocaleLowerCase('sv-SE');
+  if(seen.has(key))continue;
+  seen.add(key);agenda.push({number,title,source_url:meetingUrl});
+  if(agenda.length>=70)break;
+ }
+ agenda.sort((a,b)=>a.number-b.number);
  const documents=[],known=new Set();
  for(const a of html.matchAll(/<a\b[^>]*\bhref\s*=\s*(["'])([^"']+)\1[^>]*>([\s\S]*?)<\/a>/gi)){
-  const url=attachmentUrl(a[2],meetingUrl);if(!url||known.has(url))continue;
+  const url=attachmentUrl(a[2],meetingUrl);if(!url||known.has(new URL(url).pathname))continue;
   const title=plain(a[3]).slice(0,175)||decodeURIComponent(new URL(url).pathname.split('/').pop()).replace(/pdf$/i,'.pdf').slice(0,175);
-  if(!title)continue;known.add(url);documents.push({title,url});if(documents.length>=80)break;
+  if(!title)continue;known.add(new URL(url).pathname);documents.push({title,url});if(documents.length>=80)break;
  }
  return {agenda,documents,agenda_status:agenda.length?'identified':'not_identified'};
 }

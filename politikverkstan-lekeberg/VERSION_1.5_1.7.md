@@ -5,7 +5,7 @@
 - Endast uttryckligt numrerade HTML-rubriker accepteras som dagordningspunkter. Om rubriker inte kan identifieras säkert visas i stället varning och originalkälla. MeetingPlus kan ändra HTML-struktur.
 - Offentliga dokument lagras **endast som namn och original-URL**. Inga dokumentfiler, personliga anteckningar eller privat material importeras.
 - Kalendern visar källdiagnostik, tidpunkt för upptäckt förändring, originalhandlingar och möjlighet att uttryckligen starta en privat mötesförberedelse från vald identifierad punkt.
-- Den initiala verkliga hämtningen den 23 oktober identifierade dokumentlänkar men **inga numrerade rubriker**. Dagordningsstödet är alltså ännu inte fullt integrerat mot kommunens faktiska HTML och måste verifieras mot MeetingPlus innan det används som komplett kallelse.
+- Den första verkliga hämtningen den 23 oktober identifierade dokumentlänkar men inga rubriker; felsökningen bekräftade därefter att MeetingPlus använder listposter med klass `meeting-item-row`, ett synligt ordningsnummer och `item-title`. Parsern har därför kompletterats för den faktiska strukturen. Fullständighet och jämförelse mot justerade originalkallelser behöver fortsatt kontrolleras.
 
 ## 1.6 Ärendeflöde och beslutsverifiering
 - Ägare kan skapa ett **privat** ärende direkt från en punkt i **eget privat** sammanträde. Det skapar inte ett nytt gruppdelat ärende.
