@@ -50,6 +50,8 @@ function dashboardPage(){
    jump:'followups'},
   {count:drafts.length,label:'Motionsutkast',note:'Mina pågående motioner',tab:'motions'}
  ];
+ const needsProtocol=(state.dashboardCases||[]).filter(c=>['beslutat','uppfoljning','avslutat'].includes(c.status)&&
+  c.official_decision?.verification!=='source_checked'&&(c.is_owner||c.assignee_email===state.user?.email));
  const edit=state.dashboardTaskEdit||taskBlank();
  const next=prepOptions()[0]||null;
  return `
@@ -65,6 +67,8 @@ function dashboardPage(){
    </div>
    <button type="button" class="btn btn-primary" data-tab="prepare">Öppna förberedelsen</button>
   </section>
+  ${needsProtocol.length?'<section class="card db-panel" aria-label="Beslut som behöver källkontroll"><h3>'+needsProtocol.length+' ärenden som behöver protokollskontroll</h3><p>Intern ärendestatus är inte ett styrkt kommunalt beslut. Kontrollera justerat protokoll och registrera beslutskälla.</p>'+
+   needsProtocol.slice(0,5).map(c=>'<button type="button" class="db-link-row" data-dashboard-case="'+h(c.id)+'">'+h(c.title)+'</button>').join('')+'</section>':''}
   <div class="db-kpis">${stats.map(x=>`<button type="button" class="db-kpi" ${x.jump?'data-db-followups-jump="1"':'data-tab="'+x.tab+'"'}><strong>${h(x.count)}</strong><span>${h(x.label)}</span><small>${h(x.note)}</small></button>`).join('')}</div>
   <div class="db-columns">
    <section class="card db-panel" aria-labelledby="db-meetings-heading">

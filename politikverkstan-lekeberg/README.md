@@ -1,4 +1,6 @@
-# Politikverkstan Lekeberg – 1.8.0
+# Politikverkstan Lekeberg – 2.0.0
+
+**Nytt i 1.9 och 2.0:** En källstyrd ärendeakt med dokumentreferenser, klassificerade granskningspunkter och separat protokollsanknutet beslut. Befintlig uppföljning för ansvariga och tidsfrister används fortsatt. Beslutskällor markeras endast efter manuell avstämning. Se [versionsbeskrivning](VERSION_1.9_2.0.md). Ingen ny D1-migrering.
 
 **Nytt i 1.8.0:** *Mitt nästa sammanträde* visar kommande offentliga och egna sammanträden i en samlad förberedelsevy med dagordning, ursprungshandlingar, egen arbetsindikator och redigering av privata punkter. Sparade egna förberedelser återanvänds utan att automatiskt importera kallelser eller skapa dubbletter. Se [leveransbeskrivningen](VERSION_1.8.md). Ingen ny D1-migrering.
 
@@ -6,7 +8,7 @@
 
 **Utveckling 1.5–1.7:** Offentliga MeetingPlus-länkar till kallelser och handlingar samt en konservativ dagordningsavläsning. Om källan saknar identifierbara numrerade rubriker visas ingen automatiskt konstruerad dagordning. Från en privat dagordningspunkt kan ett privat ärende skapas och följas genom underlag, möten, beslutskontroll och uppföljningar. Skrivverkstaden har sju dokumenttyper: motion, interpellation, enkel fråga, ändringsyrkande, reservation, särskilt yttrande och nämndinitiativ. Nya dokument är privata som standard. Se [versionsrapport](VERSION_1.5_1.7.md). Ingen ny D1-migrering ingår.
 
-**Status:** Kodbas för den publika mandatportalen och den inloggningsskyddade Arbetsytan. Aktuell kodversion är **1.8.0**, med förbättrad källstatus för organisationsregistret, fältspecifik markering av delvis verifierade uppgifter, tydligare varningar för osäkra nämndsimuleringar och ett läsande kontrollkommando för produktionsdatabasen. Källgranskningen innebär inte att samtliga 57 organ och uppdrag är verifierade för mandatperioden 2026–2030.
+**Status:** Kodbas för den publika mandatportalen och den inloggningsskyddade Arbetsytan. Aktuell kodversion är **2.0.0**, med förbättrad källstatus för organisationsregistret, fältspecifik markering av delvis verifierade uppgifter, tydligare varningar för osäkra nämndsimuleringar och ett läsande kontrollkommando för produktionsdatabasen. Källgranskningen innebär inte att samtliga 57 organ och uppdrag är verifierade för mandatperioden 2026–2030.
 
 **Senaste funktionsutvecklingen:** Version 1.3.0 gör det möjligt att skapa en privat mötesförberedelse från ett offentligt sammanträde med länk till originalkällan, utan automatisk import av interna anteckningar. Version 1.2.0 införde statusfiltrering och exportbar granskningslista för 57 organisationer. Version 1.1.0 samlade ärenden, underlag, möten, uppföljningar, ställningstaganden och historik i en ärendeöversikt. Versionerna 1.0–1.0.2 införde spårbar ärendehantering och en läskalender för kommunfullmäktige, kommunstyrelsen, barn- och utbildningsnämnden och socialnämnden. Äldre ändringar finns i [ändringsloggen](CHANGELOG.md).
 

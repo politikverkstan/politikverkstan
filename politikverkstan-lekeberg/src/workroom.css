@@ -686,3 +686,16 @@ html[data-theme="dark"] .official-today-label{color:#a3e8dd}
 @media(max-width:680px){.prep-top{padding:16px}.prep-next-card{align-items:stretch;flex-direction:column}.prep-next-card .btn{align-self:stretch}
  .prep-item{padding:12px}.prep-actions,.prep-edit-form,.prep-follow-up,.prep-notes-preview{margin-left:0}
  .prep-top-actions>.btn{width:100%;text-align:center}}
+
+/* 1.9–2.0: structured case evidence and manual protocol verification */
+.case-dossier{display:grid;gap:14px;min-width:0}
+.dossier-entry{border:1px solid var(--border);border-radius:10px;padding:13px;display:grid;gap:7px;overflow-wrap:anywhere;min-width:0}
+.dossier-entry-head{display:flex;align-items:start;justify-content:space-between;gap:12px}
+.dossier-entry small,.dossier-entry p{margin:0;color:var(--muted);font-size:13px;line-height:1.55;overflow-wrap:anywhere;white-space:pre-wrap}
+.dossier-actions{display:flex;flex-wrap:wrap;gap:8px}
+.dossier-critical{border-left:4px solid #bc623b}
+.dossier-form{display:grid;gap:12px;margin:8px 0;padding:14px;border:1px solid var(--border);border-radius:12px}
+.dossier-form .btn{justify-self:start}
+.dossier-warning{padding:12px;border-radius:8px;border:1px solid var(--border)}
+.dossier-decision-summary{padding:14px;border:1px solid var(--border);border-radius:10px;display:grid;gap:9px}
+@media(max-width:680px){.dossier-entry-head{display:block}.dossier-actions{margin-top:8px}.dossier-form .btn{width:100%}}

@@ -8,6 +8,43 @@ const err=(code,message)=>out({error:message},code);
 const statuses=new Set(['nytt','granskning','stallningstagande','beslutat','uppfoljning','avslutat']);
 const committees=new Set(['Kommunfullmäktige','Kommunstyrelsen','Barn- och utbildningsnämnden','Socialnämnden','Bygg- och miljönämnden','Valnämnden','Sydnärkes IT-nämnd','Sydnärkes miljö- och byggnämnd','Annat']);
 const fields={summary:6000,alternatives:4500,finances:4500,risks:4500,questions:4500,recommendation:3500,decision:3500,follow_up:3500,sources:3500};
+const sourceKinds=new Set(['handling','protokoll','statistik','annan']);
+const findingKinds=new Set(['faktafel','motsagelse','underlagsbrist','risk','politisk_invandning']);
+const findingLevels=new Set(['kritisk','betydande','mindre']);
+const str=(v,max)=>{
+ if(typeof v!=='string'||v.length>max)throw Error('Ogiltigt textfält i ärendeakten');
+ return v.trim();
+};
+const httpsSource=v=>{
+ const raw=str(v,1024);if(!raw)return '';
+ let u;try{u=new URL(raw);}catch{throw Error('Ogiltig https-källa i ärendeakten');}
+ if(u.protocol!=='https:'||u.username||u.password||!u.hostname)throw Error('Ogiltig https-källa i ärendeakten');
+ return raw;
+};
+export function normalizeCaseDossier(v){
+ const rawSources=v.source_refs??[],rawFindings=v.findings??[],decision=v.official_decision??{};
+ if(!Array.isArray(rawSources)||rawSources.length>12)throw Error('Ogiltigt källregister, högst 12 poster');
+ const source_refs=rawSources.map(x=>{
+  if(!x||typeof x!=='object'||Array.isArray(x))throw Error('Ogiltig källpost');
+  const title=str(x.title,160),url=httpsSource(x.url??''),reference=str(x.reference??'',180),kind=str(x.kind??'handling',20);
+  if(!title||!sourceKinds.has(kind)||typeof x.checked!=='boolean')throw Error('Ogiltig källpost');
+  return {title,url,reference,kind,checked:x.checked};
+ });
+ if(!Array.isArray(rawFindings)||rawFindings.length>15)throw Error('Ogiltig granskningslista, högst 15 poster');
+ const findings=rawFindings.map(x=>{
+  if(!x||typeof x!=='object'||Array.isArray(x))throw Error('Ogiltig granskningspunkt');
+  const type=str(x.type,40),severity=str(x.severity??'betydande',20),title=str(x.title,160),
+   reference=str(x.reference??'',350),impact=str(x.impact??'',500),action=str(x.action??'',500),status=str(x.status??'open',20);
+  if(!findingKinds.has(type)||!findingLevels.has(severity)||!title||!['open','resolved'].includes(status))throw Error('Ogiltig granskningspunkt');
+  return {type,severity,title,reference,impact,action,status};
+ });
+ if(!decision||typeof decision!=='object'||Array.isArray(decision))throw Error('Ogiltig beslutsuppgift');
+ const text=str(decision.text??'',3500),date=str(decision.date??'',10),reference=str(decision.reference??'',180),
+  url=httpsSource(decision.url??''),verification=str(decision.verification??'not_checked',20);
+ if(!validDate(date)||!['not_checked','source_checked'].includes(verification))throw Error('Ogiltig beslutsuppgift');
+ if(verification==='source_checked'&&(!text||!date||!reference||!url))throw Error('Källavstämning kräver beslutstext, datum, paragraf och https-protokoll');
+ return {source_refs,findings,official_decision:{text,date,reference,url,verification}};
+}
 const MAX_NOTE=4500,MAX_COMMENT=3000;
 const clean=(v,max)=>typeof v==='string'?v.trim().slice(0,max):'';
 const validDate=v=>v===''||typeof v==='string'&&/^\d{4}-\d\d-\d\d$/.test(v)&&!Number.isNaN(Date.parse(v+'T00:00:00Z'))&&new Date(v+'T00:00:00Z').toISOString().slice(0,10)===v;
@@ -39,6 +76,7 @@ export function normalizeCase(input){
  const motion_id=input.motion_id||null,file_id=input.file_id||null;
  if(motion_id!==null&&!validId(motion_id))throw Error('Ogiltig motionskoppling');
  if(file_id!==null&&!validId(file_id))throw Error('Ogiltig dokumentkoppling');
+ Object.assign(content,normalizeCaseDossier(input));
  return {title,status,committee,meeting_date:date,labels,content,motion_id,file_id,
   meeting_notes:input.meeting_notes===undefined?undefined:input.meeting_notes.trim()};
 }
@@ -75,6 +113,9 @@ function publicCase(row,user,personalNotes=''){
   // Linked private files/motions are only ever exposed to their actual owner.
   motion_id:isOwner?(content.motion_id||null):null,file_id:isOwner?(content.file_id||null):null,
   ...Object.fromEntries(Object.keys(fields).map(k=>[k,content[k]||''])),
+  source_refs:Array.isArray(content.source_refs)?content.source_refs:[],
+  findings:Array.isArray(content.findings)?content.findings:[],
+  official_decision:content.official_decision&&typeof content.official_decision==='object'?content.official_decision:{text:'',date:'',reference:'',url:'',verification:'not_checked'},
   meeting_notes:personalNotes,created_at:row.created_at,updated_at:row.updated_at};
 }
 const payload=v=>JSON.stringify({...v.content,motion_id:v.motion_id,file_id:v.file_id});
@@ -156,6 +197,10 @@ export async function handleCases(req,env,user){
    if(!editor(row,user))return err(403,'Endast ägaren eller utsedd ansvarig får redigera');
    const raw=await body(req);
    if(!Number.isSafeInteger(raw.revision)||raw.revision!==row.revision)return err(409,'Ärendet har ändrats. Ladda om innan du sparar.');
+   // Backward compatibility: a legacy client must not erase new dossier content.
+   const oldContent=JSON.parse(row.content_json);
+   for(const key of ['source_refs','findings','official_decision'])
+    if(raw[key]===undefined)raw[key]=oldContent[key];
    const v=normalizeCase(raw),isOwner=owner(row,user);
    // An assignee cannot replace or borrow the owner's private file/motion IDs.
    if(!isOwner&&(v.motion_id||v.file_id))return err(403,'Privata dokumentkopplingar kan endast ändras av ägaren');
@@ -175,7 +220,7 @@ export async function handleCases(req,env,user){
  }catch(e){return catchCase(e);}
 }
 function catchCase(e){
- if(e instanceof SyntaxError||/^(För stor|Ogiltig|Ange en rubrik|Rubriken får|Högst åtta|För långt)/.test(e.message))return err(400,e.message);
+ if(e instanceof SyntaxError||/^(För stor|Ogiltig|Ange en rubrik|Rubriken får|Högst åtta|För långt|Källavstämning)/.test(e.message))return err(400,e.message);
  console.error('Casework error',e.message);
  // A v1.0 Worker must not share or modify cases against the older v0.9.2 schema:
  // without 0011 the audit trigger and last_editor_email do not exist.

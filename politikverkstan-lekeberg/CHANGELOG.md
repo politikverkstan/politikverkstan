@@ -1,3 +1,12 @@
+## 2.0.0 – 2026-10-24 (inkluderar 1.9)
+
+- **1.9:** Strukturerat källregister per ärende med typ, titel, säker original-URL, dokumentreferens och kontrollstatus. Visar möjliga officiella handlingar från matchande sammanträde men kopplar aldrig automatiskt en handling till ett ärende.
+- **1.9:** Granskningspunkter i kategorierna faktafel, motsägelse, underlagsbrist, risk och politisk invändning, med prioritet, belägg, betydelse, åtgärdsförslag och status.
+- **2.0:** Separat post för faktiskt beslut, beslutsdatum, paragraf, protokoll-URL och manuell avstämningsstatus. Utan komplett källhänvisning kan uppgiften inte markeras som avstämd.
+- **2.0:** Ärenden med intern beslutsstatus men utan manuellt protokollskontrollerad uppgift lyfts på startsidan. Ansvar, tidsfrister och uppföljningar fortsätter i befintliga ärendefunktioner.
+- **1.8-regression:** Browser-testet kontrollerar asynkron uppdatering av progressindikator i stället för att anta att renderingen slutförts samtidigt som API-svaret.
+- All ny struktur ligger i befintligt behörighetsstyrt ärende-JSON, utan ny migrering eller åtkomstutökning. Äldre klienters PUT utan de nya fälten bevarar dem.
+
 ## 1.8.0 – 2026-10-24
 
 - Ny, inloggningsskyddad vy `Mitt nästa sammanträde` med kommande möten från MeetingPlus och egna åtkomliga möten.

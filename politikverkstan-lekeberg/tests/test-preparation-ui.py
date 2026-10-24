@@ -77,7 +77,7 @@ with sync_playwright() as p:
  page.locator('#prep-edit-form [name=follow_up]').fill('Återkom till prognosen efter mötet.')
  page.locator('#prep-edit-form button[type=submit]').click()
  page.wait_for_function("window.savedItems[0].preparation.includes('Begär underlag')")
- assert '1 av 2' in page.locator('.prep-progress-head').inner_text()
+ page.wait_for_function("document.querySelector('.prep-progress-head')?.innerText.includes('1 av 2')")
  assert 'Uppföljning' in page.locator('.prep-item').first.inner_text() or 'Återkom' in page.locator('.prep-item').first.inner_text()
  page.locator('#prep-open-private').click()
  page.locator('#meeting-form').wait_for()
@@ -85,7 +85,7 @@ with sync_playwright() as p:
  page.locator('.prep-next-card').wait_for()
  page.locator('.prep-next-card button').click()
  page.locator('.prep-root').wait_for()
- assert '1 av 2' in page.locator('.prep-progress-head').inner_text()
+ page.wait_for_function("document.querySelector('.prep-progress-head')?.innerText.includes('1 av 2')")
  assert page.evaluate('window.savedMeetings.length')==1
  assert not errors,errors
  browser.close()
